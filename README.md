@@ -16,7 +16,7 @@ Installation
 1. Go to **Addon Manager > Newsman > Manage**
 Fill in your [Newsman](https://www.newsmanapp.com) API KEY and User ID and click the Save button.
 
-  ![General Settings](https://raw.githubusercontent.com/Newsman/Magento2-Newsman/master/assets/settings1.png)
+  ![General Settings](https://raw.githubusercontent.com/Newsman/CS-Cart-Newsman/master/assets/settings1.png)
 
 2. After the [Newsman](https://www.newsmanapp.com) API KEY and User ID are set, you can choose a list and press Save.
 
