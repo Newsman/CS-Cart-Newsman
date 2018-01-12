@@ -1,161 +1,162 @@
-<?php
+	<?php
 
-/***************************************************************************
- *                                                                          *
- *   (c) 2017 Newsman                                                       *
- *                                                                          *
- * This  is  commercial  software,  only  users  who have purchased a valid *
- * license  and  accept  to the terms of the  License Agreement can install *
- * and use this program.                                                    *
- *                                                                          *
- ****************************************************************************
- * PLEASE READ THE FULL TEXT  OF THE SOFTWARE  LICENSE   AGREEMENT  IN  THE *
- * "copyright.txt" FILE PROVIDED WITH THIS DISTRIBUTION PACKAGE.            *
- ****************************************************************************/
+	/***************************************************************************
+	 *                                                                          *
+	 *   (c) 2017 Newsman                                                       *
+	 *                                                                          *
+	 * This  is  commercial  software,  only  users  who have purchased a valid *
+	 * license  and  accept  to the terms of the  License Agreement can install *
+	 * and use this program.                                                    *
+	 *                                                                          *
+	 ****************************************************************************
+	 * PLEASE READ THE FULL TEXT  OF THE SOFTWARE  LICENSE   AGREEMENT  IN  THE *
+	 * "copyright.txt" FILE PROVIDED WITH THIS DISTRIBUTION PACKAGE.            *
+	 ****************************************************************************/
 
-if (!defined('BOOTSTRAP'))
-{
-	die('Access denied');
-}
-
-use Tygh\Registry;
-use Tygh\Settings;
-
-require_once(realpath(dirname(__FILE__)) . '/lib/Newsman/Client.php');
-
-function fn_settings_variants_addons_newsman_newsman_list()
-{
-	try
+	if (!defined('BOOTSTRAP'))
 	{
-		$vars = Registry::get('addons.newsman');
-		$userid = $vars['newsman_userid'];
-		$apikey = $vars['newsman_apikey'];
-		$listid = $vars['newsman_list'];
+		die('Access denied');
+	}
 
-		if ($_SERVER['REQUEST_METHOD'] == 'POST')
-		{
-			if (empty($userid) || empty($apikey))
-			{
-				fn_set_notification('W', 'Check fields', 'User Id and Api Key cannot be empty', 'S');
-				return false;
-			}
-		}
+	use Tygh\Registry;
+	use Tygh\Settings;
 
-		if (!empty($userid) || !empty($apikey))
-		{
-			$client = new Newsman_Client($userid, $apikey);
-			$lists = $client->list->all();
-		}
+	require_once(realpath(dirname(__FILE__)) . '/lib/Newsman/Client.php');
 
-		$all_datas = array();
-
-		if (!empty($lists))
-		{
-			foreach ($lists as $list)
-			{
-				$all_datas[$list['list_id']] = $list['list_name'];
-			}
-		} else
-		{
-			$all_datas['0'] = 'Insert UserId and ApiKey';
-		}
-
-		if ($_SERVER['REQUEST_METHOD'] == 'POST')
+	function fn_settings_variants_addons_newsman_newsman_list()
+	{
+		try
 		{
 			$vars = Registry::get('addons.newsman');
 			$userid = $vars['newsman_userid'];
 			$apikey = $vars['newsman_apikey'];
 			$listid = $vars['newsman_list'];
 
-			$client = new Newsman_Client($userid, $apikey);
-
-			$users = db_query('SELECT * FROM ?:users WHERE status = ?i', "A");
-
-			$emails = array();
-			$name = array();
-
-			foreach ($users as $user)
+			if ($_SERVER['REQUEST_METHOD'] == 'POST')
 			{
-				$emails[] = $user['email'];
-				$name[] = (empty($user['firstname']) ? " " : $user['firstname']);
-			}
-
-			$max = 9999;
-
-			$csv = "email,firstname" . "\n";
-			for ($int = 0; $int < count($emails); $int++)
-			{
-				$csv .= $emails[$int];
-				$csv .= ",";
-				$csv .= $name[$int];
-				$csv .= "\n";
-
-				if ($int == $max)
+				if (empty($userid) || empty($apikey))
 				{
-					$int = 0;
-
-					$ret = $client->import->csv($listid, array(), $csv);
+					fn_set_notification('W', 'Check fields', 'User Id and Api Key cannot be empty', 'S');
+					return false;
 				}
 			}
 
-			$ret = $client->import->csv($listid, array(), $csv);
+			if (!empty($userid) || !empty($apikey))
+			{
+				$client = new Newsman_Client($userid, $apikey);
+				$lists = $client->list->all();
+			}
 
-			fn_set_notification('S', 'Import', 'Import has been executed successfully', 'S');
-		}
-	} catch (Exception $ex)
-	{
-		fn_set_notification('W', 'Credentials', 'User Id and Api Key are invalid', 'S');
-		return false;
-	}
+			$all_datas = array();
 
-	return $all_datas;
-}
+			if (!empty($lists))
+			{
+				foreach ($lists as $list)
+				{
+					$all_datas[$list['list_id']] = $list['list_name'];
+				}
+			} else
+			{
+				$all_datas['0'] = 'Insert UserId and ApiKey';
+			}
 
-function fn_newsman_update_user_profile_post($user_id, $user_data, $action)
-{
-	if ($action == "add")
-	{
-		$vars = Registry::get('addons.newsman');
-		$userid = $vars['newsman_userid'];
-		$apikey = $vars['newsman_apikey'];
-		$listid = $vars['newsman_list'];
+			if ($_SERVER['REQUEST_METHOD'] == 'POST')
+			{
+				$vars = Registry::get('addons.newsman');
+				$userid = $vars['newsman_userid'];
+				$apikey = $vars['newsman_apikey'];
+				$listid = $vars['newsman_list'];
 
-		if (!empty($userid) && !empty($apikey) && !empty($listid))
+				$client = new Newsman_Client($userid, $apikey);
+
+				$users = db_query('SELECT * FROM ?:em_subscribers WHERE status = ?i', "A");
+
+				$emails = array();
+				$name = array();
+
+				foreach ($users as $user)
+				{
+					$emails[] = $user['email'];
+					//	$name[] = (empty($user['firstname']) ? " " : $user['firstname']);
+					$name[] = (empty($user['name']) ? " " : $user['name']);
+				}
+
+				$max = 9999;
+
+				$csv = "email,name" . "\n";
+				for ($int = 0; $int < count($emails); $int++)
+				{
+					$csv .= $emails[$int];
+					$csv .= ",";
+					$csv .= $name[$int];
+					$csv .= "\n";
+
+					if ($int == $max)
+					{
+						$int = 0;
+
+						$ret = $client->import->csv($listid, array(), $csv);
+					}
+				}
+
+				$ret = $client->import->csv($listid, array(), $csv);
+
+				fn_set_notification('S', 'Import', 'Import has been executed successfully', 'S');
+			}
+		} catch (Exception $ex)
 		{
-			$client = new Newsman_Client($userid, $apikey);
-			$client->setCallType("rest");
+			fn_set_notification('W', 'Credentials', 'User Id and Api Key are invalid', 'S');
+			return false;
+		}
 
-			$users = db_query('SELECT * FROM ?:users WHERE user_id = ?i', $user_id);
+		return $all_datas;
+	}
 
-			$emails = array();
-			$name = array();
+	function fn_newsman_update_user_profile_post($user_id, $user_data, $action)
+	{
+		if ($action == "add")
+		{
+			$vars = Registry::get('addons.newsman');
+			$userid = $vars['newsman_userid'];
+			$apikey = $vars['newsman_apikey'];
+			$listid = $vars['newsman_list'];
 
-			foreach ($users as $user)
+			if (!empty($userid) && !empty($apikey) && !empty($listid))
 			{
-				$emails[] = $user['email'];
-				$name[] = (empty($user['firstname']) ? " " : $user['firstname']);
-			}
+				$client = new Newsman_Client($userid, $apikey);
+				$client->setCallType("rest");
 
-			$max = 9999;
+				$users = db_query('SELECT * FROM ?:users WHERE user_id = ?i', $user_id);
 
-			$csv = "email,firstname" . "\n";
-			for ($int = 0; $int < count($emails); $int++)
-			{
-				$csv .= $emails[$int];
-				$csv .= ",";
-				$csv .= $name[$int];
-				$csv .= "\n";
+				$emails = array();
+				$name = array();
 
-				if ($int == $max)
+				foreach ($users as $user)
 				{
-					$int = 0;
-
-					$ret = $client->import->csv($listid, array(), $csv);
+					$emails[] = $user['email'];
+					$name[] = (empty($user['firstname']) ? " " : $user['firstname']);
 				}
+
+				$max = 9999;
+
+				$csv = "email,firstname" . "\n";
+				for ($int = 0; $int < count($emails); $int++)
+				{
+					$csv .= $emails[$int];
+					$csv .= ",";
+					$csv .= $name[$int];
+					$csv .= "\n";
+
+					if ($int == $max)
+					{
+						$int = 0;
+
+						$ret = $client->import->csv($listid, array(), $csv);
+					}
+				}
+				$ret = $client->import->csv($listid, array(), $csv);
 			}
-			$ret = $client->import->csv($listid, array(), $csv);
 		}
 	}
-}
 
-?>
+	?>
