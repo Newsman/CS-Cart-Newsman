@@ -2,7 +2,7 @@
 
 [Newsman](https://www.newsmanapp.com) addon for CS Cart. Sync your CS Cart customers / subscribers to [Newsman](https://www.newsmanapp.com) list / segments.
  
-This is the easiest way to connect your Shop with [Newsman](https://www.newsmanapp.com). Generate an API KEY in your [Newsman](https://www.newsmanapp.com) account, install this plugin and you will be able to sync your customers with [Newsman](https://www.newsmanapp.com) list / segments.
+This is the easiest way to connect your Shop with [Newsman](https://www.newsmanapp.com). Generate an API KEY in your [Newsman](https://www.newsmanapp.com) account, install this plugin and you will be able to sync your customers and subscribers with [Newsman](https://www.newsmanapp.com) list / segments.
 
 Installation
 
