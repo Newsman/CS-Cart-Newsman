@@ -31,12 +31,25 @@ function fn_settings_variants_addons_newsman_newsman_list()
 		$userid = $vars['newsman_userid'];
 		$apikey = $vars['newsman_apikey'];
 		$listid = $vars['newsman_list'];
+		$importType = $vars['newsman_importType'];
 
 		if ($_SERVER['REQUEST_METHOD'] == 'POST')
 		{
 			if (empty($userid) || empty($apikey))
 			{
 				fn_set_notification('W', 'Check fields', 'User Id and Api Key cannot be empty', 'S');
+				return false;
+			}
+
+			if (empty($importType["importOrders"]) && empty($importType["importSubscribers"]))
+			{
+				fn_set_notification('W', 'Import Type', 'Please choose an import type (Subscribers or Customers)', 'S');
+				return false;
+			}
+
+			if ($importType["importOrders"] != "Y" && $importType["importSubscribers"] != "Y")
+			{
+				fn_set_notification('W', 'Import Type', 'Please choose an import type (Subscribers or Customers)', 'S');
 				return false;
 			}
 		}
@@ -82,17 +95,19 @@ function fn_settings_variants_addons_newsman_newsman_list()
 
 			$max = 9999;
 
-			$csv = "email,name" . "\n";
+			$csv = "email,name,source" . "\n";
 			for ($int = 0; $int < count($emails); $int++)
 			{
 				$csv .= $emails[$int];
 				$csv .= ",";
 				$csv .= $name[$int];
+				$csv .= ",";
+				$csv .= "cs_cart_subscribers";
 				$csv .= "\n";
 
 				if ($int == $max)
 				{
-					$int = 0;
+					$max += 9999;
 
 					$ret = $client->import->csv($listid, array(), $csv);
 				}
@@ -116,17 +131,19 @@ function fn_settings_variants_addons_newsman_newsman_list()
 
 			$max = 9999;
 
-			$csv = "email,name" . "\n";
+			$csv = "email,name,source" . "\n";
 			for ($int = 0; $int < count($emails); $int++)
 			{
 				$csv .= $emails[$int];
 				$csv .= ",";
 				$csv .= $name[$int];
+				$csv .= ",";
+				$csv .= "cs_cart_customers_order_completed";
 				$csv .= "\n";
 
 				if ($int == $max)
 				{
-					$int = 0;
+					$max += 9999;
 
 					$ret = $client->import->csv($listid, array(), $csv);
 				}
@@ -153,75 +170,99 @@ function fn_newsman_update_user_profile_post($user_id, $user_data, $action)
 		$userid = $vars['newsman_userid'];
 		$apikey = $vars['newsman_apikey'];
 		$listid = $vars['newsman_list'];
+		$importType = $vars['newsman_importType'];
+
+		if (empty($importType["importOrders"]) && empty($importType["importSubscribers"]))
+		{
+			fn_set_notification('W', 'Import Type', 'Please choose an import type (Subscribers or Customers)', 'S');
+			return false;
+		}
+
+		if ($importType["importOrders"] != "Y" && $importType["importSubscribers"] != "Y")
+		{
+			fn_set_notification('W', 'Import Type', 'Please choose an import type (Subscribers or Customers)', 'S');
+			return false;
+		}
 
 		if (!empty($userid) && !empty($apikey) && !empty($listid))
 		{
 			$client = new Newsman_Client($userid, $apikey);
 			$client->setCallType("rest");
 
-			$users = db_query('SELECT * FROM ?:em_subscribers WHERE status = ?i', "A");
-
-			$emails = array();
-			$name = array();
-
-			foreach ($users as $user)
+			if ($importType["importSubscribers"] == "Y")
 			{
-				$emails[] = $user['email'];
-				$name[] = (empty($user['name']) ? " " : $user['name']);
-			}
+				//Subscribers
+				$users = db_query('SELECT * FROM ?:em_subscribers WHERE status = ?i', "A");
 
-			$max = 9999;
+				$emails = array();
+				$name = array();
 
-			$csv = "email,name" . "\n";
-			for ($int = 0; $int < count($emails); $int++)
-			{
-				$csv .= $emails[$int];
-				$csv .= ",";
-				$csv .= $name[$int];
-				$csv .= "\n";
-
-				if ($int == $max)
+				foreach ($users as $user)
 				{
-					$int = 0;
-
-					$ret = $client->import->csv($listid, array(), $csv);
+					$emails[] = $user['email'];
+					$name[] = (empty($user['name']) ? " " : $user['name']);
 				}
-			}
-			$ret = $client->import->csv($listid, array(), $csv);
 
+				$max = 9999;
 
-			/*Orders Processing*/
-
-			$orders = db_query('SELECT * FROM ?:orders WHERE status = ?i', "C");
-
-			$emails = array();
-			$name = array();
-
-			foreach ($orders as $order)
-			{
-				$emails[] = $order['email'];
-				$name[] = (empty($order['s_firstname']) ? " " : $order['s_firstname']);
-			}
-
-			$max = 9999;
-
-			$csv = "email,name" . "\n";
-			for ($int = 0; $int < count($emails); $int++)
-			{
-				$csv .= $emails[$int];
-				$csv .= ",";
-				$csv .= $name[$int];
-				$csv .= "\n";
-
-				if ($int == $max)
+				$csv = "email,name,source" . "\n";
+				for ($int = 0; $int < count($emails); $int++)
 				{
-					$int = 0;
+					$csv .= $emails[$int];
+					$csv .= ",";
+					$csv .= $name[$int];
+					$csv .= ",";
+					$csv .= "cs_cart_subscribers";
+					$csv .= "\n";
 
-					$ret = $client->import->csv($listid, array(), $csv);
+					if ($int == $max)
+					{
+						$max += 9999;
+
+						$ret = $client->import->csv($listid, array(), $csv);
+					}
 				}
+				$ret = $client->import->csv($listid, array(), $csv);
+				//Subscribers
 			}
 
-			$ret = $client->import->csv($listid, array(), $csv);
+			if ($importType["importOrders"] == "Y")
+			{
+				/*Orders Processing*/
+				$orders = db_query('SELECT * FROM ?:orders WHERE status = ?i', "C");
+
+				$emails = array();
+				$name = array();
+
+				foreach ($orders as $order)
+				{
+					$emails[] = $order['email'];
+					$name[] = (empty($order['s_firstname']) ? " " : $order['s_firstname']);
+				}
+
+				$max = 9999;
+
+				$csv = "email,name,source" . "\n";
+				for ($int = 0; $int < count($emails); $int++)
+				{
+					$csv .= $emails[$int];
+					$csv .= ",";
+					$csv .= $name[$int];
+					$csv .= ",";
+					$csv .= "cs_cart_customers_order_completed";
+					$csv .= "\n";
+
+					if ($int == $max)
+					{
+						$max += 9999;
+
+						$ret = $client->import->csv($listid, array(), $csv);
+					}
+				}
+
+				$ret = $client->import->csv($listid, array(), $csv);
+				/*Orders Processing*/
+			}
 		}
 	}
 }

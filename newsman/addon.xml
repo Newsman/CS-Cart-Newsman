@@ -21,6 +21,21 @@
                         <name>Api Key</name>
                         <type>input</type>
                     </item>
+                    <item id="newsman_importType">
+                        <name>Import type</name>
+                        <type>multiple checkboxes</type>
+                        <variants>
+                            <item id="importSubscribers">
+                                <name>Import Subscribers</name>
+                                <type>checkbox</type>
+                            </item>
+                            <item id="importOrders">
+                                <name>Import Customers</name>
+                                <type>checkbox</type>
+                            </item>
+                        </variants>
+                        <default_value>importSubscribers</default_value>
+                    </item>
                     <item id="newsman_list">
                         <name>List</name>
                         <type>selectbox</type>
@@ -38,6 +53,7 @@
             `userid` int unsigned NOT NULL,
             `apikey` varchar(128) NOT NULL default '',
             `list` int NOT NULL,
+            `importType` varchar(20) NOT NULL,
             PRIMARY KEY (`id`)
             ) Engine=MyISAM DEFAULT CHARSET UTF8;
         </item>
