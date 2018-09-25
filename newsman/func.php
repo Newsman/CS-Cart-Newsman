@@ -31,6 +31,7 @@ function fn_settings_variants_addons_newsman_newsman_list()
 		$userid = $vars['newsman_userid'];
 		$apikey = $vars['newsman_apikey'];
 		$listid = $vars['newsman_list'];
+		$time = $vars['newsman_time'];
 		$importType = $vars['newsman_importType'];
 
 		if ($_SERVER['REQUEST_METHOD'] == 'POST')
@@ -170,7 +171,19 @@ function fn_newsman_update_user_profile_post($user_id, $user_data, $action)
 		$userid = $vars['newsman_userid'];
 		$apikey = $vars['newsman_apikey'];
 		$listid = $vars['newsman_list'];
+		$time = $vars['newsman_time'];
 		$importType = $vars['newsman_importType'];
+
+		$timefromdatabase = $time;
+
+		$dif = time() - $timefromdatabase;
+
+		if($dif > 3600)
+		{
+			Registry::set('addons.newsman.newsman_time', time());
+		}else{
+			die('cannot execute scripts, 1 hour must pass');
+		}
 
 		if (empty($importType["importOrders"]) && empty($importType["importSubscribers"]))
 		{
