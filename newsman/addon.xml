@@ -50,10 +50,7 @@
         <item for="install">
             CREATE TABLE `?:newsman_credentials` (
             `id` int unsigned NOT NULL auto_increment,
-            `userid` int unsigned NOT NULL,
-            `apikey` varchar(128) NOT NULL default '',
-            `list` int NOT NULL,
-            `importType` varchar(20) NOT NULL,
+            `time` varchar(100) NOT NULL,
             PRIMARY KEY (`id`)
             ) Engine=MyISAM DEFAULT CHARSET UTF8;
         </item>

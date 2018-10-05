@@ -9,8 +9,7 @@
  * and use this program.                                                    *
  *                                                                          *
  ****************************************************************************
- * PLEASE READ THE FULL TEXT  OF THE SOFTWARE  LICENSE   AGREEMENT  IN  THE *
- * "copyright.txt" FILE PROVIDED WITH THIS DISTRIBUTION PACKAGE.            *
+ *
  ****************************************************************************/
 
 if (!defined('BOOTSTRAP'))
@@ -23,15 +22,80 @@ use Tygh\Settings;
 
 require_once(realpath(dirname(__FILE__)) . '/lib/Newsman/Client.php');
 
+function safeForCsv($str)
+{
+	return '"' . str_replace('"', '""', $str) . '"';
+}
+
+function _importData(&$data, $list, $segments = null, $client)
+{
+	$csv = '"email","name","source"' . PHP_EOL;
+
+	$source = safeForCsv("cscart newsman plugin");
+	foreach ($data as $_dat)
+	{
+		$csv .= sprintf(
+			"%s,%s,%s",
+			safeForCsv($_dat["email"]),
+			safeForCsv($_dat["name"]),
+			$source
+		);
+		$csv .= PHP_EOL;
+	}
+
+	$ret = null;
+	try
+	{
+		if (is_array($segments) && count($segments) > 0)
+		{
+			$ret = $client->import->csv($list, $segments, $csv);
+		} else
+		{
+			$ret = $client->import->csv($list, array(), $csv);
+		}
+
+		if ($ret == "")
+		{
+			throw new Exception("Import failed");
+		}
+	} catch (Exception $e)
+	{
+
+	}
+
+	$data = array();
+}
+
+function cronTime($action, $value = null)
+{
+	$val = "";
+
+	switch ($action)
+	{
+		case "Insert":
+			$val = db_query('INSERT INTO ?:newsman_credentials (`time`) VALUES (' . $value . ');');
+			break;
+		case "Update":
+			$val = db_query('UPDATE ?:newsman_credentials SET `time` = ' . $value . ';');
+			break;
+		case "Select":
+			$val = db_query('SELECT `time` FROM ?:newsman_credentials');
+			break;
+	}
+
+	return $val;
+}
+
 function fn_settings_variants_addons_newsman_newsman_list()
 {
 	try
 	{
+		$batchSize = 5000;
+
 		$vars = Registry::get('addons.newsman');
 		$userid = $vars['newsman_userid'];
 		$apikey = $vars['newsman_apikey'];
 		$listid = $vars['newsman_list'];
-		$time = $vars['newsman_time'];
 		$importType = $vars['newsman_importType'];
 
 		if ($_SERVER['REQUEST_METHOD'] == 'POST')
@@ -44,13 +108,13 @@ function fn_settings_variants_addons_newsman_newsman_list()
 
 			if (empty($importType["importOrders"]) && empty($importType["importSubscribers"]))
 			{
-				fn_set_notification('W', 'Import Type', 'Please choose an import type (Subscribers or Customers)', 'S');
+				fn_set_notification('W', 'Import Type', 'Please choose an import type (Subscribers or Customers), Save again to take effect', 'S');
 				return false;
 			}
 
 			if ($importType["importOrders"] != "Y" && $importType["importSubscribers"] != "Y")
 			{
-				fn_set_notification('W', 'Import Type', 'Please choose an import type (Subscribers or Customers)', 'S');
+				fn_set_notification('W', 'Import Type', 'Please choose an import type (Subscribers or Customers), Save again to take effect', 'S');
 				return false;
 			}
 		}
@@ -76,6 +140,12 @@ function fn_settings_variants_addons_newsman_newsman_list()
 
 		if ($_SERVER['REQUEST_METHOD'] == 'POST')
 		{
+			if (empty($listid))
+			{
+				fn_set_notification('W', 'List', 'List empty, save again to take effect', 'S');
+				return false;
+			}
+
 			$vars = Registry::get('addons.newsman');
 			$userid = $vars['newsman_userid'];
 			$apikey = $vars['newsman_apikey'];
@@ -83,80 +153,66 @@ function fn_settings_variants_addons_newsman_newsman_list()
 
 			$client = new Newsman_Client($userid, $apikey);
 
-			$users = db_query('SELECT * FROM ?:em_subscribers WHERE status = ?i', "A");
-
-			$emails = array();
-			$name = array();
-
-			foreach ($users as $user)
+			if ($importType["importSubscribers"] == "Y")
 			{
-				$emails[] = $user['email'];
-				$name[] = (empty($user['name']) ? " " : $user['name']);
-			}
+				$customers_to_import = array();
 
-			$max = 9999;
+				$users = db_query('SELECT * FROM ?:em_subscribers WHERE status = ?i', "A");
 
-			$csv = "email,name,source" . "\n";
-			for ($int = 0; $int < count($emails); $int++)
-			{
-				$csv .= $emails[$int];
-				$csv .= ",";
-				$csv .= $name[$int];
-				$csv .= ",";
-				$csv .= "cs_cart_subscribers";
-				$csv .= "\n";
-
-				if ($int == $max)
+				foreach ($users as $user)
 				{
-					$max += 9999;
+					$customers_to_import[] = array(
+						"email" => $user["email"],
+						"name" => (empty($user['name']) ? " " : $user['name'])
+					);
 
-					$ret = $client->import->csv($listid, array(), $csv);
+					if ((count($customers_to_import) % $batchSize) == 0)
+					{
+						_importData($customers_to_import, $listid, null, $client);
+					}
 				}
-			}
-
-			$ret = $client->import->csv($listid, array(), $csv);
-
-
-			/*Orders Processing*/
-
-			$orders = db_query('SELECT * FROM ?:orders WHERE status = ?i', "C");
-
-			$emails = array();
-			$name = array();
-
-			foreach ($orders as $order)
-			{
-				$emails[] = $order['email'];
-				$name[] = (empty($order['s_firstname']) ? " " : $order['s_firstname']);
-			}
-
-			$max = 9999;
-
-			$csv = "email,name,source" . "\n";
-			for ($int = 0; $int < count($emails); $int++)
-			{
-				$csv .= $emails[$int];
-				$csv .= ",";
-				$csv .= $name[$int];
-				$csv .= ",";
-				$csv .= "cs_cart_customers_order_completed";
-				$csv .= "\n";
-
-				if ($int == $max)
+				if (count($customers_to_import) > 0)
 				{
-					$max += 9999;
-
-					$ret = $client->import->csv($listid, array(), $csv);
+					_importData($customers_to_import, $listid, null, $client);
 				}
+
+				unset($customers_to_import);
 			}
 
-			$ret = $client->import->csv($listid, array(), $csv);
 
-			fn_set_notification('S', 'Import', 'Import has been executed successfully', 'S');
+			if ($importType["importOrders"] == "Y")
+			{
+				/*Orders Processing*/
+
+				$customers_to_import = array();
+
+				$orders = db_query('SELECT * FROM ?:orders WHERE status = ?i', "C");
+
+				foreach ($orders as $order)
+				{
+					$customers_to_import[] = array(
+						"email" => $order["email"],
+						"name" => (empty($order['s_firstname']) ? " " : $order['s_firstname'])
+					);
+
+					if ((count($customers_to_import) % $batchSize) == 0)
+					{
+						_importData($customers_to_import, $listid, null, $client);
+					}
+				}
+				if (count($customers_to_import) > 0)
+				{
+					_importData($customers_to_import, $listid, null, $client);
+				}
+
+				unset($customers_to_import);
+			}
+
+			fn_set_notification('S', 'Import', 'Import has been programmed successfully', 'S');
 		}
 	} catch (Exception $ex)
 	{
-		fn_set_notification('W', 'Credentials', 'User Id and Api Key are invalid', 'S');
+		fn_set_notification('W', 'Credentials', 'User Id and Api Key are invalid, Save again to take effect', 'S');
 		return false;
 	}
 
@@ -167,23 +223,46 @@ function fn_newsman_update_user_profile_post($user_id, $user_data, $action)
 {
 	if ($action == "add")
 	{
+		$batchSize = 5000;
+
 		$vars = Registry::get('addons.newsman');
 		$userid = $vars['newsman_userid'];
 		$apikey = $vars['newsman_apikey'];
 		$listid = $vars['newsman_list'];
-		$time = $vars['newsman_time'];
 		$importType = $vars['newsman_importType'];
+
+
+		$first = false;
+
+		$time = cronTime("Select");
+		if ($time->num_rows == 0)
+		{
+			cronTime("Insert", time());
+			$first = true;
+		}
+
+		$time = cronTime("Select");
+
+		foreach ($time as $_time)
+		{
+			$time = $_time["time"];
+		}
 
 		$timefromdatabase = $time;
 
 		$dif = time() - $timefromdatabase;
 
-		if($dif > 3600)
+		if (!$first)
 		{
-			Registry::set('addons.newsman.newsman_time', time());
-		}else{
-			die('cannot execute scripts, 1 hour must pass');
+			if ($dif > 3600)
+			{
+				cronTime("Update", time());
+			} else
+			{
+				die('cannot execute scripts, 1 hour must pass');
+			}
 		}
+
 
 		if (empty($importType["importOrders"]) && empty($importType["importSubscribers"]))
 		{
@@ -205,79 +284,61 @@ function fn_newsman_update_user_profile_post($user_id, $user_data, $action)
 			if ($importType["importSubscribers"] == "Y")
 			{
 				//Subscribers
-				$users = db_query('SELECT * FROM ?:em_subscribers WHERE status = ?i', "A");
+				$customers_to_import = array();
 
-				$emails = array();
-				$name = array();
+				$users = db_query('SELECT * FROM ?:em_subscribers WHERE status = ?i', "A");
 
 				foreach ($users as $user)
 				{
-					$emails[] = $user['email'];
-					$name[] = (empty($user['name']) ? " " : $user['name']);
-				}
+					$customers_to_import[] = array(
+						"email" => $user["email"],
+						"name" => (empty($user['name']) ? " " : $user['name'])
+					);
 
-				$max = 9999;
-
-				$csv = "email,name,source" . "\n";
-				for ($int = 0; $int < count($emails); $int++)
-				{
-					$csv .= $emails[$int];
-					$csv .= ",";
-					$csv .= $name[$int];
-					$csv .= ",";
-					$csv .= "cs_cart_subscribers";
-					$csv .= "\n";
-
-					if ($int == $max)
+					if ((count($customers_to_import) % $batchSize) == 0)
 					{
-						$max += 9999;
-
-						$ret = $client->import->csv($listid, array(), $csv);
+						_importData($customers_to_import, $listid, null, $client);
 					}
 				}
-				$ret = $client->import->csv($listid, array(), $csv);
+				if (count($customers_to_import) > 0)
+				{
+					_importData($customers_to_import, $listid, null, $client);
+				}
+
+				unset($customers_to_import);
 				//Subscribers
 			}
 
 			if ($importType["importOrders"] == "Y")
 			{
 				/*Orders Processing*/
-				$orders = db_query('SELECT * FROM ?:orders WHERE status = ?i', "C");
+				$customers_to_import = array();
 
-				$emails = array();
-				$name = array();
+				$orders = db_query('SELECT * FROM ?:orders WHERE status = ?i', "C");
 
 				foreach ($orders as $order)
 				{
-					$emails[] = $order['email'];
-					$name[] = (empty($order['s_firstname']) ? " " : $order['s_firstname']);
-				}
+					$customers_to_import[] = array(
+						"email" => $order["email"],
+						"name" => (empty($order['s_firstname']) ? " " : $order['s_firstname'])
+					);
 
-				$max = 9999;
-
-				$csv = "email,name,source" . "\n";
-				for ($int = 0; $int < count($emails); $int++)
-				{
-					$csv .= $emails[$int];
-					$csv .= ",";
-					$csv .= $name[$int];
-					$csv .= ",";
-					$csv .= "cs_cart_customers_order_completed";
-					$csv .= "\n";
-
-					if ($int == $max)
+					if ((count($customers_to_import) % $batchSize) == 0)
 					{
-						$max += 9999;
-
-						$ret = $client->import->csv($listid, array(), $csv);
+						_importData($customers_to_import, $listid, null, $client);
 					}
 				}
+				if (count($customers_to_import) > 0)
+				{
+					_importData($customers_to_import, $listid, null, $client);
+				}
 
-				$ret = $client->import->csv($listid, array(), $csv);
+				unset($customers_to_import);
 				/*Orders Processing*/
 			}
 		}
 	}
 }
+
 
 ?>
