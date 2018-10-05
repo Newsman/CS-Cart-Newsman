@@ -27,18 +27,17 @@ function safeForCsv($str)
 	return '"' . str_replace('"', '""', $str) . '"';
 }
 
-function _importData(&$data, $list, $segments = null, $client)
+function _importData(&$data, $list, $segments = null, $client, $source)
 {
 	$csv = '"email","name","source"' . PHP_EOL;
 
-	$source = safeForCsv("cscart newsman plugin");
 	foreach ($data as $_dat)
 	{
 		$csv .= sprintf(
 			"%s,%s,%s",
 			safeForCsv($_dat["email"]),
 			safeForCsv($_dat["name"]),
-			$source
+			safeForCsv($source)
 		);
 		$csv .= PHP_EOL;
 	}
@@ -168,12 +167,12 @@ function fn_settings_variants_addons_newsman_newsman_list()
 
 					if ((count($customers_to_import) % $batchSize) == 0)
 					{
-						_importData($customers_to_import, $listid, null, $client);
+						_importData($customers_to_import, $listid, null, $client, "cscart subscribers");
 					}
 				}
 				if (count($customers_to_import) > 0)
 				{
-					_importData($customers_to_import, $listid, null, $client);
+					_importData($customers_to_import, $listid, null, $client, "cscart subscribers");
 				}
 
 				unset($customers_to_import);
@@ -197,12 +196,12 @@ function fn_settings_variants_addons_newsman_newsman_list()
 
 					if ((count($customers_to_import) % $batchSize) == 0)
 					{
-						_importData($customers_to_import, $listid, null, $client);
+						_importData($customers_to_import, $listid, null, $client, "cscart orders_completed");
 					}
 				}
 				if (count($customers_to_import) > 0)
 				{
-					_importData($customers_to_import, $listid, null, $client);
+					_importData($customers_to_import, $listid, null, $client, "cscart orders_completed");
 				}
 
 				unset($customers_to_import);
@@ -297,12 +296,12 @@ function fn_newsman_update_user_profile_post($user_id, $user_data, $action)
 
 					if ((count($customers_to_import) % $batchSize) == 0)
 					{
-						_importData($customers_to_import, $listid, null, $client);
+						_importData($customers_to_import, $listid, null, $client, "cscart subscribers");
 					}
 				}
 				if (count($customers_to_import) > 0)
 				{
-					_importData($customers_to_import, $listid, null, $client);
+					_importData($customers_to_import, $listid, null, $client, "cscart subscribers");
 				}
 
 				unset($customers_to_import);
@@ -325,12 +324,12 @@ function fn_newsman_update_user_profile_post($user_id, $user_data, $action)
 
 					if ((count($customers_to_import) % $batchSize) == 0)
 					{
-						_importData($customers_to_import, $listid, null, $client);
+						_importData($customers_to_import, $listid, null, $client, "cscart orders_completed");
 					}
 				}
 				if (count($customers_to_import) > 0)
 				{
-					_importData($customers_to_import, $listid, null, $client);
+					_importData($customers_to_import, $listid, null, $client, "cscart orders_completed");
 				}
 
 				unset($customers_to_import);
