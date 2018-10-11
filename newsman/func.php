@@ -253,12 +253,12 @@ function fn_newsman_update_user_profile_post($user_id, $user_data, $action)
 
 		if (!$first)
 		{
-			if ($dif > 3600)
+			if ($dif > 86400)
 			{
 				cronTime("Update", time());
 			} else
 			{
-				die('cannot execute scripts, 1 hour must pass');
+				die('cannot execute scripts, 24 hour must pass');
 			}
 		}
 
