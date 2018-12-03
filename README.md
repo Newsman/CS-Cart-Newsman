@@ -21,3 +21,12 @@ Fill in your [Newsman](https://www.newsmanapp.com) API KEY and User ID and click
 2. After the [Newsman](https://www.newsmanapp.com) API KEY and User ID are set, you can choose a list and press Save.
 
 3. Automatic synchronization is enabled for each registered customer.
+
+## Upgrade Plugin
+
+1. Go to **Addon Manager > Newsman > Manage**
+Search for Newsman - Email Marketing -> Click Cog Bar -> Uninstall -> Disabled
+  ![Upgrade](https://raw.githubusercontent.com/Newsman/CS-Cart-Newsman/master/assets/upgrade.jpg)
+
+2. Copy new files
+3. Search for Newsman - Email Marketing -> Click Cog Bar -> Install -> Activate
