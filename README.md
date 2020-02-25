@@ -6,9 +6,11 @@ This is the easiest way to connect your Shop with [Newsman](https://www.newsmana
 
 Installation
 
-## Manual installation: 
+## Installation: 
 
-1. Copy the *"newsman"* addon folder from this repository to your "app/addons/" shop directory.
+1. 
+- Copy the *"newsman"* addon folder from this repository to your "app/addons/" shop directory.
+- Copy the "newsman.php" file from "app/controllers/frontend/" to your "app/controllers/frontend/" shop directory.
 
 2. Install addon from Manage Add-ons and Set it as active.
 

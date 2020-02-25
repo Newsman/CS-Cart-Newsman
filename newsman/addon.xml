@@ -41,6 +41,11 @@
                         <type>selectbox</type>
                         <default_value>fn_add_setting_info</default_value>
                     </item>
+                    <item id="newsman_segment">
+                        <name>Segment</name>
+                        <type>selectbox</type>
+                        <default_value>fn_add_setting_info</default_value>
+                    </item>
                 </items>
             </section>
         </sections>
