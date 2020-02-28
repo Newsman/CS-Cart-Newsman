@@ -146,7 +146,7 @@ function safeForCsv($str)
 
 function _importData(&$data, $list, $segments = null, $client, $source)
 {
-    $csv = '"email","name","source"' . PHP_EOL;
+    $csv = '"email","fullname","source"' . PHP_EOL;
 
     foreach ($data as $_dat) {
         $csv .= sprintf(
