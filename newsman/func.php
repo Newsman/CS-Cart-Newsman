@@ -313,7 +313,7 @@ function fn_newsman_update_user_profile_post($user_id, $user_data, $action)
                 //Subscribers
                 $customers_to_import = array();
 
-                $users = db_query('SELECT * FROM ?:em_subscribers WHERE status = ?i', "A");
+                $users = db_query('SELECT * FROM ?:subscribers WHERE status = ?i', "A");
 
                 foreach ($users as $user) {
                     $customers_to_import[] = array(
