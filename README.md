@@ -24,6 +24,16 @@ Fill in your [Newsman](https://www.newsmanapp.com) API KEY and User ID and click
 
 3. Automatic synchronization is enabled for each registered customer.
 
+### Sync Segmentation:
+
+- Subscribers
+
+- email, source
+
+- Customers with orders completed:
+
+- email, firstname, lastname, city, source
+
 ## Upgrade Plugin
 
 1. Go to **Addon Manager > Newsman > Manage**

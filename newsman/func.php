@@ -91,6 +91,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 foreach ($users as $user) {
                     $customers_to_import[] = array(
                         "email" => $user["email"],
+                        //no name present
                         "name" => (empty($user['name']) ? " " : $user['name'])
                     );
 
@@ -116,15 +117,18 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 foreach ($orders as $order) {
                     $customers_to_import[] = array(
                         "email" => $order["email"],
-                        "name" => (empty($order['s_firstname']) ? " " : $order['s_firstname'])
+                        "s_firstname" => (empty($order['s_firstname']) ? " " : $order['s_firstname']),
+                        "s_lastname" => (empty($order['s_lastname']) ? " " : $order['s_lastname']),
+                        "s_city" => (empty($order['s_city']) ? " " : $order['s_city'])
                     );
 
                     if ((count($customers_to_import) % $batchSize) == 0) {
-                        _importData($customers_to_import, $listidPost, array($segmentidPost), $client, "cscart orders_completed");
+                        _importDataOrders($customers_to_import, $listidPost, array($segmentidPost), $client, "cscart orders_completed");
                     }
-                }
+                }                
+                
                 if (count($customers_to_import) > 0) {
-                    _importData($customers_to_import, $listidPost, array($segmentidPost), $client, "cscart orders_completed");
+                    _importDataOrders($customers_to_import, $listidPost, array($segmentidPost), $client, "cscart orders_completed");
                 }
 
                 unset($customers_to_import);
@@ -153,6 +157,40 @@ function _importData(&$data, $list, $segments = null, $client, $source)
             "%s,%s,%s",
             safeForCsv($_dat["email"]),
             safeForCsv($_dat["name"]),
+            safeForCsv($source)
+        );
+        $csv .= PHP_EOL;
+    }
+
+    $ret = null;
+    try {
+        if (is_array($segments) && count($segments) > 0) {
+            $ret = $client->import->csv($list, $segments, $csv);
+        } else {
+            $ret = $client->import->csv($list, array(), $csv);
+        }
+
+        if ($ret == "") {
+            throw new Exception("Import failed");
+        }
+    } catch (Exception $e) {
+
+    }
+
+    $data = array();
+}
+
+function _importDataOrders(&$data, $list, $segments = null, $client, $source)
+{
+    $csv = '"email","firstname", "lastname", "city", "source"' . PHP_EOL;
+
+    foreach ($data as $_dat) {
+        $csv .= sprintf(
+            "%s,%s,%s,%s,%s",
+            safeForCsv($_dat["email"]),
+            safeForCsv($_dat["s_firstname"]),
+            safeForCsv($_dat["s_lastname"]),
+            safeForCsv($_dat["s_city"]),
             safeForCsv($source)
         );
         $csv .= PHP_EOL;
@@ -318,6 +356,7 @@ function fn_newsman_update_user_profile_post($user_id, $user_data, $action)
                 foreach ($users as $user) {
                     $customers_to_import[] = array(
                         "email" => $user["email"],
+                          //no name present
                         "name" => (empty($user['name']) ? " " : $user['name'])
                     );
 
@@ -342,15 +381,17 @@ function fn_newsman_update_user_profile_post($user_id, $user_data, $action)
                 foreach ($orders as $order) {
                     $customers_to_import[] = array(
                         "email" => $order["email"],
-                        "name" => (empty($order['s_firstname']) ? " " : $order['s_firstname'])
+                        "s_firstname" => (empty($order['s_firstname']) ? " " : $order['s_firstname']),
+                        "s_lastname" => (empty($order['s_lastname']) ? " " : $order['s_lastname']),
+                        "s_city" => (empty($order['s_city']) ? " " : $order['s_city'])
                     );
 
                     if ((count($customers_to_import) % $batchSize) == 0) {
-                        _importData($customers_to_import, $listid, array($segmentid), $client, "cscart orders_completed");
+                        _importDataOrders($customers_to_import, $listid, array($segmentid), $client, "cscart orders_completed");
                     }
                 }
                 if (count($customers_to_import) > 0) {
-                    _importData($customers_to_import, $listid, array($segmentid), $client, "cscart orders_completed");
+                    _importDataOrders($customers_to_import, $listid, array($segmentid), $client, "cscart orders_completed");
                 }
 
                 unset($customers_to_import);

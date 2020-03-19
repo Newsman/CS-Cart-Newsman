@@ -30,7 +30,7 @@
                                 <type>checkbox</type>
                             </item>
                             <item id="importOrders">
-                                <name>Import Customers</name>
+                                <name>Import Customers with Orders Completed</name>
                                 <type>checkbox</type>
                             </item>
                         </variants>
