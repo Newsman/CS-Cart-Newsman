@@ -26,13 +26,8 @@ Fill in your [Newsman](https://www.newsmanapp.com) API KEY and User ID and click
 
 ### Sync Segmentation:
 
-- Subscribers
-
-- email, source
-
-- Customers with orders completed:
-
-- email, firstname, lastname, city, source
+- Subscribers: email, source
+- Customers with orders completed: email, firstname, lastname, city, source
 
 ## Upgrade Plugin
 
