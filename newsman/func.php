@@ -234,13 +234,12 @@ function cronTime($action, $value = null)
 }
 
 function fn_settings_variants_addons_newsman_newsman_segment()
-{
+{    
     try {
         $vars = Registry::get('addons.newsman');
         $userid = $vars['newsman_userid'];
         $apikey = $vars['newsman_apikey'];
-        $listid = $vars['newsman_list'];
-
+        $listid = $vars['newsman_list']; 
         if (!empty($userid) || !empty($apikey)) {
             $client = new Newsman_Client($userid, $apikey);
             $segments = $client->segment->all($listid);
@@ -331,7 +330,6 @@ function fn_newsman_update_user_profile_post($user_id, $user_data, $action)
                 die('cannot execute scripts, 24 hour must pass');
             }
         }
-
 
         if (empty($importType["importOrders"]) && empty($importType["importSubscribers"])) {
             fn_set_notification('W', 'Import Type', 'Please choose an import type (Subscribers or Customers)', 'S');

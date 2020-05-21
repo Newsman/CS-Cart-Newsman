@@ -33,6 +33,10 @@
                                 <name>Import Customers with Orders Completed</name>
                                 <type>checkbox</type>
                             </item>
+                            <item id="allowAPI">
+                                <name>Allow API access to (Orders, Products, Customers, Subscribers)</name>
+                                <type>checkbox</type>
+                            </item>                            
                         </variants>
                         <default_value>importSubscribers</default_value>
                     </item>

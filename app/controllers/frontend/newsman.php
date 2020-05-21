@@ -6,8 +6,13 @@ use Tygh\Settings;
 $vars = Registry::get('addons.newsman');
 $_apikey = $vars['newsman_apikey'];
 
+$importType = $vars['newsman_importType'];
+
 $apikey = (empty($_GET["apikey"])) ? "" : $_GET["apikey"];
 $newsman = (empty($_GET["newsman"])) ? "" : $_GET["newsman"];
+$start = (!empty($_GET["start"]) && $_GET["start"] >= 0) ? $_GET["start"] : "";
+$limit = (empty($_GET["limit"])) ? "" : $_GET["limit"];
+$startLimit;
 
 if (!empty($newsman) && !empty($apikey)) {
     $apikey = $_GET["apikey"];
@@ -19,13 +24,23 @@ if (!empty($newsman) && !empty($apikey)) {
         echo json_encode(array('status' => "403"));
         exit;
     }
+    elseif(empty($importType["allowAPI"]))
+    {
+        http_response_code(403);
+        header('Content-Type: application/json');
+        echo json_encode(array('status' => "403"));
+        exit;
+    }
+
+    if(!empty($start) && $start >= 0 && !empty($limit))
+    $startLimit = " LIMIT {$limit} OFFSET {$start}";
 
     switch ($_GET["newsman"]) {
         case "orders.json":
 
-            $ordersObj = array();
+            $ordersObj = array();            
 
-            $orders = db_query('SELECT * FROM ?:orders');
+            $orders = db_query('SELECT * FROM ?:orders' . $startLimit);
 
             foreach ($orders as $item) {
 
@@ -73,14 +88,14 @@ if (!empty($newsman) && !empty($apikey)) {
 
             header('Content-Type: application/json');
             echo json_encode($ordersObj, JSON_PRETTY_PRINT);
-            return;
+            exit;      
 
             break;
 
         case
         "products.json":
 
-            $products = db_query('SELECT * FROM ?:products');
+            $products = db_query('SELECT * FROM ?:products' . $startLimit);
             $productsJson = array();
 
             foreach ($products as $prod) {
@@ -99,13 +114,13 @@ if (!empty($newsman) && !empty($apikey)) {
 
             header('Content-Type: application/json');
             echo json_encode($productsJson, JSON_PRETTY_PRINT);
-            return;
+            exit;     
 
             break;
 
         case "customers.json":
 
-            $wp_cust = db_query('SELECT * FROM ?:orders WHERE status = ?i', "C");
+            $wp_cust = db_query('SELECT * FROM ?:orders WHERE status = ?i' . $startLimit, "C");
 
             $custs = array();
 
@@ -121,19 +136,19 @@ if (!empty($newsman) && !empty($apikey)) {
             header('Content-Type: application/json');
             echo json_encode($custs, JSON_PRETTY_PRINT);
             exit;
-
+ 
             break;
 
         case "subscribers.json":
 
-            $wp_subscribers = db_query('SELECT * FROM ?:em_subscribers WHERE status = ?i', "A");
+            $wp_subscribers = db_query('SELECT * FROM ?:subscribers WHERE status = ?i' . $startLimit, "A");
             $subs = array();
 
             foreach ($wp_subscribers as $users) {
                 $subs[] = array(
                     "email" => $users["email"],
-                    "firstname" => $users["firstname"],
-                    "lastname" => $users["lastname"]
+                    "firstname" => "",
+                    "lastname" => ""
                 );
             }
 
