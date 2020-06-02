@@ -1,13 +1,18 @@
 <?php
 
+ini_set('error_reporting', E_ALL);
+
 use Tygh\Registry;
 use Tygh\Settings;
+
+//require_once(realpath(dirname(__FILE__)) . '/lib/Newsman/Client.php');
 
 $vars = Registry::get('addons.newsman');
 $_apikey = $vars['newsman_apikey'];
 
 $importType = $vars['newsman_importType'];
 
+$cron = (empty($_GET["cron"])) ? "" : $_GET["cron"];
 $apikey = (empty($_GET["apikey"])) ? "" : $_GET["apikey"];
 $newsman = (empty($_GET["newsman"])) ? "" : $_GET["newsman"];
 $start = (!empty($_GET["start"]) && $_GET["start"] >= 0) ? $_GET["start"] : "";
@@ -158,10 +163,195 @@ if (!empty($newsman) && !empty($apikey)) {
 
             break;
     }
-} else {
+} 
+elseif(!empty($cron) && !empty($apikey))
+{
+    $apikey = $_GET["apikey"];
+    $currApiKey = $_apikey;
+
+    if ($apikey != $currApiKey) {
+        http_response_code(403);
+        header('Content-Type: application/json');
+        echo json_encode(array('status' => "403"));
+        exit;
+    }
+
+    $batchSize = 5000;
+
+    $vars = Registry::get('addons.newsman');
+    $userid = $vars['newsman_userid'];
+    $apikey = $vars['newsman_apikey'];
+    $listid = $vars['newsman_list'];
+    $importType = $vars['newsman_importType'];
+    $segmentid = $vars['newsman_segment'];
+
+    if (!empty($userid) && !empty($apikey) && !empty($listid)) {
+        $client = new Newsman_Client($userid, $apikey);
+        $client->setCallType("rest");
+
+        try{
+            //Subscribers
+            $customers_to_import = array();
+
+            $users = db_query('SELECT * FROM ?:em_subscribers WHERE status = ?i', "A");
+
+            foreach ($users as $user) {
+                $customers_to_import[] = array(
+                    "email" => $user["email"],
+                      //no name present
+                    "name" => (empty($user['name']) ? " " : $user['name'])
+                );
+
+                if ((count($customers_to_import) % $batchSize) == 0) {
+                    _importDataCRON($customers_to_import, $listid, array($segmentid), $client, "cscart subscribers CRON");
+                }
+            }
+            if (count($customers_to_import) > 0) {
+                _importDataCRON($customers_to_import, $listid, array($segmentid), $client, "cscart subscribers CRON");
+            }
+
+            unset($customers_to_import);
+            //Subscribers       
+        }
+        catch(Exception $ex){
+            //table not found (optional)
+        } 
+
+        try{
+            //Subscribers
+            $customers_to_import = array();
+
+            $users = db_query('SELECT * FROM ?:subscribers');
+
+            foreach ($users as $user) {
+                $customers_to_import[] = array(
+                    "email" => $user["email"],
+                      //no name present
+                    "name" => ''
+                );
+
+                if ((count($customers_to_import) % $batchSize) == 0) {
+                    _importDataCRON($customers_to_import, $listid, array($segmentid), $client, "cscart subscribers CRON");
+                }
+            }
+            if (count($customers_to_import) > 0) {
+                _importDataCRON($customers_to_import, $listid, array($segmentid), $client, "cscart subscribers CRON");
+            }
+
+            unset($customers_to_import);
+            //Subscribers       
+        }
+        catch(Exception $ex){
+            //table not found (optional)
+        } 
+        
+            /*Orders Processing*/
+            $customers_to_import = array();
+
+            $orders = db_query('SELECT * FROM ?:orders WHERE status = ?i', "C");
+
+            foreach ($orders as $order) {
+                $customers_to_import[] = array(
+                    "email" => $order["email"],
+                    "s_firstname" => (empty($order['s_firstname']) ? " " : $order['s_firstname']),
+                    "s_lastname" => (empty($order['s_lastname']) ? " " : $order['s_lastname']),
+                    "s_city" => (empty($order['s_city']) ? " " : $order['s_city'])
+                );
+
+                if ((count($customers_to_import) % $batchSize) == 0) {
+                    _importDataCRONOrders($customers_to_import, $listid, array($segmentid), $client, "cscart orders_completed CRON");
+                }
+            }
+            if (count($customers_to_import) > 0) {
+                _importDataCRONOrders($customers_to_import, $listid, array($segmentid), $client, "cscart orders_completed CRON");
+            }
+
+            unset($customers_to_import);
+            /*Orders Processing*/   
+            
+            echo "CRON";
+    }
+    else{
+        http_response_code(403);
+        header('Content-Type: application/json');
+        echo json_encode(array('status' => "setup not completed"));
+    }
+}
+else {
     http_response_code(403);
     header('Content-Type: application/json');
     echo json_encode(array('status' => "403"));
+}
+
+function safeForCsvCRON($str)
+{
+    return '"' . str_replace('"', '""', $str) . '"';
+}
+
+function _importDataCRON(&$data, $list, $segments = null, $client, $source)
+{
+    $csv = '"email","fullname","source"' . PHP_EOL;
+
+    foreach ($data as $_dat) {
+        $csv .= sprintf(
+            "%s,%s,%s",
+            safeForCsvCRON($_dat["email"]),
+            safeForCsvCRON($_dat["name"]),
+            safeForCsvCRON($source)
+        );
+        $csv .= PHP_EOL;
+    }
+
+    $ret = null;
+    try {
+        if (is_array($segments) && count($segments) > 0) {
+            $ret = $client->import->csv($list, $segments, $csv);
+        } else {
+            $ret = $client->import->csv($list, array(), $csv);
+        }
+
+        if ($ret == "") {
+            throw new Exception("Import failed");
+        }
+    } catch (Exception $e) {
+
+    }
+
+    $data = array();
+}
+
+function _importDataCRONOrders(&$data, $list, $segments = null, $client, $source)
+{
+    $csv = '"email","firstname", "lastname", "city", "source"' . PHP_EOL;
+
+    foreach ($data as $_dat) {
+        $csv .= sprintf(
+            "%s,%s,%s,%s,%s",
+            safeForCsvCRON($_dat["email"]),
+            safeForCsvCRON($_dat["s_firstname"]),
+            safeForCsvCRON($_dat["s_lastname"]),
+            safeForCsvCRON($_dat["s_city"]),
+            safeForCsvCRON($source)
+        );
+        $csv .= PHP_EOL;
+    }
+
+    $ret = null;
+    try {
+        if (is_array($segments) && count($segments) > 0) {
+            $ret = $client->import->csv($list, $segments, $csv);
+        } else {
+            $ret = $client->import->csv($list, array(), $csv);
+        }
+
+        if ($ret == "") {
+            throw new Exception("Import failed");
+        }
+    } catch (Exception $e) {
+
+    }
+
+    $data = array();
 }
 
 exit;
