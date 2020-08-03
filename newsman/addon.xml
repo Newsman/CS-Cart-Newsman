@@ -21,6 +21,10 @@
                         <name>Api Key</name>
                         <type>input</type>
                     </item>
+                    <item id="newsman_remarketing">
+                        <name>Remarketing ID (optional)</name>
+                        <type>input</type>
+                    </item>                    
                     <item id="newsman_importType">
                         <name>Import type</name>
                         <type>multiple checkboxes</type>

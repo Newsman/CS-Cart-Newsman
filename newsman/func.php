@@ -38,10 +38,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $c = 0;
         foreach ($opts as $key => $val) {
             $c++;
-            if ($c == 4) {
+            if ($c == 5) {
                 $listidPost = $opts[$key];
             }
-            if ($c == 5) {
+            if ($c == 6) {
                 $segmentidPost = $opts[$key];
                 break;
             }
@@ -56,8 +56,20 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
+            if($segmentidPost == 0){
+                $segmentidPost = array();
+            }
+            else{
+                $segmentidPost = array($segmentidPost);
+            }
+
             if (empty($userid) || empty($apikey)) {
                 fn_set_notification('W', 'Check fields', 'User Id and Api Key cannot be empty', 'S');
+                return false;
+            }
+
+            if ($listidPost == 0) {
+                fn_set_notification('W', 'Check fields', 'Select a list', 'S');
                 return false;
             }
 
@@ -96,11 +108,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     );
 
                     if ((count($customers_to_import) % $batchSize) == 0) {
-                        _importData($customers_to_import, $listidPost, array($segmentidPost), $client, "cscart subscribers");
+                        _importData($customers_to_import, $listidPost, $segmentidPost, $client, "cscart subscribers");
                     }
                 }
                 if (count($customers_to_import) > 0) {
-                    _importData($customers_to_import, $listidPost, array($segmentidPost), $client, "cscart subscribers");
+                    _importData($customers_to_import, $listidPost, $segmentidPost, $client, "cscart subscribers");
                 }
 
                 unset($customers_to_import);
@@ -123,12 +135,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     );
 
                     if ((count($customers_to_import) % $batchSize) == 0) {
-                        _importDataOrders($customers_to_import, $listidPost, array($segmentidPost), $client, "cscart orders_completed");
+                        _importDataOrders($customers_to_import, $listidPost, $segmentidPost, $client, "cscart orders_completed");
                     }
                 }                
                 
                 if (count($customers_to_import) > 0) {
-                    _importDataOrders($customers_to_import, $listidPost, array($segmentidPost), $client, "cscart orders_completed");
+                    _importDataOrders($customers_to_import, $listidPost, $segmentidPost, $client, "cscart orders_completed");
                 }
 
                 unset($customers_to_import);
