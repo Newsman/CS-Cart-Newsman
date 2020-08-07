@@ -95,7 +95,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
             $client = new Newsman_Client($userid, $apikey);
 
-            if ($importType["importSubscribers"] == "Y") {
+            /*if ($importType["importSubscribers"] == "Y") {
                 $customers_to_import = array();
 
                 $users = db_query('SELECT * FROM ?:subscribers');
@@ -116,11 +116,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 }
 
                 unset($customers_to_import);
-            }
+            }*/
 
 
-            if ($importType["importOrders"] == "Y") {
-                /*Orders Processing*/
+            /*if ($importType["importOrders"] == "Y") {
+                //Orders Processing
 
                 $customers_to_import = array();
 
@@ -144,9 +144,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 }
 
                 unset($customers_to_import);
-            }
+            }*/
 
-            fn_set_notification('S', 'Import', 'Import has been programmed successfully', 'S');
+            //fn_set_notification('S', 'Import', 'Import has been programmed successfully', 'S');
         }
     } catch (Exception $ex) {
         fn_set_notification('W', 'Credentials', 'User Id and Api Key are invalid, Save again to take effect, Error: ' . $ex->getMessage(), 'S');
@@ -307,6 +307,7 @@ function fn_settings_variants_addons_newsman_newsman_list()
 
 function fn_newsman_update_user_profile_post($user_id, $user_data, $action)
 {
+    /*OBSOLETE
     if ($action == "add") {
         $batchSize = 5000;
 
@@ -383,7 +384,7 @@ function fn_newsman_update_user_profile_post($user_id, $user_data, $action)
             }
 
             if ($importType["importOrders"] == "Y") {
-                /*Orders Processing*/
+               
                 $customers_to_import = array();
 
                 $orders = db_query('SELECT * FROM ?:orders WHERE status = ?i', "C");
@@ -405,10 +406,11 @@ function fn_newsman_update_user_profile_post($user_id, $user_data, $action)
                 }
 
                 unset($customers_to_import);
-                /*Orders Processing*/
+             
             }
-        }
+        }        
     }
+    */
 }
 
 

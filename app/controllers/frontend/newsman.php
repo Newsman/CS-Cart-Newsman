@@ -15,11 +15,19 @@ $importType = $vars['newsman_importType'];
 $cron = (empty($_GET["cron"])) ? "" : $_GET["cron"];
 $apikey = (empty($_GET["apikey"])) ? "" : $_GET["apikey"];
 $newsman = (empty($_GET["newsman"])) ? "" : $_GET["newsman"];
+
+///
+/// Start / Limit
+///
 $start = (!empty($_GET["start"]) && $_GET["start"] >= 0) ? $_GET["start"] : "";
 $limit = (empty($_GET["limit"])) ? "" : $_GET["limit"];
 $startLimit;
 
-if (!empty($newsman) && !empty($apikey)) {
+if(!empty($start) && $start >= 0 && !empty($limit))
+$startLimit = " LIMIT {$limit} OFFSET {$start}";
+
+//API
+if (!empty($newsman) && !empty($apikey) && empty($cron)) {
     $apikey = $_GET["apikey"];
     $currApiKey = $_apikey;
 
@@ -37,10 +45,7 @@ if (!empty($newsman) && !empty($apikey)) {
         exit;
     }
 
-    if(!empty($start) && $start >= 0 && !empty($limit))
-    $startLimit = " LIMIT {$limit} OFFSET {$start}";
-
-    switch ($_GET["newsman"]) {
+    switch ($newsman) {
         case "orders.json":
 
             $ordersObj = array();            
@@ -62,7 +67,7 @@ if (!empty($newsman) && !empty($apikey)) {
                     $currProd = db_query('SELECT * FROM ?:product_descriptions WHERE product_id = ?i', $currProdM["product_id"]);
                     foreach ($currProd as $_currProd) {
                         $currProd = $_currProd;
-                    }
+                    }                
 
                     $productsJson[] = array(
                         "id" => $currProdM["product_id"],
@@ -72,8 +77,32 @@ if (!empty($newsman) && !empty($apikey)) {
                     );
                 }
 
+                $status = "";
+
+                switch($item["status"]){
+                    case "C":
+                        $status = "completed";
+                    break;
+                    case "P":
+                        $status = "processed";
+                    break;                
+                    case "O":
+                        $status = "opened";
+                    break;               
+                    case "F":
+                        $status = "failed";
+                    break;                
+                    case "C":
+                        $status = "cancelled";
+                    break;                
+                    case "D":
+                        $status = "declined";
+                    break;                 
+                }
+
                 $ordersObj[] = array(
-                    "order_no" => $item["order_id"],
+                    "order_no" => $item["order_id"],           
+                    "status" => $status,     
                     "lastname" => $item["firstname"],
                     "firstname" => $item["firstname"],
                     "email" => $item["email"],
@@ -164,12 +193,20 @@ if (!empty($newsman) && !empty($apikey)) {
             break;
     }
 } 
-elseif(!empty($cron) && !empty($apikey))
+//CRON
+elseif(!empty($cron) && !empty($apikey) && !empty($newsman))
 {
     $apikey = $_GET["apikey"];
-    $currApiKey = $_apikey;
+    $currApiKey = $_apikey;   
 
     if ($apikey != $currApiKey) {
+        http_response_code(403);
+        header('Content-Type: application/json');
+        echo json_encode(array('status' => "403"));
+        exit;
+    }
+    elseif(empty($importType["allowAPI"]))
+    {
         http_response_code(403);
         header('Content-Type: application/json');
         echo json_encode(array('status' => "403"));
@@ -185,15 +222,28 @@ elseif(!empty($cron) && !empty($apikey))
     $importType = $vars['newsman_importType'];
     $segmentid = $vars['newsman_segment'];
 
+    $segment = null;
+    
+    if($segmentid == 0){
+        $segment = array();
+    }
+    else{
+        $segment = array($segmentid);
+    }
+
     if (!empty($userid) && !empty($apikey) && !empty($listid)) {
         $client = new Newsman_Client($userid, $apikey);
         $client->setCallType("rest");
 
+     switch ($newsman) {
+
+        case "subscribers":
+
         try{
             //Subscribers
-            $customers_to_import = array();
+            /*$customers_to_import = array();
 
-            $users = db_query('SELECT * FROM ?:em_subscribers WHERE status = ?i', "A");
+            $users = db_query('SELECT * FROM ?:em_subscribers WHERE status = ?i' . $startLimit, "A");
 
             foreach ($users as $user) {
                 $customers_to_import[] = array(
@@ -203,14 +253,14 @@ elseif(!empty($cron) && !empty($apikey))
                 );
 
                 if ((count($customers_to_import) % $batchSize) == 0) {
-                    _importDataCRON($customers_to_import, $listid, array($segmentid), $client, "cscart subscribers CRON");
+                    _importDataCRON($customers_to_import, $listid, $segment, $client, "cscart subscribers CRON");
                 }
             }
             if (count($customers_to_import) > 0) {
-                _importDataCRON($customers_to_import, $listid, array($segmentid), $client, "cscart subscribers CRON");
+                _importDataCRON($customers_to_import, $listid, $segment, $client, "cscart subscribers CRON");
             }
 
-            unset($customers_to_import);
+            unset($customers_to_import);*/
             //Subscribers       
         }
         catch(Exception $ex){
@@ -221,7 +271,7 @@ elseif(!empty($cron) && !empty($apikey))
             //Subscribers
             $customers_to_import = array();
 
-            $users = db_query('SELECT * FROM ?:subscribers');
+            $users = db_query('SELECT * FROM ?:subscribers' . $startLimit);
 
             foreach ($users as $user) {
                 $customers_to_import[] = array(
@@ -231,11 +281,11 @@ elseif(!empty($cron) && !empty($apikey))
                 );
 
                 if ((count($customers_to_import) % $batchSize) == 0) {
-                    _importDataCRON($customers_to_import, $listid, array($segmentid), $client, "cscart subscribers CRON");
+                    _importDataCRON($customers_to_import, $listid, $segment, $client, "cscart subscribers CRON");
                 }
             }
             if (count($customers_to_import) > 0) {
-                _importDataCRON($customers_to_import, $listid, array($segmentid), $client, "cscart subscribers CRON");
+                _importDataCRON($customers_to_import, $listid, $segment, $client, "cscart subscribers CRON");
             }
 
             unset($customers_to_import);
@@ -244,11 +294,19 @@ elseif(!empty($cron) && !empty($apikey))
         catch(Exception $ex){
             //table not found (optional)
         } 
+
+        http_response_code(403);
+        header('Content-Type: application/json');
+        echo json_encode(array('status' => "subscribers sync ok"));
+
+    break;
+
+    case "orders":
         
             /*Orders Processing*/
             $customers_to_import = array();
 
-            $orders = db_query('SELECT * FROM ?:orders WHERE status = ?i', "C");
+            $orders = db_query('SELECT * FROM ?:orders WHERE status = ?i' . $startLimit, "C");
 
             foreach ($orders as $order) {
                 $customers_to_import[] = array(
@@ -259,17 +317,50 @@ elseif(!empty($cron) && !empty($apikey))
                 );
 
                 if ((count($customers_to_import) % $batchSize) == 0) {
-                    _importDataCRONOrders($customers_to_import, $listid, array($segmentid), $client, "cscart orders_completed CRON");
+                    _importDataCRONOrders($customers_to_import, $listid, $segment, $client, "cscart orders_completed CRON");
                 }
             }
             if (count($customers_to_import) > 0) {
-                _importDataCRONOrders($customers_to_import, $listid, array($segmentid), $client, "cscart orders_completed CRON");
+                _importDataCRONOrders($customers_to_import, $listid, $segment, $client, "cscart orders_completed CRON");
             }
 
             unset($customers_to_import);
             /*Orders Processing*/   
             
-            echo "CRON";
+            http_response_code(403);
+            header('Content-Type: application/json');
+            echo json_encode(array('status' => "orders completed sync ok"));
+
+        break;
+
+    case "count":
+
+        $orders = db_query('SELECT COUNT(*) FROM ?:orders WHERE status = ?i', "C");
+        
+        foreach($orders as $o)
+        {
+            $orders = $o["COUNT(*)"];
+        }
+
+        $users = db_query('SELECT COUNT(*) FROM ?:subscribers');
+
+        foreach($users as $o)
+        {
+            $users = $o["COUNT(*)"];
+        }
+
+        http_response_code(403);
+        header('Content-Type: application/json');
+        echo json_encode(array(
+            'orders_completed' => $orders,
+            'subscribers' => $users
+        )
+    );
+
+    break;
+
+        }
+
     }
     else{
         http_response_code(403);
