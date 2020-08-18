@@ -1,6 +1,6 @@
 <?php
 
-ini_set('error_reporting', E_ALL);
+//ini_set('error_reporting', E_ALL);
 
 use Tygh\Registry;
 use Tygh\Settings;
@@ -97,7 +97,19 @@ if (!empty($newsman) && !empty($apikey) && empty($cron)) {
                     break;                
                     case "D":
                         $status = "declined";
-                    break;                 
+                    break;     
+                    case "A":
+                        $stauts = "delivering";
+                    break;
+                    case "H":
+                        $status = "client not responding";    
+                    break;
+                    case "E":
+                        $status = "confirmed payment";
+                    break;
+                    case "I":
+                        $status = "cancelled";
+                    break;
                 }
 
                 $ordersObj[] = array(
