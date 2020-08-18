@@ -1,3 +1,5 @@
+
+application/x-httpd-php func.php ( PHP script, ASCII text )
 <?php
 
 /***************************************************************************
@@ -23,6 +25,10 @@ require_once(realpath(dirname(__FILE__)) . '/lib/Newsman/Client.php');
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
+    //Execute if on settings page
+    if($_POST["selected_section"] == "newsman_general")
+    {
+        
     try {
         $batchSize = 5000;
 
@@ -137,8 +143,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     if ((count($customers_to_import) % $batchSize) == 0) {
                         _importDataOrders($customers_to_import, $listidPost, $segmentidPost, $client, "cscart orders_completed");
                     }
-                }                
-                
+                }
+
                 if (count($customers_to_import) > 0) {
                     _importDataOrders($customers_to_import, $listidPost, $segmentidPost, $client, "cscart orders_completed");
                 }
@@ -152,6 +158,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         fn_set_notification('W', 'Credentials', 'User Id and Api Key are invalid, Save again to take effect, Error: ' . $ex->getMessage(), 'S');
         return false;
     }
+    
+  }
 
 }
 
@@ -246,12 +254,12 @@ function cronTime($action, $value = null)
 }
 
 function fn_settings_variants_addons_newsman_newsman_segment()
-{    
+{
     try {
         $vars = Registry::get('addons.newsman');
         $userid = $vars['newsman_userid'];
         $apikey = $vars['newsman_apikey'];
-        $listid = $vars['newsman_list']; 
+        $listid = $vars['newsman_list'];
         if (!empty($userid) || !empty($apikey)) {
             $client = new Newsman_Client($userid, $apikey);
             $segments = $client->segment->all($listid);
@@ -384,7 +392,7 @@ function fn_newsman_update_user_profile_post($user_id, $user_data, $action)
             }
 
             if ($importType["importOrders"] == "Y") {
-               
+
                 $customers_to_import = array();
 
                 $orders = db_query('SELECT * FROM ?:orders WHERE status = ?i', "C");
@@ -406,9 +414,9 @@ function fn_newsman_update_user_profile_post($user_id, $user_data, $action)
                 }
 
                 unset($customers_to_import);
-             
+
             }
-        }        
+        }
     }
     */
 }
