@@ -1,5 +1,3 @@
-
-application/x-httpd-php func.php ( PHP script, ASCII text )
 <?php
 
 /***************************************************************************
@@ -26,9 +24,9 @@ require_once(realpath(dirname(__FILE__)) . '/lib/Newsman/Client.php');
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     //Execute if on settings page
-    if($_POST["selected_section"] == "newsman_general")
-    {
-        
+  
+    if(!empty($_POST["selected_section"]) && $_POST["selected_section"] == "newsman_general")
+    {    
     try {
         $batchSize = 5000;
 

@@ -29,6 +29,7 @@ if ($mode == 'view') {
     );
 
   echo "
+<div id='newsman_scripts'>
     <script>            
 
         var _nzm = _nzm || [];
@@ -76,6 +77,7 @@ if ($mode == 'view') {
 
                 if (window.jQuery) { 
 
+                    //add to cart
                     jQuery('.ty-btn__add-to-cart').click(function(){
 
                         _nzm.run('ec:addProduct', {
@@ -89,6 +91,31 @@ if ($mode == 'view') {
                         _nzm.run('send', 'event', 'UX', 'click', 'add to cart');
             
                     });
+
+                    //remove from cart
+                    $('.cm-ajax-full-render[data-ca-dispatch=\"delete_cart_item\"]').each(function () {
+                        jQuery(this).bind('click', {'elem': jQuery(this)}, function (ev) {                                              
+
+                            var _c = jQuery(this).parent().find('.ty-cart-items__list-item-desc');                                                              
+
+                            var id = jQuery(this).attr('href');                   
+                            var id = id.substring(id.indexOf('product_id%3D') + 13);                  
+                            
+                            var qty = _c.find('p:first span:first').html();
+                            qty = 1;              
+                            
+                            _nzm.run('ec:addProduct', {
+                                'id': id,
+                                'quantity': qty
+                            });
+            
+                            _nzm.run('ec:setAction', 'remove');
+                            _nzm.run('send', 'event', 'UX', 'click', 'remove from cart');                            
+            
+                        });
+                    });                   
+
+                    jQuery('#newsman_scripts').appendTo('body');
 
                 }
                 else{
@@ -108,6 +135,7 @@ if ($mode == 'view') {
         })();
     
     </script>   
+</div>    
  ";
     }
 }

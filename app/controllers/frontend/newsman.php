@@ -203,6 +203,30 @@ if (!empty($newsman) && !empty($apikey) && empty($cron)) {
             exit;
 
             break;
+        case "count.json":
+
+                $orders = db_query('SELECT COUNT(*) FROM ?:orders WHERE status = ?i', "C");
+                
+                foreach($orders as $o)
+                {
+                    $orders = $o["COUNT(*)"];
+                }
+        
+                $users = db_query('SELECT COUNT(*) FROM ?:subscribers');
+        
+                foreach($users as $o)
+                {
+                    $users = $o["COUNT(*)"];
+                }
+           
+                header('Content-Type: application/json');
+                echo json_encode(array(
+                    'orders_completed' => $orders,
+                    'subscribers' => $users
+                )
+            );
+        
+            break;
     }
 } 
 //CRON
@@ -307,7 +331,6 @@ elseif(!empty($cron) && !empty($apikey) && !empty($newsman))
             //table not found (optional)
         } 
 
-        http_response_code(403);
         header('Content-Type: application/json');
         echo json_encode(array('status' => "subscribers sync ok"));
 
@@ -339,37 +362,10 @@ elseif(!empty($cron) && !empty($apikey) && !empty($newsman))
             unset($customers_to_import);
             /*Orders Processing*/   
             
-            http_response_code(403);
             header('Content-Type: application/json');
             echo json_encode(array('status' => "orders completed sync ok"));
 
         break;
-
-    case "count":
-
-        $orders = db_query('SELECT COUNT(*) FROM ?:orders WHERE status = ?i', "C");
-        
-        foreach($orders as $o)
-        {
-            $orders = $o["COUNT(*)"];
-        }
-
-        $users = db_query('SELECT COUNT(*) FROM ?:subscribers');
-
-        foreach($users as $o)
-        {
-            $users = $o["COUNT(*)"];
-        }
-
-        http_response_code(403);
-        header('Content-Type: application/json');
-        echo json_encode(array(
-            'orders_completed' => $orders,
-            'subscribers' => $users
-        )
-    );
-
-    break;
 
         }
 
