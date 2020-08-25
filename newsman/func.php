@@ -153,7 +153,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             //fn_set_notification('S', 'Import', 'Import has been programmed successfully', 'S');
         }
     } catch (Exception $ex) {
-        fn_set_notification('W', 'Credentials', 'User Id and Api Key are invalid, Save again to take effect, Error: ' . $ex->getMessage(), 'S');
+        fn_set_notification('W', 'Credentials', 'User Id and Api Key are invalid, Save again to take effect', 'S');
         return false;
     }
     
@@ -274,7 +274,7 @@ function fn_settings_variants_addons_newsman_newsman_segment()
         }
 
     } catch (Exception $ex) {
-        fn_set_notification('W', 'Credentials', 'Error: ' . $ex->getMessage(), 'S');
+        //fn_set_notification('W', 'Credentials', 'Error: ' . $ex->getMessage(), 'S');
         return false;
     }
 
@@ -304,7 +304,7 @@ function fn_settings_variants_addons_newsman_newsman_list()
         }
 
     } catch (Exception $ex) {
-        fn_set_notification('W', 'Credentials', 'Error: ' . $ex->getMessage(), 'S');
+        //fn_set_notification('W', 'Credentials', 'Error: ' . $ex->getMessage(), 'S');
         return false;
     }
 
