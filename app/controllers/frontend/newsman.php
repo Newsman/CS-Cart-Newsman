@@ -72,8 +72,8 @@ if (!empty($newsman) && !empty($apikey) && empty($cron)) {
                     $productsJson[] = array(
                         "id" => $currProdM["product_id"],
                         "name" => $currProd["product"],
-                        "stock_quantity" => $currProdM["amount"],
-                        "price" => $currProdM["list_price"]
+                        "stock_quantity" => (int)$currProdM["amount"],
+                        "price" => (float)$currProdM["list_price"]
                     );
                 }
 
@@ -110,10 +110,11 @@ if (!empty($newsman) && !empty($apikey) && empty($cron)) {
                     case "I":
                         $status = "cancelled";
                     break;
-                }
+                }       
 
                 $ordersObj[] = array(
-                    "order_no" => $item["order_id"],           
+                    "order_no" => $item["order_id"],  
+                    "date" => $item["timestamp"],         
                     "status" => $status,     
                     "lastname" => $item["firstname"],
                     "firstname" => $item["firstname"],
@@ -127,7 +128,7 @@ if (!empty($newsman) && !empty($apikey) && empty($cron)) {
                     "shipping" => "",
                     "fees" => 0,
                     "rebates" => 0,
-                    "total" => $item["total"],
+                    "total" => (float)$item["total"],
                     "products" => $productsJson
                 );
             }
@@ -150,11 +151,17 @@ if (!empty($newsman) && !empty($apikey) && empty($cron)) {
                     $currProd = $_currProd;
                 }
 
+                $currProdPrices = db_query('SELECT * FROM ?:product_prices WHERE product_id = ?i', $prod["product_id"]);
+                foreach ($currProdPrices as $_currProd) {
+                    $currProdPrices = $_currProd;
+                }       
+
                 $productsJson[] = array(
                     "id" => $prod["product_id"],
                     "name" => $currProd["product"],
-                    "stock_quantity" => $prod["amount"],
-                    "price" => $prod["list_price"]
+                    "stock_quantity" => (int)$prod["amount"],
+                    "price" => (float)$currProdPrices["price"],
+                    "price_old" => (float)$prod["list_price"]
                 );
             }
 

@@ -97,4 +97,93 @@ if ($mode == 'complete') {
 </div>    
  ";
     }
+
+    if ($mode == 'cart') {
+
+  echo "
+<div id='newsman_scripts'>
+    <script>            
+
+        var _nzm = _nzm || [];
+		var _nzm_config = _nzm_config || [];
+		(function() {
+			if (!_nzm.track) {
+				var a, methods, i;
+				a = function(f) {
+					return function() {
+						_nzm.push([f].concat(Array.prototype.slice.call(arguments, 0)));
+					}
+				};
+				methods = ['identify', 'track', 'run'];
+				for(i = 0; i < methods.length; i++) {
+					_nzm[methods[i]] = a(methods[i])
+				};
+				s = document.getElementsByTagName('script')[0];
+				var script_dom = document.createElement('script');
+				script_dom.async = true;
+				script_dom.id    = 'nzm-tracker';
+				script_dom.setAttribute('data-site-id', '" . $vars['newsman_remarketing'] . "');
+				script_dom.src = 'https://retargeting.newsmanapp.com/js/retargeting/track.js';
+				s.parentNode.insertBefore(script_dom, s);
+			}
+		})();
+
+		_nzm.run( 'require', 'ec' );
+		_nzm.run( 'set', 'currencyCode', 'RON' );	        
+        
+        (function(){
+
+            function _loadEvents(){
+
+                if (window.jQuery) { 
+
+                    //remove from cart                
+                    $('.ty-cart-content__product-delete').each(function () {
+                        jQuery(this).bind('click', {'elem': jQuery(this)}, function (ev) {                                              
+
+                            var _c = jQuery(this).closest('tr');                        
+
+                            _qty = _c.find('.ty-value-changer input');                      
+                            _qty = _qty.val();
+
+                            _c = _c.find('.quantity input');      
+                            var _id = _c.val();                                                  
+                   
+                            _nzm.run('ec:addProduct', {
+                                'id': _id,
+                                'quantity': _qty
+                            });
+            
+                            _nzm.run('ec:setAction', 'remove');
+                            _nzm.run('send', 'event', 'UX', 'click', 'remove from cart');                            
+            
+                            alert('');
+
+                        });
+                    });                                         
+
+                    jQuery('#newsman_scripts').appendTo('body');
+
+                }
+                else{
+                    setTimeout(function(){
+
+                        _loadEvents();
+
+                    }, 1000);
+                }
+
+            }
+
+            if(!window.jQuery){
+                _loadEvents();
+            }
+
+        })();
+    
+    </script>   
+</div>    
+ ";
+    }
+
 }

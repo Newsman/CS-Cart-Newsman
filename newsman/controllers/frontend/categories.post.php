@@ -15,21 +15,70 @@ $_REQUEST['category_id'] = empty($_REQUEST['category_id']) ? 0 : $_REQUEST['cate
 
 if ($mode == 'view') {
 
+    $params = $_REQUEST;
+
+    if ($items_per_page = fn_change_session_param(Tygh::$app['session'], $_REQUEST, 'items_per_page')) {
+        $params['items_per_page'] = $items_per_page;
+    }
+    if ($sort_by = fn_change_session_param(Tygh::$app['session'], $_REQUEST, 'sort_by')) {
+        $params['sort_by'] = $sort_by;
+    }
+    if ($sort_order = fn_change_session_param(Tygh::$app['session'], $_REQUEST, 'sort_order')) {
+        $params['sort_order'] = $sort_order;
+    }
+
+    $params['cid'] = $_REQUEST['category_id'];
+    $params['extend'] = array('categories', 'description');
+    $params['subcats'] = '';
+    if (Registry::get('settings.General.show_products_from_subcategories') == 'Y') {
+        $params['subcats'] = 'Y';
+    }
+
     list($products, $search) = fn_get_products($params, Registry::get('settings.Appearance.products_per_page'), CART_LANGUAGE);
 
-    $impressions = '';
+    $impressions = 'var prodData = [];';
+    $impressions .= 'var prodDataName = [];';
+    $addtocart = '';
 
     $int = 0;
     foreach($products as $prod){
-        $int++;
+        $int++;      
+
+        $__category = db_query('SELECT * FROM ?:category_descriptions WHERE category_id = ?i', $_REQUEST['category_id']);
+
+        foreach($__category as $___category){
+            $__category = $___category["category"];
+        }
+
+        $name = str_replace("'", "", $prod["product"]);
+
         $impressions .= "
         _nzm.run( 'ec:addImpression', {
             'id': '" . $prod["product_id"] . "',
-            'name': '" . $prod["product"] . "',
-            'category': '" . '' . "',
+            'name': '" . $name . "',
+            'category': '" . $__category . "',
             'list': 'Category List',
             'position': '" . $int . "'
         } );
+        ";
+
+        $impressions .= "
+        //add to cart      
+
+        prodData[" . $prod["product_id"] . "] = {
+            'id': '" . $prod["product_id"] . "',
+            'name': '" . $name . "',
+            'price': '" . $prod["price"] . "',
+            'quantity': 1
+        };    
+        
+        prodDataName['" . $name . "'] = {
+            'id': '" . $prod["product_id"] . "',
+            'name': '" . $name . "',
+            'price': '" . $prod["price"] . "',
+            'quantity': 1
+        }; 
+     
         ";
     }    
 
@@ -74,6 +123,47 @@ if ($mode == 'view') {
 
                 if (window.jQuery) { 
                     
+                    //add to cart
+                    $( '.ty-btn__add-to-cart').each(function(index) {
+                        $(this).on('click', function(){
+                     
+                            var id = $(this).attr('id');
+                            id = id.replace('button_cart_', '');           
+                         
+                            _nzm.run('ec:addProduct', {
+                                'id': prodData[id].id,
+                                'name': prodData[id].name,                             
+                                'price': prodData[id].price,
+                                'quantity': 1
+                            });
+                            _nzm.run('ec:setAction', 'add');
+                            _nzm.run('send', 'event', 'UX', 'click', 'add to cart');
+
+                        });
+                    }); 
+
+                    //remove from cart                
+                    $('.cm-ajax-full-render[data-ca-dispatch=\"delete_cart_item\"]').each(function () {
+                        jQuery(this).bind('click', {'elem': jQuery(this)}, function (ev) {                                              
+
+                            var _c = jQuery(this).closest('.ty-cart-items__list-item');        
+                            _c = _c.find('.ty-cart-items__list-item-desc a');      
+                            var _name = _c.html();                              
+                            
+                            var qty = _c.find('p:first span:first').html();
+                            qty = 1;              
+                            
+                            _nzm.run('ec:addProduct', {
+                                'id': prodDataName[_name].id,
+                                'quantity': qty
+                            });
+            
+                            _nzm.run('ec:setAction', 'remove');
+                            _nzm.run('send', 'event', 'UX', 'click', 'remove from cart');                            
+            
+                        });
+                    });                  
+
                     jQuery('#newsman_scripts').appendTo('body');
 
                 }
