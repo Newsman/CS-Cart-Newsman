@@ -15,13 +15,11 @@ $importType = $vars['newsman_importType'];
 $cron = (empty($_GET["cron"])) ? "" : $_GET["cron"];
 $apikey = (empty($_GET["apikey"])) ? "" : $_GET["apikey"];
 $newsman = (empty($_GET["newsman"])) ? "" : $_GET["newsman"];
-
-///
-/// Start / Limit
-///
 $start = (!empty($_GET["start"]) && $_GET["start"] >= 0) ? $_GET["start"] : "";
 $limit = (empty($_GET["limit"])) ? "" : $_GET["limit"];
 $startLimit;
+$order_id = (empty($_GET["order_id"])) ? "" : $_GET["order_id"];
+$product_id = (empty($_GET["product_id"])) ? "" : $_GET["product_id"];
 
 if(!empty($start) && $start >= 0 && !empty($limit))
 $startLimit = " LIMIT {$limit} OFFSET {$start}";
@@ -50,7 +48,12 @@ if (!empty($newsman) && !empty($apikey) && empty($cron)) {
 
             $ordersObj = array();            
 
-            $orders = db_query('SELECT * FROM ?:orders' . $startLimit);
+            $query = db_query('SELECT * FROM ?:orders' . $startLimit);
+
+            if(!empty($order_id))
+                $query = db_query('SELECT * FROM ?:orders WHERE order_id = ?i', $order_id);
+
+            $orders = $query;
 
             foreach ($orders as $item) {
 
@@ -140,9 +143,14 @@ if (!empty($newsman) && !empty($apikey) && empty($cron)) {
             break;
 
         case
-        "products.json":
+        "products.json":        
 
-            $products = db_query('SELECT * FROM ?:products' . $startLimit);
+            $query = db_query('SELECT * FROM ?:products' . $startLimit);
+
+            if(!empty($product_id))
+                $query = db_query('SELECT * FROM ?:products WHERE product_id = ?i', $product_id);
+
+            $products = $query;
             $productsJson = array();
 
             foreach ($products as $prod) {
@@ -234,6 +242,13 @@ if (!empty($newsman) && !empty($apikey) && empty($cron)) {
             );
         
             break;
+        
+        case "version.json":
+
+            header('Content-Type: application/json');
+            echo json_encode(PRODUCT_VERSION);
+
+        break;
     }
 } 
 //CRON
