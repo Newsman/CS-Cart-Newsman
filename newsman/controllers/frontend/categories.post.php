@@ -139,30 +139,47 @@ if ($mode == 'view') {
                             _nzm.run('ec:setAction', 'add');
                             _nzm.run('send', 'event', 'UX', 'click', 'add to cart');
 
+                            setTimeout(function() {
+
+                                bindRemoveFromCart();
+      
+                              }, 2000);
+
                         });
                     }); 
 
-                    //remove from cart                
-                    $('.cm-ajax-full-render[data-ca-dispatch=\"delete_cart_item\"]').each(function () {
-                        jQuery(this).bind('click', {'elem': jQuery(this)}, function (ev) {                                              
+                    function bindRemoveFromCart()
+                    {
+                        //unbind
+                        $('.cm-ajax-full-render[data-ca-dispatch=\"delete_cart_item\"]').each(function () {
+                            jQuery(this).unbind('click');
+                        });                          
 
-                            var _c = jQuery(this).closest('.ty-cart-items__list-item');        
-                            _c = _c.find('.ty-cart-items__list-item-desc a');      
-                            var _name = _c.html();                              
-                            
-                            var qty = _c.find('p:first span:first').html();
-                            qty = 1;              
-                            
-                            _nzm.run('ec:addProduct', {
-                                'id': prodDataName[_name].id,
-                                'quantity': qty
+                        //bind
+                        $('.cm-ajax-full-render[data-ca-dispatch=\"delete_cart_item\"]').each(function () {
+                            jQuery(this).bind('click', {'elem': jQuery(this)}, function (ev) {                                              
+
+                                var _c = jQuery(this).closest('.ty-cart-items__list-item');        
+                                _c = _c.find('.ty-cart-items__list-item-desc a');      
+                                var _name = _c.html();                              
+                                
+                                var qty = _c.find('p:first span:first').html();
+                                qty = 1;              
+                                
+                                _nzm.run('ec:addProduct', {
+                                    'id': prodDataName[_name].id,
+                                    'quantity': qty
+                                });
+                
+                                _nzm.run('ec:setAction', 'remove');
+                                _nzm.run('send', 'event', 'UX', 'click', 'remove from cart');                             
+                
                             });
-            
-                            _nzm.run('ec:setAction', 'remove');
-                            _nzm.run('send', 'event', 'UX', 'click', 'remove from cart');                            
-            
                         });
-                    });                  
+                          
+                    }       
+                    
+                    bindRemoveFromCart();                 
 
                     jQuery('#newsman_scripts').appendTo('body');
 
