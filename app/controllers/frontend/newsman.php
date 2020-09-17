@@ -76,7 +76,9 @@ if (!empty($newsman) && !empty($apikey) && empty($cron)) {
                         "id" => $currProdM["product_id"],
                         "name" => $currProd["product"],
                         "stock_quantity" => (int)$currProdM["amount"],
-                        "price" => (float)$currProdM["list_price"]
+                        "price" => (float)$currProdM["list_price"],
+                        "image_url" => "",
+ 			"url" => ""
                     );
                 }
 
@@ -169,7 +171,9 @@ if (!empty($newsman) && !empty($apikey) && empty($cron)) {
                     "name" => $currProd["product"],
                     "stock_quantity" => (int)$prod["amount"],
                     "price" => (float)$currProdPrices["price"],
-                    "price_old" => (float)$prod["list_price"]
+                    "price_old" => (float)$prod["list_price"],
+		    "image_url" => "",
+		    "url" => ""
                 );
             }
 
