@@ -72,13 +72,37 @@ if (!empty($newsman) && !empty($apikey) && empty($cron)) {
                         $currProd = $_currProd;
                     }                
 
+                    $currProdPrices = db_query('SELECT * FROM ?:product_prices WHERE product_id = ?i', $p["product_id"]);
+                    foreach ($currProdPrices as $_currProd) {
+                        $currProdPrices = $_currProd;
+                    }   
+
+                    $url = 'https://' . getenv('HTTP_HOST') . "?dispatch=products.view?product_id=" . $p["product_id"];
+
+                    $image_url = "";
+
+                    $imageData = db_get_array("SELECT ?:images.image_path, ?:images_links.type FROM ?:images ".
+                    "LEFT JOIN ?:images_links ON ?:images_links.detailed_id = ?:images.image_id ".
+                    "WHERE ?:images_links.object_id = ?s", $p['product_id']);
+
+                    foreach ($imageData as $k => $v) {                   
+
+                        $images = fn_get_image_pairs($p['product_id'], 'product', $v['type'], false, true, $lang_code);
+                    
+                        if ($v['type'] == 'M') {
+                                $image_url = $images['detailed']['image_path'];
+                        }                                                             
+                    
+                    }
+
                     $productsJson[] = array(
                         "id" => $currProdM["product_id"],
                         "name" => $currProd["product"],
                         "stock_quantity" => (int)$currProdM["amount"],
-                        "price" => (float)$currProdM["list_price"],
-                        "image_url" => "",
- 			"url" => ""
+                        "price" => (float)$currProdPrices["price"],
+                        "price_old" => (float)$currProdM["list_price"],
+                        "image_url" => $image_url,
+                        "url" => $url
                     );
                 }
 
@@ -164,7 +188,25 @@ if (!empty($newsman) && !empty($apikey) && empty($cron)) {
                 $currProdPrices = db_query('SELECT * FROM ?:product_prices WHERE product_id = ?i', $prod["product_id"]);
                 foreach ($currProdPrices as $_currProd) {
                     $currProdPrices = $_currProd;
-                }       
+                }               
+
+                $url = 'https://' . getenv('HTTP_HOST') . "?dispatch=products.view?product_id=" . $prod["product_id"];
+
+                $image_url = "";
+
+                $imageData = db_get_array("SELECT ?:images.image_path, ?:images_links.type FROM ?:images ".
+                "LEFT JOIN ?:images_links ON ?:images_links.detailed_id = ?:images.image_id ".
+                "WHERE ?:images_links.object_id = ?s", $prod['product_id']);
+
+                foreach ($imageData as $k => $v) {                   
+
+                    $images = fn_get_image_pairs($prod['product_id'], 'product', $v['type'], false, true, $lang_code);
+                 
+                    if ($v['type'] == 'M') {
+                             $image_url = $images['detailed']['image_path'];
+                    }                                                             
+                 
+                 }
 
                 $productsJson[] = array(
                     "id" => $prod["product_id"],
@@ -172,8 +214,8 @@ if (!empty($newsman) && !empty($apikey) && empty($cron)) {
                     "stock_quantity" => (int)$prod["amount"],
                     "price" => (float)$currProdPrices["price"],
                     "price_old" => (float)$prod["list_price"],
-		    "image_url" => "",
-		    "url" => ""
+                    "image_url" => $image_url,
+                    "url" => $url
                 );
             }
 
