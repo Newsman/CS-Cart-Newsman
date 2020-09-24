@@ -75,9 +75,7 @@ if (!empty($newsman) && !empty($apikey) && empty($cron)) {
                     $currProdPrices = db_query('SELECT * FROM ?:product_prices WHERE product_id = ?i', $p["product_id"]);
                     foreach ($currProdPrices as $_currProd) {
                         $currProdPrices = $_currProd;
-                    }   
-
-                    $url = 'https://' . getenv('HTTP_HOST') . "?dispatch=products.view?product_id=" . $p["product_id"];
+                    }                      
 
                     $image_url = "";
 
@@ -86,7 +84,7 @@ if (!empty($newsman) && !empty($apikey) && empty($cron)) {
                     "WHERE ?:images_links.object_id = ?s", $p['product_id']);
 
                     foreach ($imageData as $k => $v) {                   
-
+                   
                         $images = fn_get_image_pairs($p['product_id'], 'product', $v['type'], false, true, $lang_code);
                     
                         if ($v['type'] == 'M') {
@@ -94,6 +92,40 @@ if (!empty($newsman) && !empty($apikey) && empty($cron)) {
                         }                                                             
                     
                     }
+
+                    $oldUrl = 'https://' . getenv('HTTP_HOST') . "?dispatch=products.view?product_id=" . $p["product_id"];
+                    $url = 'https://' . getenv('HTTP_HOST') . '/';
+                    $seoName = fn_seo_get_name('p', $p["product_id"]);
+                    $catExplode = "";   
+                    $catName = "";
+   
+                    $path = db_get_hash_single_array(
+                       "SELECT c.id_path, p.link_type FROM ?:categories as c LEFT JOIN ?:products_categories as p ON p.category_id = c.category_id WHERE p.product_id = ?i ?p",
+                       array('link_type', 'id_path'),
+                       $p["product_id"],
+                       fn_get_seo_company_condition('c.company_id', '', 0)
+                   );
+       
+                   if (!empty($path['M'])) {
+                       $catExplode = $path['M'];
+                   } elseif (!empty($path['A'])) {
+                       $catExplode = $path['A'];
+                   }
+   
+                   $catExplode = explode("/", $catExplode);
+   
+                   foreach($catExplode as $id){
+                       $c = db_query('SELECT * FROM ?:category_descriptions WHERE category_id = ?i', $id);                    
+                       foreach($c as $cat)
+                       {
+                           $catName .= strtolower($cat["category"] . '/');
+                       }                    
+                   }
+   
+                   $url .= $catName . $seoName;
+
+                   $url = str_replace("&", "and", $url);
+                   $url = str_replace(" ", "-", $url);
 
                     $productsJson[] = array(
                         "id" => $currProdM["product_id"],
@@ -188,9 +220,7 @@ if (!empty($newsman) && !empty($apikey) && empty($cron)) {
                 $currProdPrices = db_query('SELECT * FROM ?:product_prices WHERE product_id = ?i', $prod["product_id"]);
                 foreach ($currProdPrices as $_currProd) {
                     $currProdPrices = $_currProd;
-                }               
-
-                $url = 'https://' . getenv('HTTP_HOST') . "?dispatch=products.view?product_id=" . $prod["product_id"];
+                }                        
 
                 $image_url = "";
 
@@ -207,6 +237,40 @@ if (!empty($newsman) && !empty($apikey) && empty($cron)) {
                     }                                                             
                  
                  }
+
+                 $oldUrl = 'https://' . getenv('HTTP_HOST') . "?dispatch=products.view?product_id=" . $prod["product_id"];
+                 $url = 'https://' . getenv('HTTP_HOST') . '/';
+                 $seoName = fn_seo_get_name('p', $prod["product_id"]);
+                 $catExplode = "";   
+                 $catName = "";
+
+                 $path = db_get_hash_single_array(
+                    "SELECT c.id_path, p.link_type FROM ?:categories as c LEFT JOIN ?:products_categories as p ON p.category_id = c.category_id WHERE p.product_id = ?i ?p",
+                    array('link_type', 'id_path'),
+                    $prod["product_id"],
+                    fn_get_seo_company_condition('c.company_id', '', 0)
+                );
+    
+                if (!empty($path['M'])) {
+                    $catExplode = $path['M'];
+                } elseif (!empty($path['A'])) {
+                    $catExplode = $path['A'];
+                }
+
+                $catExplode = explode("/", $catExplode);
+
+                foreach($catExplode as $id){
+                    $c = db_query('SELECT * FROM ?:category_descriptions WHERE category_id = ?i', $id);                    
+                    foreach($c as $cat)
+                    {
+                        $catName .= strtolower($cat["category"] . '/');
+                    }                    
+                }
+
+                $url .= $catName . $seoName;
+
+                $url = str_replace("&", "and", $url);
+                $url = str_replace(" ", "-", $url);
 
                 $productsJson[] = array(
                     "id" => $prod["product_id"],
