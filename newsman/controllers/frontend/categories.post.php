@@ -90,6 +90,7 @@ if ($mode == 'view') {
 		var _nzm_config = _nzm_config || [];
 		(function() {
 			if (!_nzm.track) {
+                _nzm_config['disable_datalayer'] = 1;
 				var a, methods, i;
 				a = function(f) {
 					return function() {

@@ -25,7 +25,9 @@ if ($mode == 'complete') {
         Tygh::$app['view']->assign('order_info', $order_info);
     }
 
-  echo "
+    $_products = $order_info["products"];
+
+    $return = "
 <div id='newsman_scripts'>
     <script>            
 
@@ -33,6 +35,7 @@ if ($mode == 'complete') {
 		var _nzm_config = _nzm_config || [];
 		(function() {
 			if (!_nzm.track) {
+                _nzm_config['disable_datalayer'] = 1;
 				var a, methods, i;
 				a = function(f) {
 					return function() {
@@ -63,9 +66,24 @@ if ($mode == 'complete') {
                 if (window.jQuery) { 
 
                     //purchase
-                    _nzm.identify({ email: '" . $order_info["email"] . "', first_name: '" . $order_info["firstname"] . "', last_name: '" . $order_info["lastname"] . "' });                           
+                    _nzm.identify({ email: '" . $order_info["email"] . "', first_name: '" . $order_info["firstname"] . "', last_name: '" . $order_info["lastname"] . "' });    
+                    
+                   ";
 
-                    _nzm.run('ec:setAction', 'purchase',{
+                foreach($_products as $_product)
+                {         
+                    $return .= "
+                    _nzm.run( 'ec:addProduct', {
+                        'id': '" . $_product["product_id"] . "',
+                        'name': '" . $_product["product"] . "',
+                        'category': '',
+                        'price': '" . $_product["price"] . "',
+                        'quantity': '" . $_product["amount"] . "'
+                    } );                    
+                    ";
+                }
+
+                $return .= "_nzm.run('ec:setAction', 'purchase',{
                         'id': '" . $order_info["order_id"] . "',
                         'affiliation': '',
                         'revenue': '" . $order_info["total"] . "',
@@ -96,6 +114,8 @@ if ($mode == 'complete') {
     </script>   
 </div>    
  ";
+
+ echo $return;
     }
 
     if ($mode == 'cart') {
