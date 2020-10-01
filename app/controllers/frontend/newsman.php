@@ -269,7 +269,7 @@ if (!empty($newsman) && !empty($apikey) && empty($cron)) {
 
                 $url .= $catName . $seoName;
 
-                $url = str_replace("&", "and", $url);
+                $url = str_replace(" & ", " ", $url);
                 $url = str_replace(" ", "-", $url);
 
                 $productsJson[] = array(
