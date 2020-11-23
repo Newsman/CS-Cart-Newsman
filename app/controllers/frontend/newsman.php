@@ -21,6 +21,10 @@ $startLimit;
 $order_id = (empty($_GET["order_id"])) ? "" : $_GET["order_id"];
 $product_id = (empty($_GET["product_id"])) ? "" : $_GET["product_id"];
 
+//by default display categories
+$urlcategorybool = (!empty($_GET["urlcategorybool"]) && $_GET["urlcategorybool"] == "false") ? false : true;
+$urlextensionstring = (empty($_GET["urlextensionstring"])) ? "" : $_GET["urlextensionstring"];
+
 if(!empty($start) && $start >= 0 && !empty($limit))
 $startLimit = " LIMIT {$limit} OFFSET {$start}";
 
@@ -267,10 +271,19 @@ if (!empty($newsman) && !empty($apikey) && empty($cron)) {
                     }                    
                 }
 
-                $url .= $catName . $seoName;
+                if($urlcategorybool)
+                {
+                    $url .= $catName . $seoName;
+                }
+                else{
+                    $url .= $seoName;
+                }
 
                 $url = str_replace(" & ", " ", $url);
                 $url = str_replace(" ", "-", $url);
+                
+                if(!empty($urlextensionstring))
+                    $url .= '.' . $urlextensionstring;
 
                 $productsJson[] = array(
                     "id" => $prod["product_id"],

@@ -79,7 +79,8 @@ if ($mode == 'view') {
                 if (window.jQuery) { 
 
                     //add to cart
-                    jQuery('.ty-btn__add-to-cart').click(function(){
+                    //.ty_btn__add-to-cart
+                    jQuery('.ty-product-block__button button.ty-btn').click(function(){
 
                         _nzm.run('ec:addProduct', {
                             'id': '" . $product["main_pair"]["detailed"]["object_id"] . "',
