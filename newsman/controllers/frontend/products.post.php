@@ -78,9 +78,11 @@ if ($mode == 'view') {
 
                 if (window.jQuery) { 
 
+                function addToCart()
+                {
                     //add to cart
                     //.ty_btn__add-to-cart
-                    jQuery('.ty-product-block__button button.ty-btn').click(function(){
+                    jQuery('.ty-product-block__button button.ty-btn').on('click', function(){
 
                         _nzm.run('ec:addProduct', {
                             'id': '" . $product["main_pair"]["detailed"]["object_id"] . "',
@@ -99,6 +101,25 @@ if ($mode == 'view') {
                         }, 2000);
 
                     });
+                }
+                
+                addToCart();
+                   
+                                   
+                function nzSelectChange()
+                {
+                    $('.ty-product-options select').change(function() {
+                        
+                        setTimeout(function()
+                        {
+                            nzSelectChange();
+                            addToCart();   
+                        }, 1000);
+                        
+                    });
+                }
+                
+                nzSelectChange();
 
                     function bindRemoveFromCart()
                     {
