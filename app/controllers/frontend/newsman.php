@@ -126,10 +126,19 @@ if (!empty($newsman) && !empty($apikey) && empty($cron)) {
                        }                    
                    }
    
-                   $url .= $catName . $seoName;
+                if($urlcategorybool)
+                {
+                    $url .= $catName . $seoName;
+                }
+                else{
+                    $url .= $seoName;
+                }
 
-                   $url = str_replace("&", "and", $url);
-                   $url = str_replace(" ", "-", $url);
+                $url = str_replace(" & ", " ", $url);
+                $url = str_replace(" ", "-", $url);
+                
+                if(!empty($urlextensionstring))
+                    $url .= '.' . $urlextensionstring;
 
                     $productsJson[] = array(
                         "id" => $currProdM["product_id"],
