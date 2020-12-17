@@ -151,6 +151,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             }*/
 
             //fn_set_notification('S', 'Import', 'Import has been programmed successfully', 'S');
+            
+            return;
         }
     } catch (Exception $ex) {
         fn_set_notification('W', 'Credentials', 'User Id and Api Key are invalid, Save again to take effect, Error: ' . $ex->getMessage(), 'S');
@@ -273,8 +275,155 @@ function fn_settings_variants_addons_newsman_newsman_segment()
             $all_datas['0'] = 'Select and update list';
         }
 
-    } catch (Exception $ex) {
-        fn_set_notification('W', 'Credentials', 'Error: ' . $ex->getMessage(), 'S');
+    } catch (Exception $ex) {               
+        return false;
+    }
+
+    return $all_datas;
+}
+
+function getStores()
+{
+
+    $stores = db_query('SELECT * FROM ?:companies WHERE status = ?i', "A");
+
+    $_stores = array();
+
+    foreach($stores as $s)
+    {
+        $_stores[] = array(
+            "storefront" => $s["storefront"]
+        );
+    }
+
+    return $_stores;
+}
+
+function fn_settings_variants_addons_newsman_newsman_remarketingenable()
+{
+    $all_datas = array();
+    $all_datas['0'] = 'No';
+    $all_datas['1'] = 'Yes';
+
+    return $all_datas;
+}
+
+function fn_settings_variants_addons_newsman_newsman_remarketinglblone()
+{
+    try {
+        $stores = getStores();
+
+        $all_datas = array();
+
+        if (!empty($stores)) {
+            foreach ($stores as $s) {
+                $all_datas[$s["storefront"]] = $s["storefront"];
+            }
+        } else {
+            $all_datas['0'] = 'No stores';
+        }
+
+    } catch (Exception $ex) {               
+        return false;
+    }
+
+    return $all_datas;
+}
+
+function fn_settings_variants_addons_newsman_newsman_remarketinglbltwo()
+{
+    try {
+        $stores = getStores();        
+
+        $all_datas = array();
+
+        if(count($stores) < 2)
+            return "";
+
+        if (!empty($stores)) {
+            foreach ($stores as $s) {
+                $all_datas[$s["storefront"]] = $s["storefront"];
+            }
+        } else {
+            $all_datas['0'] = 'No stores';
+        }
+
+    } catch (Exception $ex) {               
+        return false;
+    }
+
+    return $all_datas;
+}
+
+function fn_settings_variants_addons_newsman_newsman_remarketinglblthree()
+{
+    try {
+        $stores = getStores();
+
+        $all_datas = array();
+
+        if(count($stores) < 3)
+        return "";
+
+        if (!empty($stores)) {
+            foreach ($stores as $s) {
+                $all_datas[$s["storefront"]] = $s["storefront"];
+            }
+        } else {
+            $all_datas['0'] = 'No stores';
+        }
+
+    } catch (Exception $ex) {               
+        return false;
+    }
+
+    return $all_datas;
+}
+
+function fn_settings_variants_addons_newsman_newsman_remarketinglblfour()
+{
+    try {
+        $stores = getStores();
+
+        $all_datas = array();
+
+        if(count($stores) < 4)
+        return "";
+
+        if (!empty($stores)) {
+            foreach ($stores as $s) {
+                $all_datas[$s["storefront"]] = $s["storefront"];
+            }
+        } else {
+            $all_datas['0'] = 'No stores';
+        }
+
+    } catch (Exception $ex) {               
+        return false;
+    }
+
+    return $all_datas;
+}
+
+function fn_settings_variants_addons_newsman_newsman_remarketinglblfive()
+{
+    try {
+        $stores = getStores();
+
+        $all_datas = array();
+
+        if(count($stores) < 5)
+        return "";
+
+        if (!empty($stores)) {
+            foreach ($stores as $s) {
+                $all_datas[$s["storefront"]] = $s["storefront"];
+            }
+        } else {
+            $all_datas['0'] = 'No stores';
+        }
+
+    } catch (Exception $ex) {               
         return false;
     }
 
