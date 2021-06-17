@@ -12,6 +12,9 @@ Installation
 2. Install addon from Manage Add-ons and Set it as active.
 
 ## Configuration
+
+### Synchronization
+
 1. Go to **Addon Manager > Newsman > Manage**
 Fill in your [Newsman](https://www.newsmanapp.com) API KEY and User ID and click the Save button.
 
@@ -20,6 +23,12 @@ Fill in your [Newsman](https://www.newsmanapp.com) API KEY and User ID and click
 2. After the [Newsman](https://www.newsmanapp.com) API KEY and User ID are set, you can choose a list and press Save.
 
 3. Automatic synchronization is enabled for each registered customer.
+
+### Remarketing
+
+Fill in your [Newsman](https://www.newsmanapp.com) Remarketing ID, Enable Remarketing and click the Save button.
+
+![Remarketing](https://raw.githubusercontent.com/Newsman/CS-Cart-Newsman/master/assets/remarketing.png)
 
 ### Sync Segmentation:
 
