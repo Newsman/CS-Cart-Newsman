@@ -47,6 +47,7 @@ if(!empty($vars["newsman_remarketingenable"]) && $vars['newsman_remarketingenabl
 <div id='newsman_scripts'>
     <script>            
 
+		var _nzmPluginInfo = '1.0:CsCart';
         var _nzm = _nzm || [];
 		var _nzm_config = _nzm_config || [];
 		(function() {

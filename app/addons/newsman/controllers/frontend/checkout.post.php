@@ -63,6 +63,7 @@ if ($mode == 'complete') {
 <div id='newsman_scripts'>
     <script>            
 
+        var _nzmPluginInfo = '1.0:CsCart';
         var _nzm = _nzm || [];
 		var _nzm_config = _nzm_config || [];
 		(function() {
@@ -156,6 +157,7 @@ if ($mode == 'cart') {
 <div id='newsman_scripts'>
     <script>            
 
+        var _nzmPluginInfo = '1.0:CsCart';
         var _nzm = _nzm || [];
 		var _nzm_config = _nzm_config || [];
 		(function() {
@@ -242,6 +244,7 @@ if ($mode == 'checkout') {
     <div id='newsman_scripts'>
         <script>            
     
+            var _nzmPluginInfo = '1.0:CsCart';
             var _nzm = _nzm || [];
             var _nzm_config = _nzm_config || [];
             (function() {

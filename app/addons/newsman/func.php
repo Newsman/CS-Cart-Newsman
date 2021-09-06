@@ -66,7 +66,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             else{
                 $segmentidPost = array($segmentidPost);
             }
-
+       
             if (empty($userid) || empty($apikey)) {
                 fn_set_notification('W', 'Check fields', 'User Id and Api Key cannot be empty', 'S');
                 return false;
@@ -98,59 +98,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $listid = $vars['newsman_list'];
 
             $client = new Newsman_Client($userid, $apikey);
-
-            /*if ($importType["importSubscribers"] == "Y") {
-                $customers_to_import = array();
-
-                $users = db_query('SELECT * FROM ?:subscribers');
-
-                foreach ($users as $user) {
-                    $customers_to_import[] = array(
-                        "email" => $user["email"],
-                        //no name present
-                        "name" => (empty($user['name']) ? " " : $user['name'])
-                    );
-
-                    if ((count($customers_to_import) % $batchSize) == 0) {
-                        _importData($customers_to_import, $listidPost, $segmentidPost, $client, "cscart subscribers");
-                    }
-                }
-                if (count($customers_to_import) > 0) {
-                    _importData($customers_to_import, $listidPost, $segmentidPost, $client, "cscart subscribers");
-                }
-
-                unset($customers_to_import);
-            }*/
-
-
-            /*if ($importType["importOrders"] == "Y") {
-                //Orders Processing
-
-                $customers_to_import = array();
-
-                $orders = db_query('SELECT * FROM ?:orders WHERE status = ?i', "C");
-
-                foreach ($orders as $order) {
-                    $customers_to_import[] = array(
-                        "email" => $order["email"],
-                        "s_firstname" => (empty($order['s_firstname']) ? " " : $order['s_firstname']),
-                        "s_lastname" => (empty($order['s_lastname']) ? " " : $order['s_lastname']),
-                        "s_city" => (empty($order['s_city']) ? " " : $order['s_city'])
-                    );
-
-                    if ((count($customers_to_import) % $batchSize) == 0) {
-                        _importDataOrders($customers_to_import, $listidPost, $segmentidPost, $client, "cscart orders_completed");
-                    }
-                }
-
-                if (count($customers_to_import) > 0) {
-                    _importDataOrders($customers_to_import, $listidPost, $segmentidPost, $client, "cscart orders_completed");
-                }
-
-                unset($customers_to_import);
-            }*/
-
-            //fn_set_notification('S', 'Import', 'Import has been programmed successfully', 'S');
             
             return;
         }
@@ -284,7 +231,6 @@ function fn_settings_variants_addons_newsman_newsman_segment()
 
 function getStores()
 {
-
     $stores = db_query('SELECT * FROM ?:companies WHERE status = ?i', "A");
 
     $_stores = array();
@@ -297,6 +243,14 @@ function getStores()
     }
 
     return $_stores;
+}
+
+function fn_newsman_newsman_info()
+{   
+    $html = "<p>Cron Sync url (setup on task scheduler / hosting) - Subscribers:<br> <a target='_blank' href='https://" . getenv('HTTP_HOST') . "/index.php?dispatch=newsman.view&cron=true&apikey=c5895eea62695519585a8ce7d0c40442&newsman=subscribers'>https://" . getenv('HTTP_HOST') . "/index.php?dispatch=newsman.view&cron=true&apikey=c5895eea62695519585a8ce7d0c40442&newsman=subscribers&limit=9999</a></p>"; 
+    $html .= "<p>Cron Sync url (setup on task scheduler / hosting) - Customers with orders completed:<br> <a target='_blank' href='https://" . getenv('HTTP_HOST') . "/index.php?dispatch=newsman.view&cron=true&apikey=c5895eea62695519585a8ce7d0c40442&newsman=orders'>https://" . getenv('HTTP_HOST') . "/index.php?dispatch=newsman.view&cron=true&apikey=c5895eea62695519585a8ce7d0c40442&newsman=orders&limit=9999</a></p>";
+
+    return $html;
 }
 
 function fn_settings_variants_addons_newsman_newsman_remarketingenable()
@@ -462,110 +416,7 @@ function fn_settings_variants_addons_newsman_newsman_list()
 
 function fn_newsman_update_user_profile_post($user_id, $user_data, $action)
 {
-    /*OBSOLETE
-    if ($action == "add") {
-        $batchSize = 5000;
-
-        $vars = Registry::get('addons.newsman');
-        $userid = $vars['newsman_userid'];
-        $apikey = $vars['newsman_apikey'];
-        $listid = $vars['newsman_list'];
-        $importType = $vars['newsman_importType'];
-        $segmentid = $vars['newsman_segment'];
-
-        $first = false;
-
-        $time = cronTime("Select");
-        if ($time->num_rows == 0) {
-            cronTime("Insert", time());
-            $first = true;
-        }
-
-        $time = cronTime("Select");
-
-        foreach ($time as $_time) {
-            $time = $_time["time"];
-        }
-
-        $timefromdatabase = $time;
-
-        $dif = time() - $timefromdatabase;
-
-        if (!$first) {
-            if ($dif > 86400) {
-                cronTime("Update", time());
-            } else {
-                die('cannot execute scripts, 24 hour must pass');
-            }
-        }
-
-        if (empty($importType["importOrders"]) && empty($importType["importSubscribers"])) {
-            fn_set_notification('W', 'Import Type', 'Please choose an import type (Subscribers or Customers)', 'S');
-            return false;
-        }
-
-        if ($importType["importOrders"] != "Y" && $importType["importSubscribers"] != "Y") {
-            fn_set_notification('W', 'Import Type', 'Please choose an import type (Subscribers or Customers)', 'S');
-            return false;
-        }
-
-        if (!empty($userid) && !empty($apikey) && !empty($listid)) {
-            $client = new Newsman_Client($userid, $apikey);
-            $client->setCallType("rest");
-
-            if ($importType["importSubscribers"] == "Y") {
-                //Subscribers
-                $customers_to_import = array();
-
-                $users = db_query('SELECT * FROM ?:subscribers WHERE status = ?i', "A");
-
-                foreach ($users as $user) {
-                    $customers_to_import[] = array(
-                        "email" => $user["email"],
-                          //no name present
-                        "name" => (empty($user['name']) ? " " : $user['name'])
-                    );
-
-                    if ((count($customers_to_import) % $batchSize) == 0) {
-                        _importData($customers_to_import, $listid, array($segmentid), $client, "cscart subscribers");
-                    }
-                }
-                if (count($customers_to_import) > 0) {
-                    _importData($customers_to_import, $listid, array($segmentid), $client, "cscart subscribers");
-                }
-
-                unset($customers_to_import);
-                //Subscribers
-            }
-
-            if ($importType["importOrders"] == "Y") {
-
-                $customers_to_import = array();
-
-                $orders = db_query('SELECT * FROM ?:orders WHERE status = ?i', "C");
-
-                foreach ($orders as $order) {
-                    $customers_to_import[] = array(
-                        "email" => $order["email"],
-                        "s_firstname" => (empty($order['s_firstname']) ? " " : $order['s_firstname']),
-                        "s_lastname" => (empty($order['s_lastname']) ? " " : $order['s_lastname']),
-                        "s_city" => (empty($order['s_city']) ? " " : $order['s_city'])
-                    );
-
-                    if ((count($customers_to_import) % $batchSize) == 0) {
-                        _importDataOrders($customers_to_import, $listid, array($segmentid), $client, "cscart orders_completed");
-                    }
-                }
-                if (count($customers_to_import) > 0) {
-                    _importDataOrders($customers_to_import, $listid, array($segmentid), $client, "cscart orders_completed");
-                }
-
-                unset($customers_to_import);
-
-            }
-        }
-    }
-    */
+   
 }
 
 

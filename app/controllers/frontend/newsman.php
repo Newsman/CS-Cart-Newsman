@@ -20,6 +20,9 @@ $limit = (empty($_GET["limit"])) ? "" : $_GET["limit"];
 $startLimit;
 $order_id = (empty($_GET["order_id"])) ? "" : $_GET["order_id"];
 $product_id = (empty($_GET["product_id"])) ? "" : $_GET["product_id"];
+$cronLast = (empty($_GET["cronlast"])) ? "" : $_GET["cronlast"];
+if(!empty($cronLast))
+    $cronLast = ($cronLast == "true") ? true : false;
 
 //by default display categories
 $urlcategorybool = (!empty($_GET["urlcategorybool"]) && $_GET["urlcategorybool"] == "false") ? false : true;
@@ -385,7 +388,7 @@ if (!empty($newsman) && !empty($apikey) && empty($cron)) {
 } 
 //CRON
 elseif(!empty($cron) && !empty($apikey) && !empty($newsman))
-{
+{   
     $apikey = $_GET["apikey"];
     $currApiKey = $_apikey;   
 
@@ -403,7 +406,7 @@ elseif(!empty($cron) && !empty($apikey) && !empty($newsman))
         exit;
     }
 
-    $batchSize = 5000;
+    $batchSize = 9999;
 
     $vars = Registry::get('addons.newsman');
     $userid = $vars['newsman_userid'];
@@ -423,11 +426,11 @@ elseif(!empty($cron) && !empty($apikey) && !empty($newsman))
 
     if (!empty($userid) && !empty($apikey) && !empty($listid)) {
         $client = new Newsman_Client($userid, $apikey);
-        $client->setCallType("rest");
+        $client->setCallType("rest");    
 
      switch ($newsman) {
 
-        case "subscribers":
+        case "subscribers":         
 
         try{
             //Subscribers
@@ -459,9 +462,24 @@ elseif(!empty($cron) && !empty($apikey) && !empty($newsman))
 
         try{
             //Subscribers
+
+            if($cronLast)
+            {
+                $users = db_query('SELECT * FROM ?:subscribers');  
+
+                $data = $users->num_rows;
+
+                $start = $data - (int)$limit;
+
+                if($start < 1)
+                {
+                    $start = 1;
+                }       
+            }
+
             $customers_to_import = array();
 
-            $users = db_query('SELECT * FROM ?:subscribers' . $startLimit);
+            $users = db_query('SELECT * FROM ?:subscribers' . $startLimit);            
 
             foreach ($users as $user) {
                 $customers_to_import[] = array(
@@ -493,6 +511,21 @@ elseif(!empty($cron) && !empty($apikey) && !empty($newsman))
     case "orders":
         
             /*Orders Processing*/
+
+            if($cronLast)
+            {
+                $orders = db_query('SELECT * FROM ?:orders WHERE status = ?i', "C");
+
+                $data = $orders->num_rows;             
+
+                $start = $data - (int)$limit;
+
+                if($start < 1)
+                {
+                    $start = 1;
+                }                            
+            }
+
             $customers_to_import = array();
 
             $orders = db_query('SELECT * FROM ?:orders WHERE status = ?i' . $startLimit, "C");

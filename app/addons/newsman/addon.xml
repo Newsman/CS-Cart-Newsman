@@ -12,7 +12,7 @@
     <settings layout="separate">
         <sections>
             <section id="general" edition_type="ROOT">
-                <items>
+                <items>                
                     <item id="newsman_userid">
                         <name>User Id</name>
                         <type>input</type>
@@ -50,7 +50,12 @@
                         <type>selectbox</type>
                         <default_value>fn_add_setting_info</default_value>
                     </item>
-                    
+                    <item id="newsman_label">
+                        <name>CRON Job sync url</name>
+                        <type>info</type>
+                        <handler>fn_newsman_newsman_info</handler>
+                    </item>   
+
                     <item id="newsman_remarketingenable">
                         <name>Enable Newsman Remarketing ?</name>
                         <type>selectbox</type>
