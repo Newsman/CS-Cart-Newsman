@@ -40,12 +40,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $listidPost = 0;
         $opts = $_POST["addon_data"]["options"];
         $c = 0;
+   
         foreach ($opts as $key => $val) {
             $c++;
-            if ($c == 5) {
+            if ($c == 4) {
                 $listidPost = $opts[$key];
             }
-            if ($c == 6) {
+            if ($c == 5) {
                 $segmentidPost = $opts[$key];
                 break;
             }
@@ -97,8 +98,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $apikey = $vars['newsman_apikey'];
             $listid = $vars['newsman_list'];
 
-            $client = new Newsman_Client($userid, $apikey);
-            
+            $client = new Newsman_Client($userid, $apikey);    
+            $url = "https://" . getenv('HTTP_HOST') . "/index.php?dispatch=newsman.view&newsman=products.json&apikey=" .  $apikey;								
+            $ret = $client->feeds->setFeedOnList($listidPost, $url, getenv("HTTP_HOST"), "NewsMAN");	
+         
             return;
         }
     } catch (Exception $ex) {
@@ -247,8 +250,11 @@ function getStores()
 
 function fn_newsman_newsman_info()
 {   
-    $html = "<p>Cron Sync url (setup on task scheduler / hosting) - Subscribers:<br> <a target='_blank' href='https://" . getenv('HTTP_HOST') . "/index.php?dispatch=newsman.view&cron=true&apikey=c5895eea62695519585a8ce7d0c40442&newsman=subscribers'>https://" . getenv('HTTP_HOST') . "/index.php?dispatch=newsman.view&cron=true&apikey=c5895eea62695519585a8ce7d0c40442&newsman=subscribers&limit=9999</a></p>"; 
-    $html .= "<p>Cron Sync url (setup on task scheduler / hosting) - Customers with orders completed:<br> <a target='_blank' href='https://" . getenv('HTTP_HOST') . "/index.php?dispatch=newsman.view&cron=true&apikey=c5895eea62695519585a8ce7d0c40442&newsman=orders'>https://" . getenv('HTTP_HOST') . "/index.php?dispatch=newsman.view&cron=true&apikey=c5895eea62695519585a8ce7d0c40442&newsman=orders&limit=9999</a></p>";
+    $vars = Registry::get('addons.newsman');
+    $apikey = $vars['newsman_apikey'];
+
+    $html = "<p>Cron Sync url (setup on task scheduler / hosting) - Subscribers:<br> <a target='_blank' href='https://" . getenv('HTTP_HOST') . "/index.php?dispatch=newsman.view&cron=true&apikey=" . $apikey . "&newsman=subscribers'>https://" . getenv('HTTP_HOST') . "/index.php?dispatch=newsman.view&cron=true&apikey=" . $apikey . "&newsman=subscribers&limit=9999</a></p>"; 
+    $html .= "<p>Cron Sync url (setup on task scheduler / hosting) - Customers with orders completed:<br> <a target='_blank' href='https://" . getenv('HTTP_HOST') . "/index.php?dispatch=newsman.view&cron=true&apikey=" . $apikey . "&newsman=orders'>https://" . getenv('HTTP_HOST') . "/index.php?dispatch=newsman.view&cron=true&apikey=" . $apikey . "&newsman=orders&limit=9999</a></p>";
 
     return $html;
 }

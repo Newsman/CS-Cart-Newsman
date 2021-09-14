@@ -115,7 +115,25 @@ if ($mode == 'view') {
                 {
                     //add to cart
                     //.ty_btn__add-to-cart
-                    jQuery('.ty-product-block__button button.ty-btn').on('click', function(){
+                    
+                    var _class = '';
+                    var validate = jQuery('.ty-product-block__button button.ty-btn').text();
+                    if(validate != '')
+                    {
+                        _class = validate;
+                    }
+                    if(validate == '')
+                    {
+                        validate = jQuery('.product-info button.ty-btn').text();
+
+                        if(validate != '')
+                        {
+                            _class = validate;
+                        }
+                    }
+
+
+                    jQuery(_class).on('click', function(){
 
                         _nzm.run('ec:addProduct', {
                             'id': '" . $product["main_pair"]["detailed"]["object_id"] . "',
