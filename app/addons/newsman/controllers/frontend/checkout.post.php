@@ -40,10 +40,15 @@ foreach($_hosts as $h => $v)
 	}
 }
 
+Tygh::$app['view']->assign('newsmanRemarketingEnabled', (!empty($vars["newsman_remarketingenable"])) ? $vars['newsman_remarketingenable'] : "0");
+Tygh::$app['view']->assign('newsmanRemarketingId', $_hosts[$h]);
+
 if(!empty($vars["newsman_remarketingenable"]) && $vars['newsman_remarketingenable'] == "1")
 {
 
 if ($mode == 'complete') {
+
+    Tygh::$app['view']->assign('newsmanMode', 'complete');
 
     $order_info = fn_get_order_info($_REQUEST['order_id']);
 
@@ -59,49 +64,13 @@ if ($mode == 'complete') {
 
     $_products = $order_info["products"];
 
-    $return = "
-<div id='newsman_scripts'>
-    <script>            
-
-        var _nzmPluginInfo = '1.0:CsCart';
-        var _nzm = _nzm || [];
-		var _nzm_config = _nzm_config || [];
-		(function() {
-			if (!_nzm.track) {
-                _nzm_config['disable_datalayer'] = 1;
-				var a, methods, i;
-				a = function(f) {
-					return function() {
-						_nzm.push([f].concat(Array.prototype.slice.call(arguments, 0)));
-					}
-				};
-				methods = ['identify', 'track', 'run'];
-				for(i = 0; i < methods.length; i++) {
-					_nzm[methods[i]] = a(methods[i])
-				};
-				s = document.getElementsByTagName('script')[0];
-				var script_dom = document.createElement('script');
-				script_dom.async = true;
-				script_dom.id    = 'nzm-tracker';
-				script_dom.setAttribute('data-site-id', '" . $_hosts[$h] . "');
-				script_dom.src = 'https://retargeting.newsmanapp.com/js/retargeting/track.js';
-				s.parentNode.insertBefore(script_dom, s);
-			}
-		})();
-
-		_nzm.run( 'require', 'ec' );
-		_nzm.run( 'set', 'currencyCode', 'RON' );	        
-        
-        (function(){
+    $return = '
 
             function _loadEvents(){
 
-                if (window.jQuery) { 
-
-                    //purchase
-                    _nzm.identify({ email: '" . $order_info["email"] . "', first_name: '" . $order_info["firstname"] . "', last_name: '" . $order_info["lastname"] . "' });    
-                    
-                   ";
+                _nzm.identify({ email: "' . $order_info["email"] . '", first_name: "' . $order_info["firstname"] . '", last_name: "' . $order_info["lastname"] . '" });
+                
+               ';
 
                 foreach($_products as $_product)
                 {         
@@ -116,190 +85,81 @@ if ($mode == 'complete') {
                     ";
                 }
 
-                $return .= "_nzm.run('ec:setAction', 'purchase',{
-                        'id': '" . $order_info["order_id"] . "',
-                        'affiliation': '',
-                        'revenue': '" . $order_info["total"] . "',
-                        'tax': '0',
-                        'shipping': '" . $order_info["shipping_cost"] . "'
+                $return .= '_nzm.run("ec:setAction", "purchase",{
+                        "id": "' . $order_info["order_id"] . '",
+                        "affiliation": "",
+                        "revenue": "' . $order_info["total"] . '",
+                        "tax": "0",
+                        "shipping": "' . $order_info["shipping_cost"] . '"
                     });
-                    _nzm.run('send', 'pageview');
-
-                    jQuery('#newsman_scripts').appendTo('body');
-
-                }
-                else{
-                    setTimeout(function(){
-
-                        _loadEvents();
-
-                    }, 1000);
-                }
+                    _nzm.run("send", "pageview");
 
             }
 
-            if(!window.jQuery){
-                _loadEvents();
-            }
+           
+            _loadEvents();
 
-        })();
-    
-    </script>   
-</div>    
- ";
+ ';
 
- echo $return;
+    Tygh::$app['view']->assign('newsmanModeComplete', $return);
+ 
 }
 
 if ($mode == 'cart') {
-
-  echo "
-<div id='newsman_scripts'>
-    <script>            
-
-        var _nzmPluginInfo = '1.0:CsCart';
-        var _nzm = _nzm || [];
-		var _nzm_config = _nzm_config || [];
-		(function() {
-			if (!_nzm.track) {
-				var a, methods, i;
-				a = function(f) {
-					return function() {
-						_nzm.push([f].concat(Array.prototype.slice.call(arguments, 0)));
-					}
-				};
-				methods = ['identify', 'track', 'run'];
-				for(i = 0; i < methods.length; i++) {
-					_nzm[methods[i]] = a(methods[i])
-				};
-				s = document.getElementsByTagName('script')[0];
-				var script_dom = document.createElement('script');
-				script_dom.async = true;
-				script_dom.id    = 'nzm-tracker';
-				script_dom.setAttribute('data-site-id', '" . $_hosts[$h] . "');
-				script_dom.src = 'https://retargeting.newsmanapp.com/js/retargeting/track.js';
-				s.parentNode.insertBefore(script_dom, s);
-			}
-		})();
-
-		_nzm.run( 'require', 'ec' );
-		_nzm.run( 'set', 'currencyCode', 'RON' );	        
-        
-        (function(){
+    
+     Tygh::$app['view']->assign('newsmanMode', 'cart');
+    
+        $return = "
 
             function _loadEvents(){
 
-                if (window.jQuery) { 
+                //remove from cart                
+                $('.ty-cart-content__product-delete').each(function () {
+                    jQuery(this).bind('click', function (ev) {                                              
+                        var _c = jQuery(this).closest('tr');                        
 
-                    //remove from cart                
-                    $('.ty-cart-content__product-delete').each(function () {
-                        jQuery(this).bind('click', {'elem': jQuery(this)}, function (ev) {                                              
+                        _qty = _c.find('.ty-value-changer input');                      
+                        _qty = _qty.val();
 
-                            var _c = jQuery(this).closest('tr');                        
-
-                            _qty = _c.find('.ty-value-changer input');                      
-                            _qty = _qty.val();
-
-                            _c = _c.find('.quantity input');      
-                            var _id = _c.val();                                                  
-                   
-                            _nzm.run('ec:addProduct', {
-                                'id': _id,
-                                'quantity': _qty
-                            });
-            
-                            _nzm.run('ec:setAction', 'remove');
-                            _nzm.run('send', 'event', 'UX', 'click', 'remove from cart');                                                              
-
+                        _c = _c.find('.quantity input');      
+                        var _id = _c.val();                                                  
+               
+                        _nzm.run('ec:addProduct', {
+                            'id': _id,
+                            'quantity': _qty
                         });
-                    });                                         
+        
+                        _nzm.run('ec:setAction', 'remove');
+                        _nzm.run('send', 'event', 'UX', 'click', 'remove from cart');        
 
-                    jQuery('#newsman_scripts').appendTo('body');
-
-                }
-                else{
-                    setTimeout(function(){
-
-                        _loadEvents();
-
-                    }, 1000);
-                }
+                    });
+                });             
 
             }
+           
+            _loadEvents();
 
-            if(!window.jQuery){
-                _loadEvents();
-            }
-
-        })();
-    
-    </script>   
-</div>    
  ";
+ 
+     Tygh::$app['view']->assign('newsmanModeCart', $return);
+    
 }
 
 if ($mode == 'checkout') {
 
-    echo "
-    <div id='newsman_scripts'>
-        <script>            
+    Tygh::$app['view']->assign('newsmanMode', 'checkout');
+
+    $return = "
     
-            var _nzmPluginInfo = '1.0:CsCart';
-            var _nzm = _nzm || [];
-            var _nzm_config = _nzm_config || [];
-            (function() {
-                if (!_nzm.track) {
-                    var a, methods, i;
-                    a = function(f) {
-                        return function() {
-                            _nzm.push([f].concat(Array.prototype.slice.call(arguments, 0)));
-                        }
-                    };
-                    methods = ['identify', 'track', 'run'];
-                    for(i = 0; i < methods.length; i++) {
-                        _nzm[methods[i]] = a(methods[i])
-                    };
-                    s = document.getElementsByTagName('script')[0];
-                    var script_dom = document.createElement('script');
-                    script_dom.async = true;
-                    script_dom.id    = 'nzm-tracker';
-                    script_dom.setAttribute('data-site-id', '" . $_hosts[$h] . "');
-                    script_dom.src = 'https://retargeting.newsmanapp.com/js/retargeting/track.js';
-                    s.parentNode.insertBefore(script_dom, s);
-                }
-            })();
-    
-            _nzm.run( 'require', 'ec' );
-            _nzm.run( 'set', 'currencyCode', 'RON' );	        
-            
-            (function(){
-    
-                function _loadEvents(){
-    
-                    if (window.jQuery) {                                           
-    
-                        jQuery('#newsman_scripts').appendTo('body');
-    
-                    }
-                    else{
-                        setTimeout(function(){
-    
-                            _loadEvents();
-    
-                        }, 1000);
-                    }
-    
-                }
-    
-                if(!window.jQuery){
-                    _loadEvents();
-                }
-    
-            })();
+            function _loadEvents(){
+
+            }
+
+            _loadEvents();
         
-        </script>   
-    </div>    
      ";
+     
+    Tygh::$app['view']->assign('newsmanModeCheckout', $return);
 
 }
 
