@@ -40,10 +40,15 @@ foreach($_hosts as $h => $v)
 	}
 }
 
+Tygh::$app['view']->assign('newsmanRemarketingEnabled', (!empty($vars["newsman_remarketingenable"])) ? $vars['newsman_remarketingenable'] : "0");
+Tygh::$app['view']->assign('newsmanRemarketingId', $_hosts[$h]);
+
 if(!empty($vars["newsman_remarketingenable"]) && $vars['newsman_remarketingenable'] == "1")
 {
 
 if ($mode == 'view') {
+    
+     Tygh::$app['view']->assign('newsmanMode', 'product');
 
     $product = fn_get_product_data(
         $_REQUEST['product_id'],
@@ -60,40 +65,8 @@ if ($mode == 'view') {
         true
     );
 
-  echo "
-<div id='newsman_scripts'>
-    <script>            
+  $return = "
 
-        var _nzmPluginInfo = '1.0:CsCart';
-        var _nzm = _nzm || [];
-		var _nzm_config = _nzm_config || [];
-		(function() {
-			if (!_nzm.track) {
-                _nzm_config['disable_datalayer'] = 1;
-				var a, methods, i;
-				a = function(f) {
-					return function() {
-						_nzm.push([f].concat(Array.prototype.slice.call(arguments, 0)));
-					}
-				};
-				methods = ['identify', 'track', 'run'];
-				for(i = 0; i < methods.length; i++) {
-					_nzm[methods[i]] = a(methods[i])
-				};
-				s = document.getElementsByTagName('script')[0];
-				var script_dom = document.createElement('script');
-				script_dom.async = true;
-				script_dom.id    = 'nzm-tracker';
-				script_dom.setAttribute('data-site-id', '" . $_hosts[$h] . "');
-				script_dom.src = 'https://retargeting.newsmanapp.com/js/retargeting/track.js';
-				s.parentNode.insertBefore(script_dom, s);
-			}
-		})();
-
-		_nzm.run( 'require', 'ec' );
-		_nzm.run( 'set', 'currencyCode', 'RON' );	
-
- 
         _nzm.run( 'ec:addProduct', {
             'id': '" . $product["main_pair"]["detailed"]["object_id"] . "', // Product ID (string)
             'name': '" . $product["product"] . "', // Product name (string)
@@ -104,12 +77,7 @@ if ($mode == 'view') {
 
         _nzm.run( 'send', 'pageview' );
 
-        
-        (function(){
-
             function _loadEvents(){
-
-                if (window.jQuery) { 
 
                 function addToCart()
                 {
@@ -120,18 +88,18 @@ if ($mode == 'view') {
                     var validate = jQuery('.ty-product-block__button button.ty-btn').text();
                     if(validate != '')
                     {
-                        _class = validate;
+                        _class = '.ty-product-block__button button.ty-btn';
                     }
+                
                     if(validate == '')
                     {
                         validate = jQuery('.product-info button.ty-btn').text();
 
                         if(validate != '')
                         {
-                            _class = validate;
+                            _class = '.product-info button.ty-btn';
                         }
                     }
-
 
                     jQuery(_class).on('click', function(){
 
@@ -205,27 +173,13 @@ if ($mode == 'view') {
                     
                     bindRemoveFromCart();
 
-                    jQuery('#newsman_scripts').appendTo('body');
-
-                }
-                else{
-                    setTimeout(function(){
-
-                        _loadEvents();
-
-                    }, 1000);
-                }
-
             }
 
-            if(!window.jQuery){
-                _loadEvents();
-            }
-
-        })();
+            _loadEvents();
     
-    </script>   
-</div>    
  ";
+    
+      Tygh::$app['view']->assign('newsmanModeProduct', $return);
+ 
     }
 }

@@ -40,12 +40,17 @@ foreach($_hosts as $h => $v)
 	}
 }
 
+Tygh::$app['view']->assign('newsmanRemarketingEnabled', (!empty($vars["newsman_remarketingenable"])) ? $vars['newsman_remarketingenable'] : "0");
+Tygh::$app['view']->assign('newsmanRemarketingId', $_hosts[$h]);
+
 if(!empty($vars["newsman_remarketingenable"]) && $vars['newsman_remarketingenable'] == "1")
 {
 
 $_REQUEST['category_id'] = empty($_REQUEST['category_id']) ? 0 : $_REQUEST['category_id'];
 
 if ($mode == 'view') {
+
+    Tygh::$app['view']->assign('newsmanMode', 'category');
 
     $params = $_REQUEST;
 
@@ -114,54 +119,37 @@ if ($mode == 'view') {
         ";
     }    
 
-  echo "
-<div id='newsman_scripts'>
-    <script>            
-
-        var _nzmPluginInfo = '1.0:CsCart';
-        var _nzm = _nzm || [];
-		var _nzm_config = _nzm_config || [];
-		(function() {
-			if (!_nzm.track) {
-                _nzm_config['disable_datalayer'] = 1;
-				var a, methods, i;
-				a = function(f) {
-					return function() {
-						_nzm.push([f].concat(Array.prototype.slice.call(arguments, 0)));
-					}
-				};
-				methods = ['identify', 'track', 'run'];
-				for(i = 0; i < methods.length; i++) {
-					_nzm[methods[i]] = a(methods[i])
-				};
-				s = document.getElementsByTagName('script')[0];
-				var script_dom = document.createElement('script');
-				script_dom.async = true;
-				script_dom.id    = 'nzm-tracker';
-				script_dom.setAttribute('data-site-id', '" . $_hosts[$h] . "');
-				script_dom.src = 'https://retargeting.newsmanapp.com/js/retargeting/track.js';
-				s.parentNode.insertBefore(script_dom, s);
-			}
-		})();
-
-		_nzm.run( 'require', 'ec' );
-		_nzm.run( 'set', 'currencyCode', 'RON' );	
+  $return = "
 
         " . $impressions . "
 
         _nzm.run( 'send', 'pageview' );
-        
-        (function(){
 
             function _loadEvents(){
+                    
+                    var _class = '';
+                    var validate = jQuery('.ty-btn__add-to-cart').text();
+                    if(validate != '')
+                    {
+                        _class = '.ty-btn__add-to-cart';
+                    }
+                
+                    if(validate == '')
+                    {
+                        validate = jQuery('.ty-grid-list__item button.ty-btn').text();
 
-                if (window.jQuery) { 
+                        if(validate != '')
+                        {
+                            _class = '.ty-grid-list__item button.ty-btn';
+                        }
+                    }
                     
                     //add to cart
-                    $( '.ty-btn__add-to-cart').each(function(index) {
+                    $(_class).each(function(index) {
                         $(this).on('click', function(){
                      
                             var id = $(this).attr('id');
+                            
                             id = id.replace('button_cart_', '');           
                          
                             _nzm.run('ec:addProduct', {
@@ -215,27 +203,12 @@ if ($mode == 'view') {
                     
                     bindRemoveFromCart();                 
 
-                    jQuery('#newsman_scripts').appendTo('body');
-
-                }
-                else{
-                    setTimeout(function(){
-
-                        _loadEvents();
-
-                    }, 1000);
-                }
-
             }
 
-            if(!window.jQuery){
-                _loadEvents();
-            }
+            _loadEvents();
 
-        })();
-    
-    </script>   
-</div>    
  ";
+ 
+        Tygh::$app['view']->assign('newsmanModeCategory', $return);
     }
 }

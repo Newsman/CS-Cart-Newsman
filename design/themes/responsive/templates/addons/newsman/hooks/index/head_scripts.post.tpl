@@ -1,3 +1,4 @@
+{nocache}
 {if $newsmanRemarketingEnabled eq '1'}
 
 <script id='newsman_scripts'>      
@@ -44,10 +45,19 @@
            
         {elseif $newsmanMode eq 'index'}
         
-           {$newsmanModeIndex nofilter}           
+           {$newsmanModeIndex nofilter}    
+
+        {elseif $newsmanMode eq 'product'}
+        
+           {$newsmanModeProduct nofilter}      
+           
+        {elseif $newsmanMode eq 'category'}
+        
+           {$newsmanModeCategory nofilter}             
             
         {/if}
   
 </script>
 
 {/if}
+{/nocache}
