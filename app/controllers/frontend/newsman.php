@@ -380,8 +380,12 @@ if (!empty($newsman) && !empty($apikey) && empty($cron)) {
         
         case "version.json":
 
+            $version = array(
+                "version" => "CsCart " . PRODUCT_VERSION
+                );    
+
             header('Content-Type: application/json');
-            echo json_encode(PRODUCT_VERSION);
+            echo json_encode($version);
 
         break;
     }
