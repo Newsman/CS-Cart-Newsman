@@ -26,8 +26,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     //Execute if on settings page
   
     if(!empty($_POST["selected_section"]) && $_POST["selected_section"] == "newsman_general")
-    {    
-    try {
+    {        
         $batchSize = 5000;
 
         $vars = Registry::get('addons.newsman');
@@ -40,7 +39,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $listidPost = 0;
         $opts = $_POST["addon_data"]["options"];
         $c = 0;
-   
+
         foreach ($opts as $key => $val) {
             $c++;
             if ($c == 4) {
@@ -55,8 +54,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $importType = $vars['newsman_importType'];
 
         if (!empty($userid) || !empty($apikey)) {
-            $client = new Newsman_Client($userid, $apikey);
-            $lists = $client->list->all();
+            try{
+                $client = new Newsman_Client($userid, $apikey);
+                $lists = $client->list->all();
+            }
+            catch (Exception $ex) {
+                fn_set_notification('W', 'Credentials', 'User Id and Api Key are invalid, Save again to take effect, Error: ' . $ex->getMessage(), 'S');
+                return false;
+            }
         }
 
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
@@ -67,7 +72,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             else{
                 $segmentidPost = array($segmentidPost);
             }
-       
+        
             if (empty($userid) || empty($apikey)) {
                 fn_set_notification('W', 'Check fields', 'User Id and Api Key cannot be empty', 'S');
                 return false;
@@ -99,16 +104,17 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $listid = $vars['newsman_list'];
 
             $client = new Newsman_Client($userid, $apikey);    
-            $url = "https://" . getenv('HTTP_HOST') . "/index.php?dispatch=newsman.view&newsman=products.json&apikey=" .  $apikey;								
-            $ret = $client->feeds->setFeedOnList($listidPost, $url, getenv("HTTP_HOST"), "NewsMAN");	
-         
+            $url = "https://" . getenv('HTTP_HOST') . "/index.php?dispatch=newsman.view&newsman=products.json&apikey=" .  $apikey;		
+            
+            try{
+                $ret = $client->feeds->setFeedOnList($listidPost, $url, getenv("HTTP_HOST"), "NewsMAN");	
+            }
+            catch (Exception $ex) {
+                //cannot update identical FEED
+            }
+            
             return;
-        }
-    } catch (Exception $ex) {
-        fn_set_notification('W', 'Credentials', 'User Id and Api Key are invalid, Save again to take effect, Error: ' . $ex->getMessage(), 'S');
-        return false;
-    }
-    
+        }    
   }
 
 }
