@@ -26,7 +26,8 @@ Fill in your [Newsman](https://www.newsmanapp.com) API KEY and User ID and click
 
 ### Remarketing
 
-Fill in your [Newsman](https://www.newsmanapp.com) Remarketing ID, Enable Remarketing and click the Save button.
+1. Fill in your [Newsman](https://www.newsmanapp.com) Remarketing ID, Enable Remarketing and click the Save button.
+2. Clear cache.
 
 ![Remarketing](https://raw.githubusercontent.com/Newsman/CS-Cart-Newsman/master/assets/remarketing.png)
 
