@@ -50,6 +50,7 @@ if (!empty($newsman) && !empty($apikey) && empty($cron)) {
         exit;
     }
 
+    try{
     switch ($newsman) {
         case "orders.json":
 
@@ -218,7 +219,7 @@ if (!empty($newsman) && !empty($apikey) && empty($cron)) {
 
         case
         "products.json":        
-
+       
             $query = db_query('SELECT * FROM ?:products' . $startLimit);
 
             if(!empty($product_id))
@@ -310,7 +311,7 @@ if (!empty($newsman) && !empty($apikey) && empty($cron)) {
 
             header('Content-Type: application/json');
             echo json_encode($productsJson, JSON_PRETTY_PRINT);
-            exit;     
+            exit;                 
 
             break;
 
@@ -389,6 +390,17 @@ if (!empty($newsman) && !empty($apikey) && empty($cron)) {
 
         break;
     }
+    catch(Exception $ex)
+      {
+        $status = array(
+            "status" => "error",
+            "message" => $ex->getMessage()
+        );
+
+        header('Content-Type: application/json');
+        echo json_encode($productsJson, JSON_PRETTY_PRINT);
+        exit;  
+      }
 } 
 //CRON
 elseif(!empty($cron) && !empty($apikey) && !empty($newsman))
@@ -531,6 +543,8 @@ elseif(!empty($cron) && !empty($apikey) && !empty($newsman))
     case "orders":
         
             /*Orders Processing*/
+             
+             try{
 
             if($cronLast)
             {
@@ -572,6 +586,19 @@ elseif(!empty($cron) && !empty($apikey) && !empty($newsman))
             header('Content-Type: application/json');
             echo json_encode(array('status' => "orders completed sync ok"));
 
+             }
+          catch(Exception $ex)
+          {
+            $status = array(
+                "status" => "error",
+                "message" => $ex->getMessage()
+            );
+              
+            header('Content-Type: application/json');
+            echo json_encode($productsJson, JSON_PRETTY_PRINT);
+            exit;  
+          }
+                
         break;
 
         }
