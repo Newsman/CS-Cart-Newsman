@@ -438,7 +438,23 @@ elseif(!empty($cron) && !empty($apikey) && !empty($newsman))
 
         try{
             //Subscribers
-            /*$customers_to_import = array();
+            
+            if($cronLast)
+            {
+                $users = db_query('SELECT * FROM ?:em_subscribers');  
+
+                $data = $users->num_rows;
+
+                $start = $data - (int)$limit;
+
+                if($start < 1)
+                {
+                    $start = 1;
+                }       
+            }
+
+            
+            $customers_to_import = array();
 
             $users = db_query('SELECT * FROM ?:em_subscribers WHERE status = ?i' . $startLimit, "A");
 
@@ -457,7 +473,7 @@ elseif(!empty($cron) && !empty($apikey) && !empty($newsman))
                 _importDataCRON($customers_to_import, $listid, $segment, $client, "cscart subscribers CRON");
             }
 
-            unset($customers_to_import);*/
+            unset($customers_to_import);
             //Subscribers       
         }
         catch(Exception $ex){
