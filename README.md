@@ -27,8 +27,8 @@ Fill in your [Newsman](https://www.newsmanapp.com) API KEY and User ID and click
 ### Remarketing
 
 1. Fill in your [Newsman](https://www.newsmanapp.com) Remarketing ID, Enable Remarketing and click the Save button.
-2.1 Clear cache from cscart admin Administration -> Storage -> Clear Cache
-2.2 (optional, in case of 2.1 failure) Clear cache via FTP, delete cache folder from /rootcscart/var/
+2. Clear cache from cscart admin Administration -> Storage -> Clear Cache
+3. (optional, in case of 2.1 failure) Clear cache via FTP, delete cache folder from /rootcscart/var/
 
 ![Remarketing](https://raw.githubusercontent.com/Newsman/CS-Cart-Newsman/master/assets/remarketing.png)
 
