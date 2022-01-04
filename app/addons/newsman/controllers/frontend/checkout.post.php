@@ -66,38 +66,37 @@ if ($mode == 'complete') {
 
     $return = '
 
-            function _loadEvents(){
+        function _loadEvents(){
 
-                _nzm.identify({ email: "' . $order_info["email"] . '", first_name: "' . $order_info["firstname"] . '", last_name: "' . $order_info["lastname"] . '" });
-                
-               ';
+            _nzm.identify({ email: "' . $order_info["email"] . '", first_name: "' . $order_info["firstname"] . '", last_name: "' . $order_info["lastname"] . '" });
+            
+            ';
 
-                foreach($_products as $_product)
-                {         
-                    $return .= "
-                    _nzm.run( 'ec:addProduct', {
-                        'id': '" . $_product["product_id"] . "',
-                        'name': '" . $_product["product"] . "',
-                        'category': '',
-                        'price': '" . $_product["price"] . "',
-                        'quantity': '" . $_product["amount"] . "'
-                    } );                    
-                    ";
-                }
-
-                $return .= '_nzm.run("ec:setAction", "purchase",{
-                        "id": "' . $order_info["order_id"] . '",
-                        "affiliation": "",
-                        "revenue": "' . $order_info["total"] . '",
-                        "tax": "0",
-                        "shipping": "' . $order_info["shipping_cost"] . '"
-                    });
-                    _nzm.run("send", "pageview");
-
+            foreach($_products as $_product)
+            {         
+                $return .= "
+                _nzm.run( 'ec:addProduct', {
+                    'id': '" . $_product["product_id"] . "',
+                    'name': '" . $_product["product"] . "',
+                    'category': '',
+                    'price': '" . $_product["price"] . "',
+                    'quantity': '" . $_product["amount"] . "'
+                } );                    
+                ";
             }
 
-           
-            _loadEvents();
+            $return .= '_nzm.run("ec:setAction", "purchase",{
+                    "id": "' . $order_info["order_id"] . '",
+                    "affiliation": "",
+                    "revenue": "' . $order_info["total"] . '",
+                    "tax": "0",
+                    "shipping": "' . $order_info["shipping_cost"] . '"
+                });
+                _nzm.run("send", "pageview");
+
+        }
+        
+        _loadEvents();
 
  ';
 
@@ -137,7 +136,7 @@ if ($mode == 'cart') {
 
             }
            
-            _loadEvents();
+            //_loadEvents();
 
  ";
  

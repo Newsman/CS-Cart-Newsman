@@ -5,7 +5,7 @@
 use Tygh\Registry;
 use Tygh\Settings;
 
-//require_once(realpath(dirname(__FILE__)) . '/lib/Newsman/Client.php');
+require_once(__DIR__ . '/../../../app/addons/newsman/lib/Newsman/Client.php');
 
 $vars = Registry::get('addons.newsman');
 $_apikey = $vars['newsman_apikey'];
@@ -30,6 +30,8 @@ $urlextensionstring = (empty($_GET["urlextensionstring"])) ? "" : $_GET["urlexte
 
 if(!empty($start) && $start >= 0 && !empty($limit))
 $startLimit = " LIMIT {$limit} OFFSET {$start}";
+
+newsmanGetCart();
 
 //API
 if (!empty($newsman) && !empty($apikey) && empty($cron)) {
@@ -214,7 +216,7 @@ if (!empty($newsman) && !empty($apikey) && empty($cron)) {
 
                 header('Content-Type: application/json');
                 echo json_encode($ordersObj, JSON_PRETTY_PRINT);
-                exit;      
+                exit();      
 
                 break;
 
@@ -312,7 +314,7 @@ if (!empty($newsman) && !empty($apikey) && empty($cron)) {
 
                 header('Content-Type: application/json');
                 echo json_encode($productsJson, JSON_PRETTY_PRINT);
-                exit;                 
+                exit();                 
 
                 break;
 
@@ -333,7 +335,7 @@ if (!empty($newsman) && !empty($apikey) && empty($cron)) {
 
                 header('Content-Type: application/json');
                 echo json_encode($custs, JSON_PRETTY_PRINT);
-                exit;
+                exit();
     
                 break;
 
@@ -352,7 +354,7 @@ if (!empty($newsman) && !empty($apikey) && empty($cron)) {
 
                 header('Content-Type: application/json');
                 echo json_encode($subs, JSON_PRETTY_PRINT);
-                exit;
+                exit();
 
                 break;
             case "count.json":
@@ -377,6 +379,7 @@ if (!empty($newsman) && !empty($apikey) && empty($cron)) {
                         'subscribers' => $users
                     )
                 );
+                exit();
             
                 break;
             
@@ -388,6 +391,7 @@ if (!empty($newsman) && !empty($apikey) && empty($cron)) {
 
                 header('Content-Type: application/json');
                 echo json_encode($version);
+                exit();
 
             break;
         }
@@ -488,11 +492,12 @@ elseif(!empty($cron) && !empty($apikey) && !empty($newsman))
             }
 
             unset($customers_to_import);
+
             //Subscribers       
         }
         catch(Exception $ex){
             //table not found (optional)
-            echo "table em_subscribers not found, error: " . $ex->getMessage();
+            echo "(Optional) table em_subscribers not found, Message: " . $ex->getMessage();
         } 
 
         try{
@@ -532,6 +537,7 @@ elseif(!empty($cron) && !empty($apikey) && !empty($newsman))
             }
 
             unset($customers_to_import);
+
             //Subscribers       
         }
         catch(Exception $ex){
@@ -541,6 +547,7 @@ elseif(!empty($cron) && !empty($apikey) && !empty($newsman))
 
         header('Content-Type: application/json');
         echo json_encode(array('status' => "subscribers sync ok"));
+        exit();
 
     break;
 
@@ -585,10 +592,12 @@ elseif(!empty($cron) && !empty($apikey) && !empty($newsman))
                 }
 
                 unset($customers_to_import);
+                
                 /*Orders Processing*/   
                 
                 header('Content-Type: application/json');
                 echo json_encode(array('status' => "orders completed sync ok"));
+                exit();
 
             }
           catch(Exception $ex)
@@ -599,8 +608,8 @@ elseif(!empty($cron) && !empty($apikey) && !empty($newsman))
             );
               
             header('Content-Type: application/json');
-            echo json_encode($productsJson, JSON_PRETTY_PRINT);
-            exit;  
+            echo json_encode($productsJson, JSON_PRETTY_PRINT);  
+            exit();         
           }
                 
         break;
@@ -618,6 +627,46 @@ else {
     http_response_code(403);
     header('Content-Type: application/json');
     echo json_encode(array('status' => "403"));
+    exit();
+}
+
+function newsmanGetCart()
+{    			         			
+    $newsman = (empty($_GET["newsman"])) ? "" : $_GET["newsman"];                              
+    
+    if (!empty($newsman) &&  (bool)$_POST["post"] == true) {              
+         
+        switch ($_GET["newsman"]) {
+            case "getCart.json":                        
+
+                $cart = $_SESSION["cart"]["products"];                
+                
+                $prod = array();
+
+                foreach ($cart as $cart_item_key => $cart_item ) {
+
+                    $prod[] = array(
+                        "id" => $cart_item['product_id'],
+                        "name" => $cart_item["product"],
+                        "price" => $cart_item["price"],						
+                        "quantity" => $cart_item['amount']
+                    );							
+                                            
+                 }									 						
+
+                header('Content-Type: application/json');
+                echo json_encode($prod, JSON_PRETTY_PRINT);                
+                exit();
+
+                break; 
+            default:      
+                header('Content-Type: application/json');
+                echo json_encode(array("status" => 0, "message" => "bad url"), JSON_PRETTY_PRINT);     
+                exit();   
+            break;
+        }
+
+    }			
 }
 
 function safeForCsvCRON($str)

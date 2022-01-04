@@ -175,7 +175,7 @@ if ($mode == 'view') {
 
             }
 
-            _loadEvents();
+            //_loadEvents();
     
  ";
     
