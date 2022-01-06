@@ -30,63 +30,110 @@
 
 		_nzm.run( 'require', 'ec' );
 		_nzm.run( 'set', 'currencyCode', 'RON' );	     
-
-		NewsmanAutoEvents();			
-		setInterval(NewsmanAutoEvents, 5000);
+		
+		var isProd = true;
 
 		let lastCart = sessionStorage.getItem('lastCart');			
 		if(lastCart === null)
 			lastCart = {};			
-		let lastCartFlag = false;
-		
-		function NewsmanAutoEvents(){	
-				
-			var ajaxurl = '/index.php?dispatch=newsman.view&newsman=getCart.json';
-			
-			jQuery.post(ajaxurl, {  
-	           post: true,
-            }, function (response) {	
-							
-				lastCart = JSON.parse(sessionStorage.getItem('lastCart'));						
-				if(lastCart === null)
-					lastCart = {};	
 
-				//check cache
-				if(lastCart.length > 0 && lastCart != null && lastCart != undefined && response.length > 0 && response != null && response != undefined)
-				{				
-					if(JSON.stringify(lastCart) === JSON.stringify(response))
+		let lastCartFlag = false;
+		let bufferedClick = false;
+		let firstLoad = true;
+
+		NewsmanAutoEvents();			
+		setInterval(NewsmanAutoEvents, 5000);
+
+		BufferClick();
+
+		function NewsmanAutoEvents(){		
+
+			var ajaxurl = '/index.php?dispatch=newsman.view&newsman=getCart.json';
+
+			if(bufferedClick || firstLoad)
+			{
+
+				jQuery.post(ajaxurl, {  
+				post: true,
+				}, function (response) {				
+
+					lastCart = JSON.parse(sessionStorage.getItem('lastCart'));						
+
+					if(lastCart === null)
+						lastCart = {};	
+
+					//check cache
+					if(lastCart.length > 0 && lastCart != null && lastCart != undefined && response.length > 0 && response != null && response != undefined)
+					{									
+						if(JSON.stringify(lastCart) === JSON.stringify(response))
+						{
+							if(!isProd)
+								console.log('newsman remarketing: cache loaded, cart is unchanged');
+
+							lastCartFlag = true;					
+						}
+						else{
+							lastCartFlag = false;
+						}
+					}			
+
+					if(response.length > 0 && lastCartFlag == false)
 					{
-						console.log('newsman remarketing: cache loaded, cart is unchanged');
-						lastCartFlag = true;					
+
+						_nzm.run('ec:setAction', 'clear_cart');
+						_nzm.run('send', 'event', 'detail view', 'click', 'clearCart');	
+
+						for (var item in response) {				
+
+							_nzm.run( 'ec:addProduct', 
+								response[item]
+							);				
+
+						}	
+						
+						_nzm.run( 'ec:setAction', 'add' );
+						_nzm.run( 'send', 'event', 'UX', 'click', 'add to cart' );
+
+						sessionStorage.setItem('lastCart', JSON.stringify(response));					
+
+						if(!isProd)
+							console.log('newsman remarketing: cart sent');				
+
 					}
 					else{
-						lastCartFlag = false;
+
+						if(!isProd)
+							console.log('newsman remarketing: request not sent');
+
 					}
-				}			
 
-				if(response.length > 0 && lastCartFlag == false)
-				{
-					_nzm.run('ec:setAction', 'clear_cart');
-					_nzm.run('send', 'event', 'detail view', 'click', 'clearCart');	
-					for (var item in response) {				
-						_nzm.run( 'ec:addProduct', 
-							response[item]
-						);				
-					}	
+					firstLoad = false;
+					bufferedClick = false;
 					
-					_nzm.run( 'ec:setAction', 'add' );
-					_nzm.run( 'send', 'event', 'UX', 'click', 'add to cart' );
-					sessionStorage.setItem('lastCart', JSON.stringify(response));					
-					console.log('newsman remarketing: cart sent');				
-				}
-				else{
-					console.log('newsman remarketing: request not sent');
-				}
-				
-            });
+				});
 
-		}   
-		
+			}
+
+		}
+
+		function BufferClick(){
+
+			window.onclick = function (e) {
+				const origin = ['a', 'input', 'span', 'i', 'button'];
+	
+				var click = e.target.localName;			
+
+				if(!isProd)
+					console.log('newsman remarketing element clicked: ' + click);
+
+				for (const element of origin) {
+					if(click == element)
+						bufferedClick = true;
+				}
+			}
+
+		}
+
 		{if $newsmanMode eq 'cart'}
 		
             {$newsmanModeCart nofilter}
