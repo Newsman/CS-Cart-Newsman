@@ -20,9 +20,14 @@ $limit = (empty($_GET["limit"])) ? 1000 : $_GET["limit"];
 $startLimit;
 $order_id = (empty($_GET["order_id"])) ? "" : $_GET["order_id"];
 $product_id = (empty($_GET["product_id"])) ? "" : $_GET["product_id"];
+
 $cronLast = (empty($_GET["cronlast"])) ? "" : $_GET["cronlast"];
 if(!empty($cronLast))
     $cronLast = ($cronLast == "true") ? true : false;
+
+$storefront = (empty($_GET["storefront"])) ? "" : $_GET["storefront"];
+$list_id = (empty($_GET["list_id"])) ? "" : $_GET["list_id"];
+$segment_id = (empty($_GET["segment_id"])) ? "" : $_GET["segment_id"];
 
 //by default display categories
 $urlcategorybool = (!empty($_GET["urlcategorybool"]) && $_GET["urlcategorybool"] == "false") ? false : true;
@@ -222,12 +227,29 @@ if (!empty($newsman) && !empty($apikey) && empty($cron)) {
 
             case
             "products.json":        
-        
-                $query = db_query('SELECT * FROM ?:products' . $startLimit);
+                    
+                $query;
+
+                $company = (!empty($storefront)) ? db_query('SELECT * FROM ?:companies WHERE storefront = ?s', $storefront) : null;
+
+                if(!empty($company))
+                {
+                    foreach($company as $item)
+                    {                      
+                        $company = $item["company_id"];
+                    }                    
+                }             
+
+                if(!empty($company))                                                  
+                    $query = db_query('SELECT * FROM ?:products WHERE company_id = ?s' . $startLimit, $company);
+                else
+                    $query = db_query('SELECT * FROM ?:products' . $startLimit);            
 
                 if(!empty($product_id))
+                {
                     $query = db_query('SELECT * FROM ?:products WHERE product_id = ?i', $product_id);
-
+                }
+            
                 $products = $query;
                 $productsJson = array();
 
@@ -437,6 +459,12 @@ elseif(!empty($cron) && !empty($apikey) && !empty($newsman))
     $importType = $vars['newsman_importType'];
     $segmentid = $vars['newsman_segment'];
 
+    if(!empty($list_id))
+        $listid = $list_id;
+
+    if(!empty($segment_id))
+        $segment_id = $segmentid;        
+
     $segment = null;
     
     if($segmentid == 0){
@@ -470,7 +498,6 @@ elseif(!empty($cron) && !empty($apikey) && !empty($newsman))
                     $start = 1;
                 }       
             }
-
             
             $customers_to_import = array();
 
@@ -572,8 +599,23 @@ elseif(!empty($cron) && !empty($apikey) && !empty($newsman))
                 }
 
                 $customers_to_import = array();
+                
+                $company = (!empty($storefront)) ? db_query('SELECT * FROM ?:companies WHERE storefront = ?s', $storefront) : null;
 
-                $orders = db_query('SELECT * FROM ?:orders WHERE status = ?i' . $startLimit, "C");
+                if(!empty($company))
+                {
+                    foreach($company as $item)
+                    {                      
+                        $company = $item["company_id"];
+                    }                    
+                } 
+
+                $orders;
+
+                if(!empty($company))                                                  
+                    $orders = db_query('SELECT * FROM ?:orders WHERE company_id = ?s' . $startLimit, $company);
+                else
+                    $orders = db_query('SELECT * FROM ?:orders WHERE status = ?i' . $startLimit, "C");                
 
                 foreach ($orders as $order) {
                     $customers_to_import[] = array(
