@@ -162,4 +162,22 @@ if ($mode == 'checkout') {
 
 }
 
+if ($mode == 'onestepcheckout') {
+
+    Tygh::$app['view']->assign('newsmanMode', 'checkout');
+
+    $return = "
+    
+            function _loadEvents(){
+
+            }
+
+            _loadEvents();
+        
+     ";
+     
+    Tygh::$app['view']->assign('newsmanModeCheckout', $return);
+
+}
+
 }
