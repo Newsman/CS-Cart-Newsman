@@ -69,8 +69,8 @@ if ($mode == 'view') {
 
         _nzm.run( 'ec:addProduct', {
             'id': '" . $product["main_pair"]["detailed"]["object_id"] . "', // Product ID (string)
-            'name': '" . $product["product"] . "', // Product name (string)
-            'category': '" . $product["name"] . "', // Product category (string)
+            'name': '" . $name . "', // Product name (string)
+            'category': '', // Product category (string)
             'price': '" . $product["price"] . "', // Product price
         } );
         _nzm.run( 'ec:setAction', 'detail' );

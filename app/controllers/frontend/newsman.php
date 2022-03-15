@@ -101,7 +101,7 @@ if (!empty($newsman) && !empty($apikey) && empty($cron)) {
 
                         foreach ($imageData as $k => $v) {                   
                     
-                            $images = fn_get_image_pairs($p['product_id'], 'product', $v['type'], false, true, $lang_code);
+                            $images = fn_get_image_pairs($p['product_id'], 'product', $v['type'], false, true, "");
                         
                             if ($v['type'] == 'M') {
                                     $image_url = $images['detailed']['image_path'];
@@ -272,7 +272,7 @@ if (!empty($newsman) && !empty($apikey) && empty($cron)) {
 
                     foreach ($imageData as $k => $v) {                   
 
-                        $images = fn_get_image_pairs($prod['product_id'], 'product', $v['type'], false, true, $lang_code);
+                        $images = fn_get_image_pairs($prod['product_id'], 'product', $v['type'], false, true, "");
                     
                         if ($v['type'] == 'M') {
                                 $image_url = $images['detailed']['image_path'];
