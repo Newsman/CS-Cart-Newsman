@@ -27,9 +27,12 @@ $_hosts = array(
 $remarketingid = "";
 $host = "";
 
+$_cHost = getenv('HTTP_HOST');
+$currentHost = preg_replace('/^www\./', '', $_cHost);
+
 foreach($_hosts as $h => $v)
 {
-	if(getenv('HTTP_HOST') == $h)
+	if($currentHost == $h)	
 	{	
 		if(empty($v))
 			continue;
@@ -41,4 +44,4 @@ foreach($_hosts as $h => $v)
 }
 
 Tygh::$app['view']->assign('newsmanRemarketingEnabled', (!empty($vars["newsman_remarketingenable"])) ? $vars['newsman_remarketingenable'] : "0");
-Tygh::$app['view']->assign('newsmanRemarketingId', $_hosts[$h]);
+Tygh::$app['view']->assign('newsmanRemarketingId', $_hosts[$host]);

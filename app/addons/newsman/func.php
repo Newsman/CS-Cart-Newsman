@@ -283,6 +283,8 @@ function fn_settings_variants_addons_newsman_newsman_remarketinglblone()
 
         if (!empty($stores)) {
             foreach ($stores as $s) {
+                $s["storefront"] = preg_replace('/^www\./', '', $s["storefront"]);
+
                 $all_datas[$s["storefront"]] = $s["storefront"];
             }
         } else {
@@ -299,8 +301,8 @@ function fn_settings_variants_addons_newsman_newsman_remarketinglblone()
 function fn_settings_variants_addons_newsman_newsman_remarketinglbltwo()
 {
     try {
-        $stores = getStores();        
-
+        $stores = getStores(); 
+        
         $all_datas = array();
 
         if(count($stores) < 2)
@@ -308,15 +310,17 @@ function fn_settings_variants_addons_newsman_newsman_remarketinglbltwo()
 
         if (!empty($stores)) {
             foreach ($stores as $s) {
+                $s["storefront"] = preg_replace('/^www\./', '', $s["storefront"]);
+
                 $all_datas[$s["storefront"]] = $s["storefront"];
             }
-        } else {
+        } else {           
             $all_datas['0'] = 'No stores';
         }
 
-    } catch (Exception $ex) {               
+    } catch (Exception $ex) {                       
         return false;
-    }
+    }    
 
     return $all_datas;
 }
@@ -333,6 +337,8 @@ function fn_settings_variants_addons_newsman_newsman_remarketinglblthree()
 
         if (!empty($stores)) {
             foreach ($stores as $s) {
+                $s["storefront"] = preg_replace('/^www\./', '', $s["storefront"]);
+
                 $all_datas[$s["storefront"]] = $s["storefront"];
             }
         } else {
@@ -358,6 +364,8 @@ function fn_settings_variants_addons_newsman_newsman_remarketinglblfour()
 
         if (!empty($stores)) {
             foreach ($stores as $s) {
+                $s["storefront"] = preg_replace('/^www\./', '', $s["storefront"]);
+
                 $all_datas[$s["storefront"]] = $s["storefront"];
             }
         } else {
@@ -383,6 +391,8 @@ function fn_settings_variants_addons_newsman_newsman_remarketinglblfive()
 
         if (!empty($stores)) {
             foreach ($stores as $s) {
+                $s["storefront"] = preg_replace('/^www\./', '', $s["storefront"]);
+
                 $all_datas[$s["storefront"]] = $s["storefront"];
             }
         } else {
