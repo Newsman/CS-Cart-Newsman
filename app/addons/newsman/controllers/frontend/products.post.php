@@ -70,115 +70,15 @@ if ($mode == 'view') {
 
   $return = "
 
-        _nzm.run( 'ec:addProduct', {
-            'id': '" . $product["main_pair"]["detailed"]["object_id"] . "', // Product ID (string)
-            'name': '" . $product["product"] . "', // Product name (string)
-            'category': '', // Product category (string)
-            'price': '" . $product["price"] . "', // Product price
-        } );
-        _nzm.run( 'ec:setAction', 'detail' );
+  _nzm.run( 'ec:addProduct', {
+    'id': '" . $product["main_pair"]["detailed"]["object_id"] . "', // Product ID (string)
+    'name': '" . $product["product"] . "', // Product name (string)
+    'category': '', // Product category (string)
+    'price': '" . $product["price"] . "', // Product price
+} );
+    _nzm.run( 'ec:setAction', 'detail' );
 
-        _nzm.run( 'send', 'pageview' );
-
-            function _loadEvents(){
-
-                function addToCart()
-                {
-                    //add to cart
-                    //.ty_btn__add-to-cart
-                    
-                    var _class = '';
-                    var validate = jQuery('.ty-product-block__button button.ty-btn').text();
-                    if(validate != '')
-                    {
-                        _class = '.ty-product-block__button button.ty-btn';
-                    }
-                
-                    if(validate == '')
-                    {
-                        validate = jQuery('.product-info button.ty-btn').text();
-
-                        if(validate != '')
-                        {
-                            _class = '.product-info button.ty-btn';
-                        }
-                    }
-
-                    jQuery(_class).on('click', function(){
-
-                        _nzm.run('ec:addProduct', {
-                            'id': '" . $product["main_pair"]["detailed"]["object_id"] . "',
-                            'name': '" . $product["product"] . "',
-                            'category': '',
-                            'price': '" . $product["price"] . "',
-                            'quantity': jQuery('.ty-value-changer__input').val()
-                        });
-                        _nzm.run('ec:setAction', 'add');
-                        _nzm.run('send', 'event', 'UX', 'click', 'add to cart');
-            
-                        setTimeout(function() {
-
-                          bindRemoveFromCart();
-
-                        }, 2000);
-
-                    });
-                }
-                
-                addToCart();
-                   
-                                   
-                function nzSelectChange()
-                {
-                    $('.ty-product-options select').change(function() {
-                        
-                        setTimeout(function()
-                        {
-                            nzSelectChange();
-                            addToCart();   
-                        }, 1000);
-                        
-                    });
-                }
-                
-                nzSelectChange();
-
-                    function bindRemoveFromCart()
-                    {
-                        //unbind
-                        $('.cm-ajax-full-render[data-ca-dispatch=\"delete_cart_item\"]').each(function () {
-                            jQuery(this).unbind('click');
-                        });                          
-
-                        //bind
-                        $('.cm-ajax-full-render[data-ca-dispatch=\"delete_cart_item\"]').each(function () {
-                            jQuery(this).bind('click', {'elem': jQuery(this)}, function (ev) {                                              
-
-                                var _c = jQuery(this).parent().find('.ty-cart-items__list-item-desc');                                                              
-
-                                var id = jQuery(this).attr('href');                   
-                                var id = id.substring(id.indexOf('product_id%3D') + 13);                  
-                                
-                                var qty = _c.find('p:first span:first').html();
-                                qty = 1;              
-                                
-                                _nzm.run('ec:addProduct', {
-                                    'id': id,
-                                    'quantity': qty
-                                });
-                
-                                _nzm.run('ec:setAction', 'remove');
-                                _nzm.run('send', 'event', 'UX', 'click', 'remove from cart');                            
-                
-                            });
-                        });  
-                    }       
-                    
-                    bindRemoveFromCart();
-
-            }
-
-            //_loadEvents();
+    _nzm.run( 'send', 'pageview' );
     
  ";
     

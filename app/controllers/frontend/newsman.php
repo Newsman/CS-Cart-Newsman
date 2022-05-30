@@ -676,7 +676,7 @@ function newsmanGetCart()
 {    			         			
     $newsman = (empty($_GET["newsman"])) ? "" : $_GET["newsman"];                              
     
-    if (!empty($newsman) &&  (bool)$_POST["post"] == true) {              
+    if (!empty($newsman)) {              
          
         switch ($_GET["newsman"]) {
             case "getCart.json":                        

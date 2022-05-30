@@ -113,29 +113,7 @@ if ($mode == 'cart') {
     
         $return = "
 
-            function _loadEvents(){
-
-                //remove from cart                
-                $('.ty-cart-content__product-delete').each(function () {
-                    jQuery(this).bind('click', function (ev) {                                              
-                        var _c = jQuery(this).closest('tr');                        
-
-                        _qty = _c.find('.ty-value-changer input');                      
-                        _qty = _qty.val();
-
-                        _c = _c.find('.quantity input');      
-                        var _id = _c.val();                                                  
-               
-                        _nzm.run('ec:addProduct', {
-                            'id': _id,
-                            'quantity': _qty
-                        });
-        
-                        _nzm.run('ec:setAction', 'remove');
-                        _nzm.run('send', 'event', 'UX', 'click', 'remove from cart');        
-
-                    });
-                });             
+            function _loadEvents(){           
 
             }
            
