@@ -71,10 +71,10 @@ if ($mode == 'view') {
   $return = "
 
   _nzm.run( 'ec:addProduct', {
-    'id': '" . $product["main_pair"]["detailed"]["object_id"] . "', // Product ID (string)
-    'name': '" . $product["product"] . "', // Product name (string)
-    'category': '', // Product category (string)
-    'price': '" . $product["price"] . "', // Product price
+    'id': '" . $product["main_pair"]["detailed"]["object_id"] . "',
+    'name': '" . $product["product"] . "',
+    'category': '',
+    'price': '" . $product["price"] . "',
 } );
     _nzm.run( 'ec:setAction', 'detail' );
 

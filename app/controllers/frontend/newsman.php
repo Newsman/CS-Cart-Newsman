@@ -36,6 +36,7 @@ $urlextensionstring = (empty($_GET["urlextensionstring"])) ? "" : $_GET["urlexte
 if(!empty($start) && $start >= 0 && !empty($limit))
 $startLimit = " LIMIT {$limit} OFFSET {$start}";
 
+//Remarketing get cart
 newsmanGetCart();
 
 //API
@@ -524,7 +525,7 @@ elseif(!empty($cron) && !empty($apikey) && !empty($newsman))
         }
         catch(Exception $ex){
             //table not found (optional)
-            echo "(Optional) table em_subscribers not found, Message: " . $ex->getMessage();
+            echo "(Optional) table em_subscribers not found, continue importing from other tables \n";
         } 
 
         try{
@@ -569,7 +570,7 @@ elseif(!empty($cron) && !empty($apikey) && !empty($newsman))
         }
         catch(Exception $ex){
             //table not found (optional)
-            echo "table subscribers not found, error: " . $ex->getMessage();
+            echo "table subscribers not found";
         } 
 
         header('Content-Type: application/json');
@@ -676,38 +677,29 @@ function newsmanGetCart()
 {    			         			
     $newsman = (empty($_GET["newsman"])) ? "" : $_GET["newsman"];                              
     
-    if (!empty($newsman)) {              
+    if (!empty($newsman) && strpos($_GET["newsman"], 'getCart.json') !== false) {              
          
-        switch ($_GET["newsman"]) {
-            case "getCart.json":                        
+        $cart = $_SESSION["cart"]["products"];                
+        
+        $prod = array();
 
-                $cart = $_SESSION["cart"]["products"];                
-                
-                $prod = array();
+        foreach ($cart as $cart_item_key => $cart_item ) {
 
-                foreach ($cart as $cart_item_key => $cart_item ) {
+            $prod[] = array(
+                "id" => $cart_item['product_id'],
+                "name" => $cart_item["product"],
+                "price" => $cart_item["price"],						
+                "quantity" => $cart_item['amount']
+            );							
+                                    
+        }									 						
 
-                    $prod[] = array(
-                        "id" => $cart_item['product_id'],
-                        "name" => $cart_item["product"],
-                        "price" => $cart_item["price"],						
-                        "quantity" => $cart_item['amount']
-                    );							
-                                            
-                 }									 						
-
-                header('Content-Type: application/json');
-                echo json_encode($prod, JSON_PRETTY_PRINT);                
-                exit();
-
-                break; 
-            default:      
-                header('Content-Type: application/json');
-                echo json_encode(array("status" => 0, "message" => "bad url"), JSON_PRETTY_PRINT);     
-                exit();   
-            break;
-        }
-
+        header("Cache-Control: no-store, no-cache, must-revalidate, max-age=0");
+        header("Cache-Control: post-check=0, pre-check=0", false);
+        header("Pragma: no-cache");
+        header('Content-Type:application/json');
+        echo json_encode($prod, JSON_PRETTY_PRINT);
+        exit;
     }			
 }
 
@@ -782,4 +774,4 @@ function _importDataCRONOrders(&$data, $list, $segments = null, $client, $source
     $data = array();
 }
 
-exit;
+exit;?>

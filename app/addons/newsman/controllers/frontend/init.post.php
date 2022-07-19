@@ -57,7 +57,7 @@ if(!empty($vars["newsman_remarketingenable"]) && $vars['newsman_remarketingenabl
 
             }
 
-            //_loadEvents();
+            _loadEvents();
             
  ";
  

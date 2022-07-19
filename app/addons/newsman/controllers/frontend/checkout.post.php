@@ -95,6 +95,7 @@ if ($mode == 'complete') {
                     "tax": "0",
                     "shipping": "' . $order_info["shipping_cost"] . '"
                 });
+                
                 _nzm.run("send", "pageview");
 
         }
@@ -117,7 +118,7 @@ if ($mode == 'cart') {
 
             }
            
-            //_loadEvents();
+            _loadEvents();
 
  ";
  

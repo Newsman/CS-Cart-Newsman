@@ -3,13 +3,18 @@
 
 <script id='newsman_scripts'>      
 
+//Newsman remarketing tracking code REPLACEABLE
+
+var remarketingid = '{$newsmanRemarketingId}';
+var _nzmPluginInfo = '1.1:cscart';
+
+//Newsman remarketing tracking code REPLACEABLE
+
 //Newsman remarketing tracking code  
 
 var endpoint = 'https://retargeting.newsmanapp.com';
 var remarketingEndpoint = endpoint + '/js/retargeting/track.js';
-var remarketingid = '{$newsmanRemarketingId}';
 
-var _nzmPluginInfo = '1.1:cscart';
 var _nzm = _nzm || [];
 var _nzm_config = _nzm_config || [];
 _nzm_config['disable_datalayer'] = 1;
@@ -37,6 +42,12 @@ _nzm.run('require', 'ec');
 
 //Newsman remarketing tracking code     
 
+//Newsman remarketing auto events REPLACEABLE
+
+var ajaxurl = 'https://' + document.location.hostname + '/index.php?dispatch=newsman.view&newsman=getCart.json';
+
+//Newsman remarketing auto events REPLACEABLE
+
 //Newsman remarketing auto events
 
 var isProd = true;
@@ -49,8 +60,8 @@ var lastCartFlag = false;
 var firstLoad = true;
 var bufferedXHR = false;
 var unlockClearCart = true;
-var ajaxurl = '/index.php?dispatch=newsman.view&newsman=getCart.json';
-var documentComparer = document.location.origin;
+var isError = false;
+var documentComparer = document.location.hostname;
 var documentUrl = document.URL;
 var sameOrigin = (documentUrl.indexOf(documentComparer) !== -1);
 
@@ -93,11 +104,19 @@ function NewsmanAutoEvents() {
     if (!endTimePassed())
         return;
 
+    if (isError && isProd == true) {
+        console.log('newsman remarketing: an error occurred, set isProd = false in console, script execution stopped;');
+
+        return;
+    }
+
     let xhr = new XMLHttpRequest()
 
     if (bufferedXHR || firstLoad) {
 
-        xhr.open('GET', ajaxurl, true);
+        var timestamp = "?t=" + Date.now();
+
+        xhr.open('GET', ajaxurl + timestamp, true);
 
         startTimePassed();
 
@@ -105,7 +124,16 @@ function NewsmanAutoEvents() {
 
             if (xhr.status == 200 || xhr.status == 201) {
 
-                var response = JSON.parse(xhr.responseText);
+                try {
+                    var response = JSON.parse(xhr.responseText);
+                } catch (error) {
+                    if (!isProd)
+                        console.log('newsman remarketing: error occured json parsing response');
+
+                    isError = true;
+
+                    return;
+                }
 
                 lastCart = JSON.parse(sessionStorage.getItem('lastCart'));
 
@@ -150,6 +178,11 @@ function NewsmanAutoEvents() {
                 firstLoad = false;
                 bufferedXHR = false;
 
+            } else {
+                if (!isProd)
+                    console.log('newsman remarketing: response http status code is not 200');
+
+                isError = true;
             }
 
         }
@@ -217,13 +250,13 @@ function detectXHR() {
 
             //own request exclusion
             if (
-				pointer.responseURL.indexOf('getCart.json') >= 0 ||
-				//magento 2-2.3.x
-				pointer.responseURL.indexOf('/static/') >= 0 ||
-				pointer.responseURL.indexOf('/pub/static') >= 0 ||
-				pointer.responseURL.indexOf('/customer/section') >= 0 ||
-				//opencart 1
-				pointer.responseURL.indexOf('getCart=true') >= 0
+                            pointer.responseURL.indexOf('getCart.json') >= 0 ||
+                            //magento 2.x
+                            pointer.responseURL.indexOf('/static/') >= 0 ||
+                            pointer.responseURL.indexOf('/pub/static') >= 0 ||
+                            pointer.responseURL.indexOf('/customer/section') >= 0 ||
+                            //opencart 1
+                            pointer.responseURL.indexOf('getCart=true') >= 0
             ) {
                 validate = false;
             } else {
