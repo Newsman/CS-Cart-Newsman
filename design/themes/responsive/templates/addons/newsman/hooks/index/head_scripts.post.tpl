@@ -6,7 +6,7 @@
 //Newsman remarketing tracking code REPLACEABLE
 
 var remarketingid = '{$newsmanRemarketingId}';
-var _nzmPluginInfo = '1.1:cscart';
+var _nzmPluginInfo = '1.2:cscart';
 
 //Newsman remarketing tracking code REPLACEABLE
 
