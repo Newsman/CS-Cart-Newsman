@@ -13,10 +13,12 @@ Installation
 
 ![github](https://github.com/Newsman/CS-Cart-Newsman/blob/master/assets/cs_cart_d.png)
 
-Content *"app"* folder
-![github](https://github.com/Newsman/CS-Cart-Newsman/blob/master/assets/cs_cart_d.png)
 
-Plugin will be actived from **Add-ons**> **Downloaded add-ons**:
+  Content *"app"* folder
+
+![github](https://github.com/Newsman/CS-Cart-Newsman/blob/master/assets/app_content_new.png)
+
+  Plugin will be actived from **Add-ons**> **Downloaded add-ons**:
 ![activare](https://github.com/Newsman/CS-Cart-Newsman/blob/master/assets/activare.png)
 ![dashboard](https://github.com/Newsman/CS-Cart-Newsman/blob/master/assets/dashboard.png)
 
