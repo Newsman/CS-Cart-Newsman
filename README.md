@@ -11,6 +11,16 @@ Installation
 1. Copy the *"app"* folder contents from this repository to your "app/" shop directory.
 2. Install addon from Manage Add-ons and Set it as active.
 
+![github](https://github.com/Newsman/CS-Cart-Newsman/blob/master/assets/cs_cart_d.png)
+![aplicatie](https://github.com/Newsman/CS-Cart-Newsman/blob/master/assets/cs_cart_app.png)
+
+Content *"app"* folder is:
+![app_content](https://github.com/Newsman/CS-Cart-Newsman/blob/master/assets/app_content.png)
+
+Plugin will be actived from **Add-ons**> **Downloaded add-ons**:
+![activare](https://github.com/Newsman/CS-Cart-Newsman/blob/master/assets/activare.png)
+![dashboard](https://github.com/Newsman/CS-Cart-Newsman/blob/master/assets/dashboard.png)
+
 ## Configuration
 
 ### Synchronization
