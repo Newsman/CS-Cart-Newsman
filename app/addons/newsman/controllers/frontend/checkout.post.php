@@ -70,8 +70,6 @@ if ($mode == 'complete') {
     $return = '
 
         function _loadEvents(){
-
-            _nzm.identify({ email: "' . $order_info["email"] . '", first_name: "' . $order_info["firstname"] . '", last_name: "' . $order_info["lastname"] . '" });
             
             ';
 
