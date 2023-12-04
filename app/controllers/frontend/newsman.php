@@ -32,6 +32,7 @@ $segment_id = (empty($_GET["segment_id"])) ? "" : $_GET["segment_id"];
 //by default display categories
 $urlcategorybool = (!empty($_GET["urlcategorybool"]) && $_GET["urlcategorybool"] == "false") ? false : true;
 $urlextensionstring = (empty($_GET["urlextensionstring"])) ? "" : $_GET["urlextensionstring"];
+$oldurlparam = (!empty($_GET["oldurlparam"]) && $_GET["oldurlparam"] == "true") ? true : false;
 
 if(!empty($start) && $start >= 0 && !empty($limit))
 $startLimit = " LIMIT {$limit} OFFSET {$start}";
@@ -324,6 +325,11 @@ if (!empty($newsman) && !empty($apikey) && empty($cron)) {
                     if(!empty($urlextensionstring))
                         $url .= '.' . $urlextensionstring;
 
+                    if($oldurlparam)
+                    {
+                        $url = $oldUrl;
+                    }
+                    
                     $productsJson[] = array(
                         "id" => $prod["product_id"],
                         "name" => $currProd["product"],
