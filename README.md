@@ -62,33 +62,33 @@ Installation
 
 Description 
 
-Subscription Forms & Pop-ups
+Subscription Forms & Pop-ups<br>
 Craft visually appealing forms and pop-ups to capture potential leads, incorporating embedded newsletter signups or exit-intent popups.
 Maintain form consistency across various devices to provide a smooth and seamless user experience.
 Integrate forms with automated processes for swift responses and personalized welcome emails.
 
-Contact Lists & Segments
+Contact Lists & Segments<br>
 Effortlessly import and synchronize contact lists from diverse sources for simplified data management.
 Utilize segmentation strategies to target specific audience segments based on demographics or behavior.
 
-Email & SMS Marketing Campaigns
+Email & SMS Marketing Campaigns<br>
 Effortlessly dispatch mass campaigns, newsletters, or promotions to a broad subscriber base.
 Tailor campaigns for individual subscribers, addressing them by name and recommending pertinent products.
 Re-engage subscribers by re-sending campaigns to those who haven't opened the initial email.
 
-Email & SMS Marketing Automation
+Email & SMS Marketing Automation<br>
 Automate personalized product recommendations, follow-up emails, and strategies for addressing cart abandonment.
 Strategically tackle cart abandonment or showcase related products to encourage the completion of purchases.
 Collect post-purchase feedback to enhance customer satisfaction.
 
-Ecommerce Remarketing
+Ecommerce Remarketing<br>
 Reconnect with subscribers through targeted offers grounded in past interactions.
 Personalize interactions with exclusive offers or reminders based on user behavior or preferences.
 
-SMTP Transactional Emails
+SMTP Transactional Emails<br>
 Ensure the prompt and dependable delivery of crucial messages, such as order confirmations or shipping notifications, via SMTP.
 
-Extended Email and SMS Statistics
+Extended Email and SMS Statistics<br>
 Obtain insights into open rates, click-through rates, conversion rates, and overall campaign performance to make well-informed decisions.
 The NewsMAN Plugin for CsCart streamlines your marketing endeavors effortlessly, simplifying the process of effectively connecting with your audience.
 
