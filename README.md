@@ -26,14 +26,19 @@ Installation
 
 ### Synchronization
 
-1. Go to **Addon Manager > Newsman > Manage**
+1. The process is automated, login with NewsMAN via Oauth and the settings will get automatically filled based on your selection
+
+![image](https://raw.githubusercontent.com/Newsman/OpenCart-Newsman/master/assets/oauth1.png)
+![image](https://raw.githubusercontent.com/Newsman/OpenCart-Newsman/master/assets/oauth2.png)
+
+2. Go to **Addon Manager > Newsman > Manage**
 Fill in your [Newsman](https://www.newsmanapp.com) API KEY and User ID and click the Save button.
 
   ![General Settings](https://raw.githubusercontent.com/Newsman/CS-Cart-Newsman/master/assets/settings1.png)
 
-2. After the [Newsman](https://www.newsmanapp.com) API KEY and User ID are set, you can choose a list and press Save.
+3. After the [Newsman](https://www.newsmanapp.com) API KEY and User ID are set, you can choose a list and press Save.
 
-3. Automatic synchronization is enabled for each registered customer.
+4. Automatic synchronization is enabled for each registered customer.
 
 ### Remarketing
 
