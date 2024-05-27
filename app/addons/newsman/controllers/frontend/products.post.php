@@ -68,12 +68,25 @@ if ($mode == 'view') {
         true
     );
 
+    $category = "";
+
+    if (!empty($product)) {
+      $main_category_id = db_get_field("SELECT category_id FROM ?:products_categories WHERE product_id = ?i AND link_type = 'M'", $product['product_id']);
+  
+      if ($main_category_id) {
+          $main_category = fn_get_category_data($main_category_id, CART_LANGUAGE);
+          if (!empty($main_category)) {
+              $category = $main_category;
+          }
+      }
+  }  
+
   $return = "
 
   _nzm.run( 'ec:addProduct', {
     'id': '" . $product["main_pair"]["detailed"]["object_id"] . "',
     'name': '" . $product["product"] . "',
-    'category': '',
+    'category': '" . $category . "',
     'price': '" . $product["price"] . "',
 } );
     _nzm.run( 'ec:setAction', 'detail' );

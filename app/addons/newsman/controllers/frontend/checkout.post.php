@@ -75,11 +75,24 @@ if ($mode == 'complete') {
 
             foreach($_products as $_product)
             {         
+                $category = "";
+
+                $main_category_id = db_get_field("SELECT category_id FROM ?:products_categories WHERE product_id = ?i AND link_type = 'M'", $_product['product_id']);
+
+                if ($main_category_id) {
+                    $main_category = fn_get_category_data($main_category_id, CART_LANGUAGE);
+                    if (!empty($main_category)) {
+                        $category = $main_category["category"];
+                        if(empty($category))
+                            $category = "";
+                    }
+                }
+
                 $return .= "
                 _nzm.run( 'ec:addProduct', {
                     'id': '" . $_product["product_id"] . "',
                     'name': '" . $_product["product"] . "',
-                    'category': '',
+                    'category': '" . $category . "',
                     'price': '" . $_product["price"] . "',
                     'quantity': '" . $_product["amount"] . "'
                 } );                    
