@@ -4,6 +4,8 @@
 
 use Tygh\Registry;
 use Tygh\Settings;
+use Tygh\Enum\YesNo;
+use Tygh\Tools\SecurityHelper;
 
 require_once(__DIR__ . '/../../../app/addons/newsman/lib/Newsman/Client.php');
 
@@ -423,6 +425,97 @@ if (!empty($newsman) && !empty($apikey) && empty($cron)) {
                 exit();
 
             break;
+
+            case "coupons.json":
+
+                try {
+                    function coupon_exists($coupon_code) {
+                        $coupon_id = db_get_field("SELECT coupon_id FROM ?:promotion_coupons WHERE coupon_code = ?s", $coupon_code);
+                        return !empty($coupon_id);
+                    }
+                
+                    $discountType = !isset($_GET["type"]) ? -1 : (int)$_GET["type"];
+                    $value = !isset($_GET["value"]) ? -1 : (int)$_GET["value"];
+                    $batch_size = !isset($_GET["batch_size"]) ? 1 : (int)$_GET["batch_size"];
+                    $prefix = !isset($_GET["prefix"]) ? "" : $_GET["prefix"];
+                    $expire_date = isset($_GET['expire_date']) ? $_GET['expire_date'] : null;
+                    $min_amount = !isset($_GET["min_amount"]) ? -1 : (float)$_GET["min_amount"];
+                    $currency = isset($_GET['currency']) ? $_GET['currency'] : "";
+                
+                    if ($discountType == -1) {
+                        echo json_encode(array("status" => 0, "msg" => "Missing type param"));
+                        exit();
+                    } elseif ($value == -1) {
+                        echo json_encode(array("status" => 0, "msg" => "Missing value param"));
+                        exit();
+                    }
+                
+                    $couponsList = array();
+                
+                    for ($int = 0; $int < $batch_size; $int++) {
+                        $characters = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+                        $coupon_code = '';
+                
+                        do {
+                            $coupon_code = '';
+                            for ($i = 0; $i < 8; $i++) {
+                                $coupon_code .= $characters[rand(0, strlen($characters) - 1)];
+                            }
+                            $full_coupon_code = $prefix . $coupon_code;
+                        } while (coupon_exists($full_coupon_code));
+                
+                        // Prepare coupon data
+                        $promotion_data = array(
+                            'name' => 'Generated Coupon ' . $full_coupon_code,
+                            'detailed_description' => 'Auto-generated coupon',
+                            'status' => 'A',
+                            'priority' => 0,
+                            'conditions' => array(
+                                'set' => 'all',
+                                'conditions' => array(
+                                    array(
+                                        'condition' => 'coupon_code',
+                                        'operator' => 'eq',
+                                        'value' => $full_coupon_code,
+                                    ),
+                                ),
+                            ),
+                            'bonuses' => array(
+                                array(
+                                    'bonus' => $discountType == 1 ? 'order_discount' : 'to_fixed',
+                                    'value' => $value,
+                                ),
+                            ),
+                        );
+                
+                        if ($min_amount != -1) {
+                            $promotion_data['conditions']['conditions'][] = array(
+                                'condition' => 'subtotal',
+                                'operator' => 'gte',
+                                'value' => $min_amount,
+                            );
+                        }
+                
+                        if ($expire_date != null) {
+                            $formatted_expire_date = strtotime($expire_date);
+                            $promotion_data['to_date'] = $formatted_expire_date;
+                        }
+                
+                        $promotion_id = fn_update_promotion($promotion_data, 0);
+                
+                        db_query("INSERT INTO ?:promotion_coupons (promotion_id, coupon_code, usage_limit, status) VALUES (?i, ?s, ?i, ?s)", $promotion_id, $full_coupon_code, 1, 'A');
+                
+                        $couponsList[] = $full_coupon_code;
+                    }
+                
+                    echo json_encode(array("status" => 1, "codes" => $couponsList));
+                } catch (Exception $exception) {
+                    echo json_encode(array("status" => 0, "msg" => $exception->getMessage()));
+                }
+
+                exit();
+
+                break;
         }
     }
     catch(Exception $ex)
