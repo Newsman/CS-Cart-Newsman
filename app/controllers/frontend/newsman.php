@@ -15,7 +15,11 @@ $_apikey = $vars['newsman_apikey'];
 $importType = $vars['newsman_importType'];
 
 $cron = (empty($_GET["cron"])) ? "" : $_GET["cron"];
-$apikey = (empty($_GET["apikey"])) ? "" : $_GET["apikey"];
+$apikey = (empty($_GET["nzmhash"])) ? "" : $_GET["nzmhash"];
+$authorizationHeader = isset($_SERVER['HTTP_AUTHORIZATION']) ? $_SERVER['HTTP_AUTHORIZATION'] : '';
+if (strpos($authorizationHeader, 'Bearer') !== false) {
+    $apikey = trim(str_replace('Bearer', '', $authorizationHeader));
+}
 $newsman = (empty($_GET["newsman"])) ? "" : $_GET["newsman"];
 $start = (!empty($_GET["start"]) && $_GET["start"] >= 0) ? $_GET["start"] : 1;
 $limit = (empty($_GET["limit"])) ? 1000 : $_GET["limit"];
@@ -44,7 +48,7 @@ newsmanGetCart();
 
 //API
 if (!empty($newsman) && !empty($apikey) && empty($cron)) {
-    $apikey = $_GET["apikey"];
+    $apikey = $_GET["nzmhash"];
     $currApiKey = $_apikey;
 
     if ($apikey != $currApiKey) {
@@ -533,7 +537,7 @@ if (!empty($newsman) && !empty($apikey) && empty($cron)) {
 //CRON
 elseif(!empty($cron) && !empty($apikey) && !empty($newsman))
 {   
-    $apikey = $_GET["apikey"];
+    $apikey = $_GET["nzmhash"];
     $currApiKey = $_apikey;   
 
     if ($apikey != $currApiKey) {
