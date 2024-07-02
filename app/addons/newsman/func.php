@@ -21,10 +21,14 @@ use Tygh\Settings;
 
 require_once(realpath(dirname(__FILE__)) . '/lib/Newsman/Client.php');
 
+if ($_SERVER['REQUEST_METHOD'] == 'GET' && !empty($_GET["addon"]) && $_GET["addon"] == "newsman") {
+$data = array();
+isOauth($data);
+}
+
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     //Execute if on settings page
-  
     if(!empty($_POST["selected_section"]) && $_POST["selected_section"] == "newsman_general")
     {        
         $batchSize = 5000;
@@ -72,29 +76,36 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             else{
                 $segmentidPost = array($segmentidPost);
             }
-        
+
+            if (!empty($userid) || !empty($apikey)) {
+                if ($listidPost == 0) {
+                    fn_set_notification('W', 'Check fields', 'Select a list', 'S');
+                    return false;
+                }
+            }
+
+            if (!empty($userid) || !empty($apikey)) {
+                if (empty($importType["importOrders"]) && empty($importType["importSubscribers"])) {
+                    fn_set_notification('W', 'Import Type', 'Please choose an import type (Subscribers or Customers), Save again to take effect', 'S');
+                    return false;
+                }
+            }
+
+            if (!empty($userid) || !empty($apikey)) {
+                if ($importType["importOrders"] != "Y" && $importType["importSubscribers"] != "Y") {
+                    fn_set_notification('W', 'Import Type', 'Please choose an import type (Subscribers or Customers), Save again to take effect', 'S');
+                    return false;
+                }
+            }
+
+            if (!empty($userid) || !empty($apikey)) {
+                if (empty($listid)) {
+                    fn_set_notification('W', 'List', 'List empty, save again to take effect', 'S');
+                    return false;
+                }
+            }
+
             if (empty($userid) || empty($apikey)) {
-                fn_set_notification('W', 'Check fields', 'User Id and Api Key cannot be empty', 'S');
-                return false;
-            }
-
-            if ($listidPost == 0) {
-                fn_set_notification('W', 'Check fields', 'Select a list', 'S');
-                return false;
-            }
-
-            if (empty($importType["importOrders"]) && empty($importType["importSubscribers"])) {
-                fn_set_notification('W', 'Import Type', 'Please choose an import type (Subscribers or Customers), Save again to take effect', 'S');
-                return false;
-            }
-
-            if ($importType["importOrders"] != "Y" && $importType["importSubscribers"] != "Y") {
-                fn_set_notification('W', 'Import Type', 'Please choose an import type (Subscribers or Customers), Save again to take effect', 'S');
-                return false;
-            }
-
-            if (empty($listid)) {
-                fn_set_notification('W', 'List', 'List empty, save again to take effect', 'S');
                 return false;
             }
 
@@ -117,6 +128,116 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         }    
   }
 
+}
+
+function isOauth(&$data, $checkOnlyIsOauth = false)
+{
+    $redirUri = urlencode("https://" . $_SERVER["HTTP_HOST"] . $_SERVER["REQUEST_URI"]);
+    $redirUri = str_replace("amp%3B", "", $redirUri);
+    $data["oauthUrl"] = "https://newsman.app/admin/oauth/authorize?response_type=code&client_id=nzmplugin&nzmplugin=Cscart&scope=api&redirect_uri=" . $redirUri;
+
+    // OAuth processing
+    $error = "";
+    $dataLists = array();
+    $data["oauthStep"] = 1;
+    $viewState = array();
+
+    if (!empty($_GET["error"])) {
+        switch ($error) {
+            case "access_denied":
+                $error = "Access is denied";
+                break;
+            case "missing_lists":
+                $error = "There are no lists in your NewsMAN account";
+                break;
+        }
+    } elseif (!empty($_GET["code"])) {
+        $authUrl = "https://newsman.app/admin/oauth/token";
+
+        $code = $_GET["code"];
+
+        $redirect = "https://" . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
+
+        $body = array(
+            "grant_type" => "authorization_code",
+            "code" => $code,
+            "client_id" => "nzmplugin",
+            "redirect_uri" => $redirect
+        );
+
+        $ch = curl_init($authUrl);
+
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_POST, 1);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($body));
+
+        $response = curl_exec($ch);
+
+        if (curl_errno($ch)) {
+            $error .= 'cURL error: ' . curl_error($ch);
+        }
+
+        curl_close($ch);
+
+        if ($response !== false) {
+            $response = json_decode($response);
+
+            $data["creds"] = json_encode(array(
+                "newsman_userid" => $response->user_id,
+                "newsman_apikey" => $response->access_token
+            ));
+
+            $data["newsman_userid"] = $response->user_id;
+            $data["newsman_apikey"] = $response->access_token;
+
+        } else {
+            $error .= "Error sending cURL request.";
+        }
+    }
+
+    $vars = Registry::get('addons.newsman');
+    $_apikey = $vars['newsman_apikey'];
+
+    $data["isOauth"] = empty($_apikey);
+
+    echo "<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var container = document.getElementById('container_addon_option_newsman_newsman_button_placeholder');
+        if (container) {
+            // Remove all existing content
+            container.innerHTML = '';
+
+            // Create new anchor element
+            var anchor = document.createElement('a');
+            anchor.href = '" . $data["oauthUrl"] . "';
+            anchor.id = 'newsman_action_button';
+            anchor.className = 'btn btn-primary';
+            anchor.target = '_blank';
+            anchor.innerText = 'Newsman OAuth';
+
+            // Append the anchor to the container
+            container.appendChild(anchor);
+        }
+
+        var showButtonSection = " . ($data["isOauth"] ? 'true' : 'false') . ";
+
+        if (showButtonSection) {
+            document.getElementById('newsman_action_button').style.display = 'block';
+        } else {
+            document.getElementById('newsman_action_button').style.display = 'none';
+        }
+
+        // Set the values for API key and User ID
+        var userIdField = document.getElementById('addon_option_newsman_newsman_userid');
+        var apiKeyField = document.getElementById('addon_option_newsman_newsman_apikey');
+        " . (!empty($_GET["code"]) ? "
+        if (userIdField && apiKeyField) {
+            userIdField.value = '" . $data["newsman_userid"] . "';
+            apiKeyField.value = '" . $data["newsman_apikey"] . "';
+        }
+        " : "") . "
+    });
+    </script>";
 }
 
 function safeForCsv($str)

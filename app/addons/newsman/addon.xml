@@ -13,6 +13,11 @@
         <sections>
             <section id="general" edition_type="ROOT">
                 <items>                
+                    <item id="newsman_button_placeholder">
+                        <name>Button Placeholder</name>
+                        <type>button</type>
+                        <default_value />
+                    </item>
                     <item id="newsman_userid">
                         <name>User Id</name>
                         <type>input</type>
