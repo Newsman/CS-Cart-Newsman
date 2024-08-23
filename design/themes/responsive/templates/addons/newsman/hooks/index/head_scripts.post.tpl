@@ -6,7 +6,7 @@
 //Newsman remarketing tracking code REPLACEABLE
 
 var remarketingid = '{$newsmanRemarketingId}';
-var _nzmPluginInfo = '1.2:cscart';
+var _nzmPluginInfo = '1.3:cscart';
 
 //Newsman remarketing tracking code REPLACEABLE
 
@@ -44,7 +44,7 @@ _nzm.run('require', 'ec');
 
 //Newsman remarketing auto events REPLACEABLE
 
-var ajaxurl = 'https://' + document.location.hostname + '/index.php?dispatch=newsman.view&newsman=getCart.json';
+var ajaxurl = 'https://{$currentHost}/index.php?dispatch=newsman.view&newsman=getCart.json';
 
 //Newsman remarketing auto events REPLACEABLE
 

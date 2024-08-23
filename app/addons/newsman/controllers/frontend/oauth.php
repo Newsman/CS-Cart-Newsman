@@ -126,7 +126,7 @@ if(!empty($_POST["oauthstep2"]) && $_POST['oauthstep2'] == 'Y')
 				</p></div><?php } ?>	
       
 		<div class="wrap wrap-settings-admin-page">
-			<h2>NewsMAN plugin for Wordpress-Woocommerce</h2>
+			<h2>NewsMAN plugin for CsCart</h2>
 
 			<!--oauth step-->
 			<?php if($step == 1) { ?>
