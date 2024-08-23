@@ -186,7 +186,8 @@ function isOauth( &$data, $checkOnlyIsOauth = false ) {
 
     echo "<script>
     document.addEventListener('DOMContentLoaded', function() {
-        var container = document.getElementById('container_addon_option_newsman_newsman_button_placeholder');
+        var container = document.querySelector('div[id^=\"container_addon_option_newsman_newsman_button_placeholder\"]');
+        
         if (container) {
             // Remove all existing content
             container.innerHTML = '';
