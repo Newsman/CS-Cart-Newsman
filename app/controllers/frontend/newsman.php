@@ -340,7 +340,7 @@ if (!empty($newsman) && !empty($apikey) && empty($cron)) {
                         "id" => $prod["product_id"],
                         "name" => $currProd["product"],
                         "stock_quantity" => (int)$prod["amount"],
-                        "price" => (float)$currProdPrices["price"],
+                        "price" => !empty($currProdPrices) ? (float)$currProdPrices["price"] : 0,
                         "price_old" => (float)$prod["list_price"],
                         "image_url" => $image_url,
                         "url" => $url
