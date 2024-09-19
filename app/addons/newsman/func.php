@@ -359,9 +359,9 @@ function fn_newsman_newsman_info() {
     $vars = Registry::get( 'addons.newsman' );
     $apikey = $vars[ 'newsman_apikey' ];
 
-    $html = "<p>Cron Sync url (setup on task scheduler / hosting) - Subscribers:<br> <a target='_blank' href='https://" . getenv( 'HTTP_HOST' ) . '/index.php?dispatch=newsman.view&cron=true&apikey=' . $apikey . "&newsman=subscribers'>https://" . getenv( 'HTTP_HOST' ) . '/index.php?dispatch=newsman.view&cron=true&apikey=' . $apikey . '&newsman=subscribers&limit=9999</a></p>';
+    $html = "<p>Cron Sync url (setup on task scheduler / hosting) - Subscribers:<br> <a target='_blank' href='https://" . getenv( 'HTTP_HOST' ) . '/index.php?dispatch=newsman.view&cron=true&nzmhash=' . $apikey . "&newsman=subscribers'>https://" . getenv( 'HTTP_HOST' ) . '/index.php?dispatch=newsman.view&cron=true&apikey=' . $apikey . '&newsman=subscribers&limit=9999</a></p>';
 
-    $html .= "<p>Cron Sync url (setup on task scheduler / hosting) - Customers with orders completed:<br> <a target='_blank' href='https://" . getenv( 'HTTP_HOST' ) . '/index.php?dispatch=newsman.view&cron=true&apikey=' . $apikey . "&newsman=orders'>https://" . getenv( 'HTTP_HOST' ) . '/index.php?dispatch=newsman.view&cron=true&apikey=' . $apikey . '&newsman=orders&limit=9999</a></p>';
+    $html .= "<p>Cron Sync url (setup on task scheduler / hosting) - Customers with orders completed:<br> <a target='_blank' href='https://" . getenv( 'HTTP_HOST' ) . '/index.php?dispatch=newsman.view&cron=true&nzmhash=' . $apikey . "&newsman=orders'>https://" . getenv( 'HTTP_HOST' ) . '/index.php?dispatch=newsman.view&cron=true&apikey=' . $apikey . '&newsman=orders&limit=9999</a></p>';
 
     return $html;
 }
