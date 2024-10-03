@@ -1,6 +1,11 @@
 <?php
 
-//ini_set('error_reporting', E_ALL);
+/*
+ini_set('error_reporting', E_ALL);
+ini_set('display_errors', '1');
+ini_set('display_startup_errors', '1');
+error_reporting(E_ALL);
+*/
 
 use Tygh\Registry;
 use Tygh\Settings;
@@ -243,7 +248,6 @@ if (!empty($newsman) && !empty($apikey) && empty($cron)) {
 
             case
             "products.json":        
-                    
                 $query;
 
                 $company = (!empty($storefront)) ? db_query('SELECT * FROM ?:companies WHERE storefront = ?s', $storefront) : null;
@@ -343,12 +347,12 @@ if (!empty($newsman) && !empty($apikey) && empty($cron)) {
                     {
                         $url = $oldUrl;
                     }
-                    
+
                     $productsJson[] = array(
                         "id" => $prod["product_id"],
                         "name" => $currProd["product"],
                         "stock_quantity" => (int)$prod["amount"],
-                        "price" => !empty($currProdPrices) ? (float)$currProdPrices["price"] : 0,
+                        "price" => (!empty($currProdPrices) && is_array($currProdPrices) && array_key_exists("price", $currProdPrices)) ? (float)$currProdPrices["price"] : 0,
                         "price_old" => (float)$prod["list_price"],
                         "image_url" => $image_url,
                         "url" => $url
