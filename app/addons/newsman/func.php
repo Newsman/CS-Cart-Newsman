@@ -100,7 +100,7 @@ if ( $_SERVER[ 'REQUEST_METHOD' ] == 'POST' ) {
 
         $client = new Newsman_Client( $userid, $apikey );
 
-        $url = 'https://' . getenv( 'HTTP_HOST' ) . '/index.php?dispatch=newsman.view&newsman=products.json&nzmhash=' .  $apikey;
+        $url = 'https://' . getenv( 'HTTP_HOST' ) . '/index.php?dispatch=newsman.view&newsman=products.json&small_limit=1&nzmhash=' .  $apikey;
 
         try {
             $ret = $client->feeds->setFeedOnList( $listidPost, $url, getenv( 'HTTP_HOST' ), 'NewsMAN' );
