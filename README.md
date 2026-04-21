@@ -4,7 +4,7 @@
 
 By generating an API Key within your Newsman account and installing this addon, you can effortlessly connect your shop to Newsman, enabling the synchronization of customer and subscriber data with Newsman lists and segments. This addon provides a straightforward and efficient method for integrating your CS-Cart store with Newsman.
 
-> **Note:** Version **2.0.0** of the CS-Cart Newsman addon is not released yet — it will be published soon. Once released, the **newsman.zip** archive will be available on the [releases](https://github.com/Newsman/CS-Cart-Newsman/releases) page.
+> **Note:** Version **2.0.0** of the CS-Cart Newsman addon is not released yet — it will be published soon.
 
 # Installation
 
