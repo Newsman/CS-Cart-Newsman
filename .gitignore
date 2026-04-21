@@ -1,0 +1,17 @@
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+var/log/
+
+# Composer
+src/app/addons/newsman/composer.lock
+src/app/addons/newsman/vendor/

@@ -1,0 +1,131 @@
+<?xml version="1.0"?>
+<addon scheme="4.0">
+    <id>newsman</id>
+    <version>2.0.0</version>
+    <priority>500</priority>
+    <status>disabled</status>
+    <default_language>en</default_language>
+
+    <autoload>
+        <psr4 prefix="Tygh\Addons\Newsman\">src</psr4>
+    </autoload>
+
+    <bootstrap>\Tygh\Addons\Newsman\Bootstrap</bootstrap>
+    <installer>\Tygh\Addons\Newsman\Installer</installer>
+
+    <settings edition_type="ROOT,STOREFRONT">
+        <sections>
+            <section id="general">
+                <items>
+                    <item id="user_id">
+                        <type>input</type>
+                        <default_value></default_value>
+                    </item>
+                    <item id="api_key">
+                        <type>input</type>
+                        <default_value></default_value>
+                    </item>
+                    <item id="list_id">
+                        <type>hidden</type>
+                        <default_value></default_value>
+                    </item>
+                    <item id="segment_id">
+                        <type>hidden</type>
+                        <default_value></default_value>
+                    </item>
+                    <item id="authenticate_token">
+                        <type>hidden</type>
+                        <default_value></default_value>
+                    </item>
+                    <item id="cscart_mailing_list_id">
+                        <type>hidden</type>
+                        <default_value></default_value>
+                    </item>
+                    <item id="double_optin">
+                        <type>checkbox</type>
+                        <default_value>N</default_value>
+                    </item>
+                    <item id="send_user_ip">
+                        <type>checkbox</type>
+                        <default_value>Y</default_value>
+                    </item>
+                    <item id="remarketing_status">
+                        <type>checkbox</type>
+                        <default_value>Y</default_value>
+                    </item>
+                    <item id="remarketing_id">
+                        <type>hidden</type>
+                        <default_value></default_value>
+                    </item>
+                    <item id="remarketing_script_js">
+                        <type>hidden</type>
+                        <default_value></default_value>
+                    </item>
+                    <item id="remarketing_anonymize_ip">
+                        <type>checkbox</type>
+                        <default_value>N</default_value>
+                    </item>
+                    <item id="remarketing_send_telephone">
+                        <type>checkbox</type>
+                        <default_value>Y</default_value>
+                    </item>
+                    <item id="theme_cart_compatibility">
+                        <type>checkbox</type>
+                        <default_value>Y</default_value>
+                    </item>
+                    <item id="log_severity">
+                        <type>selectbox</type>
+                        <default_value>400</default_value>
+                        <variants>
+                            <item id="1"></item>
+                            <item id="400"></item>
+                            <item id="300"></item>
+                            <item id="250"></item>
+                            <item id="200"></item>
+                            <item id="100"></item>
+                        </variants>
+                    </item>
+                    <item id="api_timeout">
+                        <type>input</type>
+                        <default_value>30</default_value>
+                    </item>
+                    <item id="log_clean_days">
+                        <type>input</type>
+                        <default_value>30</default_value>
+                    </item>
+                    <item id="server_ip">
+                        <type>hidden</type>
+                        <default_value></default_value>
+                    </item>
+                    <item id="export_auth_header_name">
+                        <type>input</type>
+                        <default_value></default_value>
+                    </item>
+                    <item id="export_auth_header_key">
+                        <type>input</type>
+                        <default_value></default_value>
+                    </item>
+                    <item id="dev_active_user_ip">
+                        <type>checkbox</type>
+                        <default_value>N</default_value>
+                    </item>
+                    <item id="dev_user_ip">
+                        <type>input</type>
+                        <default_value></default_value>
+                    </item>
+                </items>
+            </section>
+        </sections>
+    </settings>
+
+    <queries>
+        <item>REPLACE INTO ?:privileges (privilege, is_default, section_id, group_id, is_view)
+              VALUES ('view_newsman', 'Y', 'marketing', 'newsman', 'Y');</item>
+        <item>REPLACE INTO ?:privileges (privilege, is_default, section_id, group_id, is_view)
+              VALUES ('manage_newsman', 'Y', 'marketing', 'newsman', 'N');</item>
+        <item for="uninstall">DELETE FROM ?:privileges
+              WHERE privilege IN ('manage_newsman', 'view_newsman')</item>
+        <item for="uninstall">DELETE FROM ?:usergroup_privileges
+              WHERE privilege IN ('manage_newsman', 'view_newsman')</item>
+    </queries>
+</addon>

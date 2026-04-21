@@ -1,0 +1,413 @@
+msgid ""
+msgstr "Project-Id-Version: tygh\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Language-Team: German\n"
+"Language: de_DE"
+
+msgctxt "Addons::name::newsman"
+msgid "Newsman"
+msgstr "Newsman"
+
+msgctxt "Languages::newsman"
+msgid "Newsman"
+msgstr "Newsman"
+
+msgctxt "Addons::description::newsman"
+msgid "Newsman email marketing and SMS integration. Sync subscribers, track orders, and enable remarketing."
+msgstr "Newsman E-Mail-Marketing- und SMS-Integration. Synchronisieren Sie Abonnenten, verfolgen Sie Bestellungen und aktivieren Sie Remarketing."
+
+msgctxt "Languages::newsman.settings_title"
+msgid "Newsman Settings"
+msgstr "Newsman-Einstellungen"
+
+msgctxt "Languages::newsman.api_key"
+msgid "API Key"
+msgstr "API-Schlüssel"
+
+msgctxt "Languages::newsman.user_id"
+msgid "User ID"
+msgstr "Benutzer-ID"
+
+msgctxt "Languages::newsman.list_id"
+msgid "Email List"
+msgstr "E-Mail-Liste"
+
+msgctxt "Languages::newsman.segment_id"
+msgid "Segment"
+msgstr "Segment"
+
+msgctxt "Languages::newsman.select_list"
+msgid "Select a list"
+msgstr "Liste auswählen"
+
+msgctxt "Languages::newsman.no_segment"
+msgid "No segment"
+msgstr "Kein Segment"
+
+msgctxt "Languages::newsman.cscart_mailing_list_id"
+msgid "CS-Cart mailing list"
+msgstr "CS-Cart-Mailingliste"
+
+msgctxt "Languages::newsman.required"
+msgid "Required"
+msgstr "Erforderlich"
+
+msgctxt "Languages::newsman.cscart_mailing_list_id_help"
+msgid "Two-way sync is restricted to this mailing list: only its subscribers are pushed to Newsman, and Newsman webhooks affect only this list."
+msgstr "Die bidirektionale Synchronisation ist auf diese Mailingliste beschränkt: Nur deren Abonnenten werden an Newsman übertragen, und Newsman-Webhooks wirken sich nur auf diese Liste aus."
+
+msgctxt "Languages::newsman.cscart_mailing_list_id_warning"
+msgid "Subscribe and unsubscribe will not work until a mailing list is selected here."
+msgstr "Anmelden und Abmelden funktionieren erst, wenn hier eine Mailingliste ausgewählt wurde."
+
+msgctxt "Languages::newsman.cscart_mailing_list_none"
+msgid "Any list (no restriction)"
+msgstr "Alle Listen (keine Einschränkung)"
+
+msgctxt "Languages::newsman.double_optin"
+msgid "Double Opt-in"
+msgstr "Double-Opt-in"
+
+msgctxt "Languages::newsman.send_user_ip"
+msgid "Send User IP"
+msgstr "Benutzer-IP senden"
+
+msgctxt "Languages::newsman.server_ip"
+msgid "Server IP"
+msgstr "Server-IP"
+
+msgctxt "Languages::newsman.server_ip_help"
+msgid "Override automatic server IP detection."
+msgstr "Die automatische Server-IP-Erkennung überschreiben."
+
+msgctxt "Languages::newsman.remarketing_section"
+msgid "Remarketing"
+msgstr "Remarketing"
+
+msgctxt "Languages::newsman.remarketing_id"
+msgid "Remarketing ID"
+msgstr "Remarketing-ID"
+
+msgctxt "Languages::newsman.remarketing_id_status"
+msgid "Remarketing ID Status"
+msgstr "Remarketing-ID-Status"
+
+msgctxt "Languages::newsman.remarketing_id_valid"
+msgid "Remarketing ID is valid"
+msgstr "Remarketing-ID ist gültig"
+
+msgctxt "Languages::newsman.remarketing_id_invalid"
+msgid "Remarketing ID is not set"
+msgstr "Remarketing-ID ist nicht festgelegt"
+
+msgctxt "Languages::newsman.remarketing_status"
+msgid "Enable Remarketing"
+msgstr "Remarketing aktivieren"
+
+msgctxt "Languages::newsman.remarketing_anonymize_ip"
+msgid "Anonymize IP"
+msgstr "IP anonymisieren"
+
+msgctxt "Languages::newsman.remarketing_send_telephone"
+msgid "Send Telephone"
+msgstr "Telefonnummer senden"
+
+msgctxt "Languages::newsman.theme_cart_compatibility"
+msgid "Theme Cart Compatibility"
+msgstr "Theme-Warenkorb-Kompatibilität"
+
+msgctxt "Languages::newsman.advanced_section"
+msgid "Advanced"
+msgstr "Erweitert"
+
+msgctxt "Languages::newsman.log_severity"
+msgid "Log Level"
+msgstr "Protokollstufe"
+
+msgctxt "Languages::newsman.log_none"
+msgid "None"
+msgstr "Keiner"
+
+msgctxt "Languages::newsman.log_error"
+msgid "Error"
+msgstr "Fehler"
+
+msgctxt "Languages::newsman.log_warning"
+msgid "Warning"
+msgstr "Warnung"
+
+msgctxt "Languages::newsman.log_notice"
+msgid "Notice"
+msgstr "Hinweis"
+
+msgctxt "Languages::newsman.log_info"
+msgid "Info"
+msgstr "Info"
+
+msgctxt "Languages::newsman.log_debug"
+msgid "Debug"
+msgstr "Debug"
+
+msgctxt "Languages::newsman.api_timeout"
+msgid "API Timeout"
+msgstr "API-Timeout"
+
+msgctxt "Languages::newsman.seconds"
+msgid "seconds"
+msgstr "Sekunden"
+
+msgctxt "Languages::newsman.log_clean_days"
+msgid "Log Clean Days"
+msgstr "Protokoll-Aufbewahrung (Tage)"
+
+msgctxt "Languages::newsman.developer_section"
+msgid "Developer"
+msgstr "Entwickler"
+
+msgctxt "Languages::newsman.dev_active_user_ip"
+msgid "Enable IP Restriction"
+msgstr "IP-Einschränkung aktivieren"
+
+msgctxt "Languages::newsman.dev_user_ip"
+msgid "Developer IP"
+msgstr "Entwickler-IP"
+
+msgctxt "Languages::newsman.export_auth_section"
+msgid "Export Authorization"
+msgstr "Export-Autorisierung"
+
+msgctxt "Languages::newsman.export_auth_header_name"
+msgid "Header Name"
+msgstr "Header-Name"
+
+msgctxt "Languages::newsman.export_auth_header_name_help"
+msgid "Authorization in HTTP header as name. Format alphanumeric separated by hyphen-minus. Please also set it in Newsman App > E-Commerce > Coupons > Authorisation Header name, Newsman App > E-Commerce > Feed > a feed > Header Authorization, etc."
+msgstr "Autorisierung im HTTP-Header als Name. Format: alphanumerisch, getrennt durch Bindestrich. Bitte auch unter Newsman App > E-Commerce > Coupons > Authorisation Header name, Newsman App > E-Commerce > Feed > ein Feed > Header Authorization usw. setzen."
+
+msgctxt "Languages::newsman.export_auth_header_key"
+msgid "Header Key"
+msgstr "Header-Schlüssel"
+
+msgctxt "Languages::newsman.export_auth_header_key_help"
+msgid "Authorization in HTTP header as value. Format alphanumeric separated by hyphen-minus. Please also set it in Newsman App > E-Commerce > Coupons > Authorisation Header value, Newsman App > E-Commerce > Feed > a feed > Header Authorization, etc."
+msgstr "Autorisierung im HTTP-Header als Wert. Format: alphanumerisch, getrennt durch Bindestrich. Bitte auch unter Newsman App > E-Commerce > Coupons > Authorisation Header value, Newsman App > E-Commerce > Feed > ein Feed > Header Authorization usw. setzen."
+
+msgctxt "Languages::newsman.authenticate_token"
+msgid "Authentication Token"
+msgstr "Authentifizierungs-Token"
+
+msgctxt "Languages::newsman.authenticate_token_help"
+msgid "Used for Newsman API authentication. It is exchanged automatically when the API key, User ID or list is changed, and when reconfigure or login with Newsman is done."
+msgstr "Wird für die Newsman-API-Authentifizierung verwendet. Er wird automatisch ausgetauscht, wenn der API-Schlüssel, die Benutzer-ID oder die Liste geändert wird, und bei einer Neukonfiguration oder Anmeldung bei Newsman."
+
+msgctxt "Languages::newsman.token_not_set"
+msgid "Not set"
+msgstr "Nicht festgelegt"
+
+msgctxt "Languages::newsman.connected"
+msgid "Connected to Newsman."
+msgstr "Mit Newsman verbunden."
+
+msgctxt "Languages::newsman.not_connected"
+msgid "Could not connect to Newsman. Please check your credentials or try again later."
+msgstr "Verbindung zu Newsman nicht möglich. Bitte überprüfen Sie Ihre Zugangsdaten oder versuchen Sie es später erneut."
+
+msgctxt "Languages::newsman.account_section"
+msgid "Account"
+msgstr "Konto"
+
+msgctxt "Languages::newsman.general_section"
+msgid "General"
+msgstr "Allgemein"
+
+msgctxt "Languages::newsman.oauth_connect_title"
+msgid "Connect to Newsman"
+msgstr "Mit Newsman verbinden"
+
+msgctxt "Languages::newsman.oauth_connect"
+msgid "Connect with Newsman"
+msgstr "Mit Newsman verbinden"
+
+msgctxt "Languages::newsman.oauth_features_title"
+msgid "Features"
+msgstr "Funktionen"
+
+msgctxt "Languages::newsman.oauth_feature_sync"
+msgid "Sync newsletter subscribers to Newsman"
+msgstr "Newsletter-Abonnenten mit Newsman synchronisieren"
+
+msgctxt "Languages::newsman.oauth_feature_remarketing"
+msgid "Remarketing and tracking scripts"
+msgstr "Remarketing- und Tracking-Skripte"
+
+msgctxt "Languages::newsman.oauth_feature_forms"
+msgid "Subscription forms and popups"
+msgstr "Abonnement-Formulare und Popups"
+
+msgctxt "Languages::newsman.oauth_feature_automation"
+msgid "Email and SMS automation"
+msgstr "E-Mail- und SMS-Automatisierung"
+
+msgctxt "Languages::newsman.oauth_feature_products"
+msgid "Product feed export"
+msgstr "Produkt-Feed-Export"
+
+msgctxt "Languages::newsman.oauth_feature_orders"
+msgid "Order tracking"
+msgstr "Bestellverfolgung"
+
+msgctxt "Languages::newsman.oauth_select_list"
+msgid "Select Email List"
+msgstr "E-Mail-Liste auswählen"
+
+msgctxt "Languages::newsman.oauth_connected"
+msgid "Connected to Newsman successfully."
+msgstr "Erfolgreich mit Newsman verbunden."
+
+msgctxt "Languages::newsman.oauth_missing_fields"
+msgid "Missing required fields."
+msgstr "Pflichtfelder fehlen."
+
+msgctxt "Languages::newsman.oauth_error"
+msgid "Authorization error"
+msgstr "Autorisierungsfehler"
+
+msgctxt "Languages::newsman.oauth_missing_code"
+msgid "Missing authorization code."
+msgstr "Autorisierungscode fehlt."
+
+msgctxt "Languages::newsman.oauth_curl_error"
+msgid "Could not complete request to Newsman"
+msgstr "Anfrage an Newsman konnte nicht abgeschlossen werden"
+
+msgctxt "Languages::newsman.oauth_invalid_response"
+msgid "Invalid response from Newsman"
+msgstr "Ungültige Antwort von Newsman"
+
+msgctxt "Languages::newsman.oauth_unexpected_response"
+msgid "Unexpected response from Newsman."
+msgstr "Unerwartete Antwort von Newsman."
+
+msgctxt "Languages::newsman.oauth_no_lists"
+msgid "No email lists found in your Newsman account."
+msgstr "In Ihrem Newsman-Konto wurden keine E-Mail-Listen gefunden."
+
+msgctxt "Languages::newsman.reconnect"
+msgid "Reconnect"
+msgstr "Erneut verbinden"
+
+msgctxt "SettingsSections::newsman::general"
+msgid "General"
+msgstr "Allgemein"
+
+msgctxt "SettingsOptions::newsman::api_key"
+msgid "API Key"
+msgstr "API-Schlüssel"
+
+msgctxt "SettingsOptions::newsman::user_id"
+msgid "User ID"
+msgstr "Benutzer-ID"
+
+msgctxt "SettingsOptions::newsman::cscart_mailing_list_id"
+msgid "CS-Cart mailing list to sync"
+msgstr "Zu synchronisierende CS-Cart-Mailingliste"
+
+msgctxt "SettingsTooltips::newsman::cscart_mailing_list_id"
+msgid "Select the CS-Cart mailing list used for two-way subscriber sync with Newsman. Only subscribers of this list are pushed to Newsman, and Newsman subscribe/unsubscribe webhooks affect only this list."
+msgstr "Wählen Sie die CS-Cart-Mailingliste, die für die bidirektionale Abonnenten-Synchronisation mit Newsman verwendet wird. Nur Abonnenten dieser Liste werden an Newsman gesendet, und Newsman-Abonnieren/Abmelden-Webhooks wirken sich nur auf diese Liste aus."
+
+msgctxt "SettingsOptions::newsman::double_optin"
+msgid "Double Opt-in"
+msgstr "Double-Opt-in"
+
+msgctxt "SettingsOptions::newsman::send_user_ip"
+msgid "Send User IP"
+msgstr "Benutzer-IP senden"
+
+msgctxt "SettingsOptions::newsman::remarketing_status"
+msgid "Enable Remarketing"
+msgstr "Remarketing aktivieren"
+
+msgctxt "SettingsOptions::newsman::remarketing_anonymize_ip"
+msgid "Anonymize IP"
+msgstr "IP anonymisieren"
+
+msgctxt "SettingsOptions::newsman::remarketing_send_telephone"
+msgid "Send Telephone"
+msgstr "Telefonnummer senden"
+
+msgctxt "SettingsOptions::newsman::theme_cart_compatibility"
+msgid "Theme Cart Compatibility"
+msgstr "Theme-Warenkorb-Kompatibilität"
+
+msgctxt "SettingsTooltips::newsman::theme_cart_compatibility"
+msgid "When enabled, the remarketing script polls the Newsman cart endpoint to detect cart changes (works on any theme). Disable this only if your theme's mini-cart block re-renders on every cart change — the native tracker reads the cart JSON rendered in the mini-cart DOM without background polling."
+msgstr "Wenn aktiviert, fragt das Remarketing-Skript den Newsman-Warenkorb-Endpunkt periodisch ab, um Warenkorbänderungen zu erkennen (funktioniert mit jedem Theme). Deaktivieren Sie dies nur, wenn der Mini-Warenkorb-Block Ihres Themes bei jeder Warenkorbänderung neu gerendert wird — der native Tracker liest das im DOM des Mini-Warenkorbs gerenderte Warenkorb-JSON ohne Hintergrund-Polling."
+
+msgctxt "SettingsOptions::newsman::log_severity"
+msgid "Log Level"
+msgstr "Protokollstufe"
+
+msgctxt "SettingsVariants::newsman::log_severity::1"
+msgid "None"
+msgstr "Keiner"
+
+msgctxt "SettingsVariants::newsman::log_severity::400"
+msgid "Error"
+msgstr "Fehler"
+
+msgctxt "SettingsVariants::newsman::log_severity::300"
+msgid "Warning"
+msgstr "Warnung"
+
+msgctxt "SettingsVariants::newsman::log_severity::250"
+msgid "Notice"
+msgstr "Hinweis"
+
+msgctxt "SettingsVariants::newsman::log_severity::200"
+msgid "Info"
+msgstr "Info"
+
+msgctxt "SettingsVariants::newsman::log_severity::100"
+msgid "Debug"
+msgstr "Debug"
+
+msgctxt "SettingsOptions::newsman::api_timeout"
+msgid "API Timeout (seconds)"
+msgstr "API-Timeout (Sekunden)"
+
+msgctxt "SettingsOptions::newsman::log_clean_days"
+msgid "Log Retention (days)"
+msgstr "Protokoll-Aufbewahrung (Tage)"
+
+msgctxt "SettingsOptions::newsman::export_auth_header_name"
+msgid "Export Auth Header Name"
+msgstr "Export-Auth-Header-Name"
+
+msgctxt "SettingsOptions::newsman::export_auth_header_key"
+msgid "Export Auth Header Key"
+msgstr "Export-Auth-Header-Schlüssel"
+
+msgctxt "SettingsOptions::newsman::dev_active_user_ip"
+msgid "Use Developer IP"
+msgstr "Entwickler-IP verwenden"
+
+msgctxt "SettingsOptions::newsman::dev_user_ip"
+msgid "Developer IP Address"
+msgstr "Entwickler-IP-Adresse"
+
+msgctxt "Languages::back"
+msgid "Back"
+msgstr "Zurück"
+
+msgctxt "Languages::privileges.view_newsman"
+msgid "Can view"
+msgstr "Kann anzeigen"
+
+msgctxt "Languages::privileges.manage_newsman"
+msgid "Can edit"
+msgstr "Kann bearbeiten"
+
+msgctxt "Languages::privilege_groups.newsman"
+msgid "Newsman"
+msgstr "Newsman"
