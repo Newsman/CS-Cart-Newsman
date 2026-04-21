@@ -1,0 +1,411 @@
+msgid ""
+msgstr "Project-Id-Version: tygh\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Language-Team: Romanian\n"
+"Language: ro_RO"
+
+msgctxt "Addons::name::newsman"
+msgid "Newsman"
+msgstr "Newsman"
+
+msgctxt "Languages::newsman"
+msgid "Newsman"
+msgstr "Newsman"
+
+msgctxt "Addons::description::newsman"
+msgid "Newsman email marketing and SMS integration. Sync subscribers, track orders, and enable remarketing."
+msgstr "Integrare Newsman pentru marketing prin e-mail și SMS. Sincronizează abonații, urmărește comenzile și activează remarketing-ul."
+
+msgctxt "Languages::newsman.settings_title"
+msgid "Newsman Settings"
+msgstr "Setări Newsman"
+
+msgctxt "Languages::newsman.api_key"
+msgid "API Key"
+msgstr "Cheie API"
+
+msgctxt "Languages::newsman.user_id"
+msgid "User ID"
+msgstr "ID utilizator"
+
+msgctxt "Languages::newsman.list_id"
+msgid "Email List"
+msgstr "Listă de e-mail"
+
+msgctxt "Languages::newsman.segment_id"
+msgid "Segment"
+msgstr "Segment"
+
+msgctxt "Languages::newsman.select_list"
+msgid "Select a list"
+msgstr "Selectează o listă"
+
+msgctxt "Languages::newsman.no_segment"
+msgid "No segment"
+msgstr "Niciun segment"
+
+msgctxt "Languages::newsman.cscart_mailing_list_id"
+msgid "CS-Cart mailing list"
+msgstr "Listă de distribuție CS-Cart"
+
+msgctxt "Languages::newsman.required"
+msgid "Required"
+msgstr "Obligatoriu"
+
+msgctxt "Languages::newsman.cscart_mailing_list_id_help"
+msgid "Two-way sync is restricted to this mailing list: only its subscribers are pushed to Newsman, and Newsman webhooks affect only this list."
+msgstr "Sincronizarea bidirecțională este limitată la această listă de distribuție: doar abonații acesteia sunt trimiși la Newsman, iar webhook-urile Newsman afectează doar această listă."
+
+msgctxt "Languages::newsman.cscart_mailing_list_id_warning"
+msgid "Subscribe and unsubscribe will not work until a mailing list is selected here."
+msgstr "Abonarea și dezabonarea nu vor funcționa până când nu este selectată aici o listă de distribuție."
+
+msgctxt "Languages::newsman.cscart_mailing_list_none"
+msgid "Any list (no restriction)"
+msgstr "Orice listă (fără restricție)"
+
+msgctxt "Languages::newsman.double_optin"
+msgid "Double Opt-in"
+msgstr "Dublă confirmare"
+
+msgctxt "Languages::newsman.send_user_ip"
+msgid "Send User IP"
+msgstr "Trimite IP-ul utilizatorului"
+
+msgctxt "Languages::newsman.server_ip"
+msgid "Server IP"
+msgstr "IP server"
+
+msgctxt "Languages::newsman.server_ip_help"
+msgid "Override automatic server IP detection."
+msgstr "Suprascrie detectarea automată a IP-ului serverului."
+
+msgctxt "Languages::newsman.remarketing_section"
+msgid "Remarketing"
+msgstr "Remarketing"
+
+msgctxt "Languages::newsman.remarketing_id"
+msgid "Remarketing ID"
+msgstr "ID remarketing"
+
+msgctxt "Languages::newsman.remarketing_id_status"
+msgid "Remarketing ID Status"
+msgstr "Starea ID-ului de remarketing"
+
+msgctxt "Languages::newsman.remarketing_id_valid"
+msgid "Remarketing ID is valid"
+msgstr "ID-ul de remarketing este valid"
+
+msgctxt "Languages::newsman.remarketing_id_invalid"
+msgid "Remarketing ID is not set"
+msgstr "ID-ul de remarketing nu este setat"
+
+msgctxt "Languages::newsman.remarketing_status"
+msgid "Enable Remarketing"
+msgstr "Activează remarketing"
+
+msgctxt "Languages::newsman.remarketing_anonymize_ip"
+msgid "Anonymize IP"
+msgstr "Anonimizează IP"
+
+msgctxt "Languages::newsman.remarketing_send_telephone"
+msgid "Send Telephone"
+msgstr "Trimite telefonul"
+
+msgctxt "Languages::newsman.theme_cart_compatibility"
+msgid "Theme Cart Compatibility"
+msgstr "Compatibilitate coș cu tema"
+
+msgctxt "Languages::newsman.advanced_section"
+msgid "Advanced"
+msgstr "Avansat"
+
+msgctxt "Languages::newsman.log_severity"
+msgid "Log Level"
+msgstr "Nivel log"
+
+msgctxt "Languages::newsman.log_none"
+msgid "None"
+msgstr "Niciunul"
+
+msgctxt "Languages::newsman.log_error"
+msgid "Error"
+msgstr "Eroare"
+
+msgctxt "Languages::newsman.log_warning"
+msgid "Warning"
+msgstr "Avertisment"
+
+msgctxt "Languages::newsman.log_notice"
+msgid "Notice"
+msgstr "Notificare"
+
+msgctxt "Languages::newsman.log_info"
+msgid "Info"
+msgstr "Info"
+
+msgctxt "Languages::newsman.log_debug"
+msgid "Debug"
+msgstr "Depanare"
+
+msgctxt "Languages::newsman.api_timeout"
+msgid "API Timeout"
+msgstr "Timeout API"
+
+msgctxt "Languages::newsman.seconds"
+msgid "seconds"
+msgstr "secunde"
+
+msgctxt "Languages::newsman.log_clean_days"
+msgid "Log Clean Days"
+msgstr "Zile păstrare log"
+
+msgctxt "Languages::newsman.developer_section"
+msgid "Developer"
+msgstr "Dezvoltator"
+
+msgctxt "Languages::newsman.dev_active_user_ip"
+msgid "Enable IP Restriction"
+msgstr "Activează restricția IP"
+
+msgctxt "Languages::newsman.dev_user_ip"
+msgid "Developer IP"
+msgstr "IP dezvoltator"
+
+msgctxt "Languages::newsman.export_auth_section"
+msgid "Export Authorization"
+msgstr "Autorizare export"
+
+msgctxt "Languages::newsman.export_auth_header_name"
+msgid "Header Name"
+msgstr "Nume antet"
+
+msgctxt "Languages::newsman.export_auth_header_name_help"
+msgid "Authorization in HTTP header as name. Format alphanumeric separated by hyphen-minus. Please also set it in Newsman App > E-Commerce > Coupons > Authorisation Header name, Newsman App > E-Commerce > Feed > a feed > Header Authorization, etc."
+msgstr "Autorizare în antetul HTTP ca nume. Format alfanumeric separat prin cratimă. Setați-l și în Newsman App > E-Commerce > Coupons > Authorisation Header name, Newsman App > E-Commerce > Feed > un feed > Header Authorization etc."
+
+msgctxt "Languages::newsman.export_auth_header_key"
+msgid "Header Key"
+msgstr "Valoare antet"
+
+msgctxt "Languages::newsman.export_auth_header_key_help"
+msgid "Authorization in HTTP header as value. Format alphanumeric separated by hyphen-minus. Please also set it in Newsman App > E-Commerce > Coupons > Authorisation Header value, Newsman App > E-Commerce > Feed > a feed > Header Authorization, etc."
+msgstr "Autorizare în antetul HTTP ca valoare. Format alfanumeric separat prin cratimă. Setați-l și în Newsman App > E-Commerce > Coupons > Authorisation Header value, Newsman App > E-Commerce > Feed > un feed > Header Authorization etc."
+
+msgctxt "Languages::newsman.authenticate_token"
+msgid "Authentication Token"
+msgstr "Token de autentificare"
+
+msgctxt "Languages::newsman.authenticate_token_help"
+msgid "Used for Newsman API authentication. It is exchanged automatically when the API key, User ID or list is changed, and when reconfigure or login with Newsman is done."
+msgstr "Utilizat pentru autentificarea API Newsman. Este schimbat automat când cheia API, ID-ul utilizatorului sau lista sunt modificate și la reconfigurare sau autentificare cu Newsman."
+
+msgctxt "Languages::newsman.token_not_set"
+msgid "Not set"
+msgstr "Nesetat"
+
+msgctxt "Languages::newsman.connected"
+msgid "Connected to Newsman."
+msgstr "Conectat la Newsman."
+
+msgctxt "Languages::newsman.not_connected"
+msgid "Could not connect to Newsman. Please check your credentials or try again later."
+msgstr "Conectarea la Newsman nu a reușit. Verificați datele de acces sau încercați mai târziu."
+
+msgctxt "Languages::newsman.account_section"
+msgid "Account"
+msgstr "Cont"
+
+msgctxt "Languages::newsman.general_section"
+msgid "General"
+msgstr "General"
+
+msgctxt "Languages::newsman.oauth_connect_title"
+msgid "Connect to Newsman"
+msgstr "Conectare la Newsman"
+
+msgctxt "Languages::newsman.oauth_connect"
+msgid "Connect with Newsman"
+msgstr "Conectează-te cu Newsman"
+
+msgctxt "Languages::newsman.oauth_features_title"
+msgid "Features"
+msgstr "Funcționalități"
+
+msgctxt "Languages::newsman.oauth_feature_sync"
+msgid "Sync newsletter subscribers to Newsman"
+msgstr "Sincronizează abonații la newsletter cu Newsman"
+
+msgctxt "Languages::newsman.oauth_feature_remarketing"
+msgid "Remarketing and tracking scripts"
+msgstr "Scripturi de remarketing și urmărire"
+
+msgctxt "Languages::newsman.oauth_feature_forms"
+msgid "Subscription forms and popups"
+msgstr "Formulare de abonare și ferestre popup"
+
+msgctxt "Languages::newsman.oauth_feature_automation"
+msgid "Email and SMS automation"
+msgstr "Automatizare e-mail și SMS"
+
+msgctxt "Languages::newsman.oauth_feature_products"
+msgid "Product feed export"
+msgstr "Export feed de produse"
+
+msgctxt "Languages::newsman.oauth_feature_orders"
+msgid "Order tracking"
+msgstr "Urmărirea comenzilor"
+
+msgctxt "Languages::newsman.oauth_select_list"
+msgid "Select Email List"
+msgstr "Selectează lista de e-mail"
+
+msgctxt "Languages::newsman.oauth_connected"
+msgid "Connected to Newsman successfully."
+msgstr "Conectare la Newsman reușită."
+
+msgctxt "Languages::newsman.oauth_missing_fields"
+msgid "Missing required fields."
+msgstr "Lipsesc câmpurile obligatorii."
+
+msgctxt "Languages::newsman.oauth_error"
+msgid "Authorization error"
+msgstr "Eroare de autorizare"
+
+msgctxt "Languages::newsman.oauth_missing_code"
+msgid "Missing authorization code."
+msgstr "Lipsește codul de autorizare."
+
+msgctxt "Languages::newsman.oauth_curl_error"
+msgid "Could not complete request to Newsman"
+msgstr "Solicitarea către Newsman nu a putut fi finalizată"
+
+msgctxt "Languages::newsman.oauth_invalid_response"
+msgid "Invalid response from Newsman"
+msgstr "Răspuns invalid de la Newsman"
+
+msgctxt "Languages::newsman.oauth_unexpected_response"
+msgid "Unexpected response from Newsman."
+msgstr "Răspuns neașteptat de la Newsman."
+
+msgctxt "Languages::newsman.oauth_no_lists"
+msgid "No email lists found in your Newsman account."
+msgstr "Nu s-au găsit liste de e-mail în contul Newsman."
+
+msgctxt "Languages::newsman.reconnect"
+msgid "Reconnect"
+msgstr "Reconectare"
+
+msgctxt "SettingsSections::newsman::general"
+msgid "General"
+msgstr "General"
+
+msgctxt "SettingsOptions::newsman::api_key"
+msgid "API Key"
+msgstr "Cheie API"
+
+msgctxt "SettingsOptions::newsman::user_id"
+msgid "User ID"
+msgstr "ID utilizator"
+
+msgctxt "SettingsOptions::newsman::cscart_mailing_list_id"
+msgid "CS-Cart mailing list to sync"
+msgstr "Lista de distribuție CS-Cart de sincronizat"
+
+msgctxt "SettingsTooltips::newsman::cscart_mailing_list_id"
+msgid "Select the CS-Cart mailing list used for two-way subscriber sync with Newsman. Only subscribers of this list are pushed to Newsman, and Newsman subscribe/unsubscribe webhooks affect only this list."
+msgstr "Selectează lista de distribuție CS-Cart utilizată pentru sincronizarea bidirecțională a abonaților cu Newsman. Doar abonații acestei liste sunt trimiși la Newsman, iar webhook-urile Newsman de abonare/dezabonare afectează doar această listă."
+
+msgctxt "SettingsOptions::newsman::double_optin"
+msgid "Double Opt-in"
+msgstr "Dublă confirmare"
+
+msgctxt "SettingsOptions::newsman::send_user_ip"
+msgid "Send User IP"
+msgstr "Trimite IP-ul utilizatorului"
+
+msgctxt "SettingsOptions::newsman::remarketing_status"
+msgid "Enable Remarketing"
+msgstr "Activează remarketing"
+
+msgctxt "SettingsOptions::newsman::remarketing_anonymize_ip"
+msgid "Anonymize IP"
+msgstr "Anonimizează IP"
+
+msgctxt "SettingsOptions::newsman::remarketing_send_telephone"
+msgid "Send Telephone"
+msgstr "Trimite telefonul"
+
+msgctxt "SettingsOptions::newsman::theme_cart_compatibility"
+msgid "Theme Cart Compatibility"
+msgstr "Compatibilitate coș cu tema"
+
+msgctxt "SettingsTooltips::newsman::theme_cart_compatibility"
+msgid "When enabled, the remarketing script polls the Newsman cart endpoint to detect cart changes (works on any theme). Disable this only if your theme's mini-cart block re-renders on every cart change — the native tracker reads the cart JSON rendered in the mini-cart DOM without background polling."
+msgstr "Când este activat, scriptul de remarketing interoghează periodic endpointul de coș Newsman pentru a detecta schimbările din coș (funcționează cu orice temă). Dezactivează doar dacă blocul mini-coș al temei se re-randează la fiecare schimbare din coș — trackerul nativ citește JSON-ul coșului randat în DOM-ul mini-coșului fără polling în fundal."
+msgid "Log Level"
+msgstr "Nivel log"
+
+msgctxt "SettingsVariants::newsman::log_severity::1"
+msgid "None"
+msgstr "Niciunul"
+
+msgctxt "SettingsVariants::newsman::log_severity::400"
+msgid "Error"
+msgstr "Eroare"
+
+msgctxt "SettingsVariants::newsman::log_severity::300"
+msgid "Warning"
+msgstr "Avertisment"
+
+msgctxt "SettingsVariants::newsman::log_severity::250"
+msgid "Notice"
+msgstr "Notificare"
+
+msgctxt "SettingsVariants::newsman::log_severity::200"
+msgid "Info"
+msgstr "Info"
+
+msgctxt "SettingsVariants::newsman::log_severity::100"
+msgid "Debug"
+msgstr "Depanare"
+
+msgctxt "SettingsOptions::newsman::api_timeout"
+msgid "API Timeout (seconds)"
+msgstr "Timeout API (secunde)"
+
+msgctxt "SettingsOptions::newsman::log_clean_days"
+msgid "Log Retention (days)"
+msgstr "Păstrare log (zile)"
+
+msgctxt "SettingsOptions::newsman::export_auth_header_name"
+msgid "Export Auth Header Name"
+msgstr "Nume antet autentificare export"
+
+msgctxt "SettingsOptions::newsman::export_auth_header_key"
+msgid "Export Auth Header Key"
+msgstr "Valoare antet autentificare export"
+
+msgctxt "SettingsOptions::newsman::dev_active_user_ip"
+msgid "Use Developer IP"
+msgstr "Utilizează IP-ul dezvoltatorului"
+
+msgctxt "SettingsOptions::newsman::dev_user_ip"
+msgid "Developer IP Address"
+msgstr "Adresă IP dezvoltator"
+
+msgctxt "Languages::back"
+msgid "Back"
+msgstr "Înapoi"
+
+msgctxt "Languages::privileges.view_newsman"
+msgid "Can view"
+msgstr "Poate vizualiza"
+
+msgctxt "Languages::privileges.manage_newsman"
+msgid "Can edit"
+msgstr "Poate edita"
+
+msgctxt "Languages::privilege_groups.newsman"
+msgid "Newsman"
+msgstr "Newsman"

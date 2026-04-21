@@ -1,0 +1,24 @@
+{
+	"name": "newsman/cscart-newsman",
+	"description": "Newsman addon for CS-Cart.",
+	"license": "Apache-2.0",
+	"type": "cscart-addon",
+	"authors": [
+		{
+			"name": "Newsman",
+			"homepage": "https://www.newsman.com/"
+		}
+	],
+	"require": {
+		"php": ">=7.4.0",
+		"greenlion/php-sql-parser": "^4.7"
+	},
+	"config": {
+		"platform": {
+			"php": "7.4.0"
+		},
+		"classmap-authoritative": true,
+		"preferred-install": "dist",
+		"sort-packages": true
+	}
+}
