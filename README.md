@@ -8,7 +8,7 @@ Installation
 
 ## Installation: 
 
-1. Copy the "app" folder contents from this repository to your "app/" shop directory.
+1. Copy the "app" folder contents from this repository to your "app/" shop directory. 
 2. Install addon from Manage Add-ons and Set it as active.
 
   ![github](https://github.com/Newsman/CS-Cart-Newsman/blob/master/assets/cs_cart_d.png)
