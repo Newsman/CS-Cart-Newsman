@@ -197,7 +197,7 @@ class Orders extends AbstractRetriever
     {
         return array(
             'created_at'  => array('field' => 'o.timestamp', 'quote' => false, 'type' => 'int'),
-            'modified_at' => array('field' => 'o.timestamp', 'quote' => false, 'type' => 'int'),
+            'modified_at' => array('field' => 'o.updated_at', 'quote' => false, 'type' => 'int'),
             'order_id'    => array('field' => 'o.order_id', 'quote' => false, 'type' => 'int'),
             'order_ids'   => array('field' => 'o.order_id', 'quote' => false, 'type' => 'int', 'multiple' => true),
         );
@@ -210,7 +210,7 @@ class Orders extends AbstractRetriever
     {
         return array(
             'created_at'  => 'o.timestamp',
-            'modified_at' => 'o.timestamp',
+            'modified_at' => 'o.updated_at',
             'order_id'    => 'o.order_id',
         );
     }

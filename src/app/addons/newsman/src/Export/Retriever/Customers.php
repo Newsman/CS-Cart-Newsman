@@ -3,9 +3,30 @@
 namespace Tygh\Addons\Newsman\Export\Retriever;
 
 use Tygh\Addons\Newsman\Export\AbstractRetriever;
+use Tygh\Addons\Newsman\Export\V1\ApiV1Exception;
 
 class Customers extends AbstractRetriever
 {
+    /**
+     * {@inheritdoc}
+     *
+     * cscart_users has no "updated_at" column, so modified_at cannot be
+     * honoured. Reject it explicitly (1010) instead of silently filtering or
+     * sorting by the creation timestamp.
+     */
+    public function processListParameters($data = array())
+    {
+        if (isset($data['modified_at']) && !empty($data['_v1_filter_fields'])) {
+            throw new ApiV1Exception(1010, 'Filter not supported on this platform: modified_at', 400);
+        }
+
+        if (isset($data['sort']) && $data['sort'] === 'modified_at') {
+            throw new ApiV1Exception(1010, 'Sort not supported on this platform: modified_at', 400);
+        }
+
+        return parent::processListParameters($data);
+    }
+
     /**
      * @param array $data
      * @return array
@@ -111,7 +132,8 @@ class Customers extends AbstractRetriever
     {
         return array(
             'created_at'        => array('field' => 'c.timestamp', 'quote' => false, 'type' => 'int'),
-            'modified_at'       => array('field' => 'c.timestamp', 'quote' => false, 'type' => 'int'),
+            // modified_at intentionally omitted — cscart_users has no updated_at column
+            // (see processListParameters() — rejected with 1010).
             'customer_id'       => array('field' => 'c.user_id', 'quote' => false, 'type' => 'int'),
             'customer_ids'      => array('field' => 'c.user_id', 'quote' => false, 'type' => 'int', 'multiple' => true),
             'email'             => array('field' => 'c.email', 'quote' => true, 'type' => 'string'),
