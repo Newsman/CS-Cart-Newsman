@@ -43,9 +43,9 @@ class ExportCsvSubscribers
         $segments = !empty($segmentId) ? array($segmentId) : null;
 
         $postParams = array(
-            $listId,
-            $segments,
-            $csvData,
+            'list_id'  => $listId,
+            'segments' => $segments,
+            'csv_data' => $csvData,
         );
 
         $result = $this->client->post($context, array(), $postParams);

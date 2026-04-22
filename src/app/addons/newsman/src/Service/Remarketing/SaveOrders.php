@@ -37,8 +37,8 @@ class SaveOrders
         $this->logger->info(sprintf('Sending %d orders via remarketing.saveOrders', count($orders)));
 
         $postParams = array(
-            $listId,
-            $orders,
+            'list_id' => $listId,
+            'orders'  => $orders,
         );
 
         $result = $this->client->post($context, array(), $postParams);
