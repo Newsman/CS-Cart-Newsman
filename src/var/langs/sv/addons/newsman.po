@@ -116,6 +116,10 @@ msgctxt "Languages::newsman.theme_cart_compatibility"
 msgid "Theme Cart Compatibility"
 msgstr "Temakompatibilitet för varukorg"
 
+msgctxt "Languages::newsman.theme_cart_compatibility_help"
+msgid "When enabled, the remarketing script polls the Newsman cart endpoint to detect cart changes (works on any theme). Disable this only if your theme's mini-cart block re-renders on every cart change — the native tracker reads the cart JSON rendered in the mini-cart DOM without background polling."
+msgstr "När aktiverat frågar remarketing-skriptet Newsmans varukorgs-endpoint periodvis för att upptäcka varukorgsändringar (fungerar med vilket tema som helst). Inaktivera detta endast om temats mini-varukorgsblock renderas om vid varje varukorgsändring — den inbyggda spåraren läser varukorgens JSON som renderas i mini-varukorgens DOM utan bakgrundspollning."
+
 msgctxt "Languages::newsman.advanced_section"
 msgid "Advanced"
 msgstr "Avancerat"

@@ -116,6 +116,10 @@ msgctxt "Languages::newsman.theme_cart_compatibility"
 msgid "Theme Cart Compatibility"
 msgstr "Compatibilidad del carrito con el tema"
 
+msgctxt "Languages::newsman.theme_cart_compatibility_help"
+msgid "When enabled, the remarketing script polls the Newsman cart endpoint to detect cart changes (works on any theme). Disable this only if your theme's mini-cart block re-renders on every cart change — the native tracker reads the cart JSON rendered in the mini-cart DOM without background polling."
+msgstr "Cuando está activado, el script de remarketing consulta periódicamente el endpoint del carrito de Newsman para detectar cambios en el carrito (funciona con cualquier tema). Desactívelo solo si el bloque mini-carrito de su tema se vuelve a renderizar en cada cambio del carrito — el rastreador nativo lee el JSON del carrito renderizado en el DOM del mini-carrito sin sondeo en segundo plano."
+
 msgctxt "Languages::newsman.advanced_section"
 msgid "Advanced"
 msgstr "Avanzado"

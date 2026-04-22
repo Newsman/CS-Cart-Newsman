@@ -36,6 +36,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             'api_key', 'user_id', 'list_id', 'segment_id', 'cscart_mailing_list_id',
             'double_optin', 'send_user_ip', 'server_ip',
             'remarketing_status', 'remarketing_id', 'remarketing_anonymize_ip', 'remarketing_send_telephone',
+            'theme_cart_compatibility',
             'log_severity', 'log_clean_days', 'api_timeout',
             'dev_active_user_ip', 'dev_user_ip',
             'export_auth_header_name', 'export_auth_header_key',
@@ -51,6 +52,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $checkboxes = array(
             'double_optin', 'send_user_ip',
             'remarketing_status', 'remarketing_anonymize_ip', 'remarketing_send_telephone',
+            'theme_cart_compatibility',
             'dev_active_user_ip',
         );
         foreach ($checkboxes as $cb) {

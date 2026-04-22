@@ -148,6 +148,15 @@
     </div>
 </div>
 
+<div class="control-group">
+    <label class="control-label" for="newsman_theme_cart_compatibility">{__("newsman.theme_cart_compatibility")}:</label>
+    <div class="controls">
+        <input type="hidden" name="theme_cart_compatibility" value="N" />
+        <input type="checkbox" name="theme_cart_compatibility" id="newsman_theme_cart_compatibility" value="Y" {if $newsman_settings.theme_cart_compatibility == "Y"}checked="checked"{/if} />
+        <p class="muted description">{__("newsman.theme_cart_compatibility_help")}</p>
+    </div>
+</div>
+
 {* === Developer Section === *}
 <hr />
 <h4>{__("newsman.developer_section")}</h4>

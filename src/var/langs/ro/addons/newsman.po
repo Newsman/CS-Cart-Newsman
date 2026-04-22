@@ -116,6 +116,10 @@ msgctxt "Languages::newsman.theme_cart_compatibility"
 msgid "Theme Cart Compatibility"
 msgstr "Compatibilitate coș cu tema"
 
+msgctxt "Languages::newsman.theme_cart_compatibility_help"
+msgid "When enabled, the remarketing script polls the Newsman cart endpoint to detect cart changes (works on any theme). Disable this only if your theme's mini-cart block re-renders on every cart change — the native tracker reads the cart JSON rendered in the mini-cart DOM without background polling."
+msgstr "Când este activat, scriptul de remarketing interoghează periodic endpointul de coș Newsman pentru a detecta schimbările din coș (funcționează cu orice temă). Dezactivează doar dacă blocul mini-coș al temei se re-randează la fiecare schimbare din coș — trackerul nativ citește JSON-ul coșului randat în DOM-ul mini-coșului fără polling în fundal."
+
 msgctxt "Languages::newsman.advanced_section"
 msgid "Advanced"
 msgstr "Avansat"
