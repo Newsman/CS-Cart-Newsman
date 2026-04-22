@@ -10,7 +10,7 @@ class StatusMapper
     /** @var array<string, string> */
     protected static $knownMap = array(
         'P' => 'payment',
-        'C' => 'delivered',
+        'C' => 'complete',
         'O' => 'pending',
         'F' => 'payment_error',
         'D' => 'canceled',
