@@ -9,7 +9,7 @@ class Config
 {
     const API_URL = 'https://ssl.newsman.app/api/';
     const API_VERSION = '1.2';
-    const ADDON_VERSION = '2.0.1';
+    const ADDON_VERSION = '2.0.2';
     const PLATFORM_NAME = 'CS-Cart';
 
     const OAUTH_AUTHORIZE_URL = 'https://newsman.app/admin/oauth/authorize';
