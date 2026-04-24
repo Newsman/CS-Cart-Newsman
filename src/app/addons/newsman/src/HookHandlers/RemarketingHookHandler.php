@@ -69,7 +69,14 @@ class RemarketingHookHandler
 
             // Cart tracking
             $cartUrl = fn_url('newsman_front.cart', 'C');
-            $bodyScripts .= $this->renderer->renderCartTracking($cartUrl, $isCheckoutComplete);
+            // Scope the nzm_cart_sync session cookie to the current storefront's
+            // base URL path so sibling storefronts on the same domain (rare on
+            // CS-Cart multistore, but supported) do not share one session flag.
+            $cookiePath = parse_url((string) Registry::get('config.current_location'), PHP_URL_PATH);
+            if ($cookiePath === null || $cookiePath === false || $cookiePath === '' || $cookiePath[0] !== '/') {
+                $cookiePath = '/';
+            }
+            $bodyScripts .= $this->renderer->renderCartTracking($cartUrl, $isCheckoutComplete, $cookiePath);
 
             // Customer identify (not on checkout complete -- purchase handles it).
             // When Varnish / full_page_cache is enabled the page HTML is shared

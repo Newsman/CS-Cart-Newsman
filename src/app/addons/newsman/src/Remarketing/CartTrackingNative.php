@@ -18,9 +18,18 @@ class CartTrackingNative
      * <script> tag out of injected HTML before calling $.html() — so a
      * script-based carrier would never update after an add-to-cart.
      *
+     * Additionally, once per browser session (gated by the nzm_cart_sync
+     * cookie), fires an explicit clear_cart when the storefront cart is
+     * empty — otherwise the equal-JSON early-return in processCart() would
+     * leave a stale Newsman-side cart untouched. When the cart is non-empty
+     * the regular processCart() sync already handles it; bootstrap only
+     * sets the cookie in that branch.
+     *
+     * @param string $cookiePath Cookie path to scope the session flag to the
+     *                           current storefront's base URL.
      * @return string
      */
-    public function getHtml()
+    public function getHtml($cookiePath = '/')
     {
         $js = <<<'JS'
 _nzm.run('require', 'ec');
@@ -171,8 +180,47 @@ _nzm.run('require', 'ec');
         });
     }
 
+    function nzmGetCookie(name) {
+        var needle = name + '=';
+        var parts = document.cookie ? document.cookie.split(';') : [];
+        for (var i = 0; i < parts.length; i++) {
+            var p = parts[i].replace(/^\s+/, '');
+            if (p.indexOf(needle) === 0) {
+                return p.substring(needle.length);
+            }
+        }
+        return null;
+    }
+
+    function nzmSetSessionCookie(name, value, path) {
+        // No Max-Age / Expires => browser-session lifetime. SameSite=Lax keeps
+        // it on ordinary same-site navigations. Cleared when the browser closes.
+        document.cookie = name + '=' + value + '; path=' + path + '; SameSite=Lax';
+    }
+
+    // Once per browser session (gated by nzm_cart_sync cookie), handle the
+    // edge case where the storefront cart is empty but the Newsman-side
+    // remarketing cart still holds items from a previous session. processCart
+    // early-returns when both lastCart and payload are empty, so without this
+    // hook the stale Newsman cart is never cleared. For a non-empty payload
+    // we skip the clear — processCart() will run immediately after and emit
+    // its own clear_cart + add sequence.
+    function nzmSessionBootstrap() {
+        var cookieName = 'nzm_cart_sync';
+        var cookiePath = __NEWSMAN_COOKIE_PATH__;
+        if (nzmGetCookie(cookieName)) {
+            return;
+        }
+        var payload = readPayload();
+        if (payload !== null && payload.length === 0) {
+            nzmClearCart();
+        }
+        nzmSetSessionCookie(cookieName, '1', cookiePath);
+    }
+
     function boot() {
         startObserver();
+        nzmSessionBootstrap();
         processCart();
     }
 
@@ -183,6 +231,13 @@ _nzm.run('require', 'ec');
     }
 })();
 JS;
+
+        $js = strtr($js, array(
+            '__NEWSMAN_COOKIE_PATH__' => json_encode(
+                $cookiePath,
+                JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP | JSON_UNESCAPED_SLASHES
+            ),
+        ));
 
         return JsHelper::wrapScript($js);
     }

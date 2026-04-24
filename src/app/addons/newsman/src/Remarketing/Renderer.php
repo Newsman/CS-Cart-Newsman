@@ -72,15 +72,17 @@ class Renderer
     /**
      * @param string $cartUrl
      * @param bool   $isCheckoutComplete
+     * @param string $cookiePath Scope of the nzm_cart_sync session cookie,
+     *                           typically the current storefront's base URL path.
      * @return string
      */
-    public function renderCartTracking($cartUrl, $isCheckoutComplete = false)
+    public function renderCartTracking($cartUrl, $isCheckoutComplete = false, $cookiePath = '/')
     {
         if ($this->config->isThemeCartCompatibility()) {
             return $this->cartTracking->getHtml($cartUrl, $isCheckoutComplete);
         }
 
-        return $this->cartTrackingNative->getHtml();
+        return $this->cartTrackingNative->getHtml($cookiePath);
     }
 
     /**
