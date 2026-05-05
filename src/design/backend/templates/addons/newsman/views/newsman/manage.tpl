@@ -61,7 +61,7 @@
 </div>
 
 <div class="control-group">
-    <label class="control-label cm-required" for="newsman_cscart_mailing_list_id">{__("newsman.cscart_mailing_list_id")}:</label>
+    <label class="control-label" for="newsman_cscart_mailing_list_id">{__("newsman.cscart_mailing_list_id")}:</label>
     <div class="controls">
         <select name="cscart_mailing_list_id" id="newsman_cscart_mailing_list_id" class="input-xlarge">
             <option value="">-- {__("newsman.cscart_mailing_list_none")} --</option>
@@ -70,7 +70,6 @@
             {/foreach}
         </select>
         <p class="description">
-            <span class="label label-important" style="margin-right:6px;"><i class="icon-warning-sign icon-white"></i> {__("newsman.required")}</span>
             <span class="muted">{__("newsman.cscart_mailing_list_id_help")}</span>
             <br />
             <span class="muted">{__("newsman.cscart_mailing_list_id_warning")}</span>

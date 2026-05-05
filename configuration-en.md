@@ -36,7 +36,7 @@ Before you can use any feature, you need to connect the addon to your Newsman ac
 5. Click **Save**. A green indicator will confirm the connection is successful.
 6. Now select an **Email List** from the dropdown; the list is populated from your Newsman account.
 7. Optionally select a **Segment** inside that list.
-8. Select a **CS-Cart mailing list** (required) to define which CS-Cart subscribers participate in two-way sync (see below).
+8. Optionally select a **CS-Cart mailing list** to define which CS-Cart subscribers participate in two-way sync (see below).
 9. Click **Save** again.
 
 ---
@@ -63,10 +63,10 @@ The **Admin > Marketing > Newsman** page is organized into sections. Each sectio
 
 - **Email List** (required) - The Newsman list where subscribers from this CS-Cart store will be added. The dropdown is populated from your Newsman account.
 - **Segment** - Optionally narrow the sync to a specific segment inside the selected list. Leave empty to sync with the whole list.
-- **CS-Cart mailing list** (required) - The CS-Cart built-in mailing list used for two-way subscriber sync with Newsman:
+- **CS-Cart mailing list** (optional) - The CS-Cart built-in mailing list used for two-way subscriber sync with Newsman:
   - Only subscribers of the selected CS-Cart mailing list are pushed to Newsman.
   - Newsman subscribe/unsubscribe webhooks affect only this list.
-  - If you select **Any list (no restriction)**, subscribe and unsubscribe actions are ignored - pick a list here to enable syncing.
+  - If you leave this empty, CS-Cart mailing-list subscribe/unsubscribe sync is disabled.
 - **Double Opt-in** - When enabled, new subscribers receive a confirmation email from Newsman and are only added to the list after they click the link inside. Recommended for higher deliverability.
 - **Send User IP** - When a visitor subscribes or places an order, the addon can send the client IP address to Newsman (helpful for analytics and anti-abuse). If turned off, the addon will use the **Server IP** value below as a fallback.
 - **Server IP** - A fallback IP address used when **Send User IP** is disabled. You can usually leave this empty; the addon will detect the server IP automatically.
@@ -130,7 +130,7 @@ You generally do not need to edit anything here - it's safer to edit settings on
 ## Troubleshooting
 
 - **"Could not connect to Newsman"** - Double-check the API Key and User ID. If they are correct but the error persists, click **Reconnect** to run the OAuth flow again.
-- **Subscribe/unsubscribe from the newsletter doesn't reach Newsman** - Make sure a **CS-Cart mailing list** is selected in the General section. The sync is intentionally restricted to a single CS-Cart mailing list, so newsletter subscribers added to other lists are skipped.
+- **Subscribe/unsubscribe from the newsletter doesn't reach Newsman** - If you want CS-Cart newsletter subscribe/unsubscribe events to sync, select a **CS-Cart mailing list** in the General section. Leaving it empty disables this part of the sync.
 - **Remarketing scripts don't appear on the storefront** - Confirm **Enable Remarketing** is on, the **Remarketing ID** is set (green status), and the CS-Cart template cache has been cleared.
 - **Need more detail in logs** - Set **Log Level** to **Debug** temporarily; log files live in `var/newsman_logs/`.
 

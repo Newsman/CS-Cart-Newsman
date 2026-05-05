@@ -54,15 +54,15 @@ msgstr "Obligatoriu"
 
 msgctxt "Languages::newsman.cscart_mailing_list_id_help"
 msgid "Two-way sync is restricted to this mailing list: only its subscribers are pushed to Newsman, and Newsman webhooks affect only this list."
-msgstr "Sincronizarea bidirecțională este limitată la această listă de distribuție: doar abonații acesteia sunt trimiși la Newsman, iar webhook-urile Newsman afectează doar această listă."
+msgstr "Optional. Cand este selectata, sincronizarea bidirectionala este limitata la aceasta lista CS-Cart: doar abonatii acesteia sunt trimisi la Newsman, iar webhook-urile Newsman afecteaza doar aceasta lista."
 
 msgctxt "Languages::newsman.cscart_mailing_list_id_warning"
 msgid "Subscribe and unsubscribe will not work until a mailing list is selected here."
-msgstr "Abonarea și dezabonarea nu vor funcționa până când nu este selectată aici o listă de distribuție."
+msgstr "Lasa gol pentru a dezactiva sincronizarea abonarii/dezabonarii cu listele CS-Cart."
 
 msgctxt "Languages::newsman.cscart_mailing_list_none"
 msgid "Any list (no restriction)"
-msgstr "Orice listă (fără restricție)"
+msgstr "Fara lista CS-Cart"
 
 msgctxt "Languages::newsman.double_optin"
 msgid "Double Opt-in"
@@ -318,7 +318,7 @@ msgstr "Lista de distribuție CS-Cart de sincronizat"
 
 msgctxt "SettingsTooltips::newsman::cscart_mailing_list_id"
 msgid "Select the CS-Cart mailing list used for two-way subscriber sync with Newsman. Only subscribers of this list are pushed to Newsman, and Newsman subscribe/unsubscribe webhooks affect only this list."
-msgstr "Selectează lista de distribuție CS-Cart utilizată pentru sincronizarea bidirecțională a abonaților cu Newsman. Doar abonații acestei liste sunt trimiși la Newsman, iar webhook-urile Newsman de abonare/dezabonare afectează doar această listă."
+msgstr "Optional. Selecteaza lista CS-Cart folosita pentru sincronizarea bidirectionala a abonatilor cu Newsman. Doar abonatii acestei liste sunt trimisi la Newsman, iar webhook-urile Newsman de abonare/dezabonare afecteaza doar aceasta lista. Lasa gol pentru a dezactiva aceasta sincronizare."
 
 msgctxt "SettingsOptions::newsman::double_optin"
 msgid "Double Opt-in"

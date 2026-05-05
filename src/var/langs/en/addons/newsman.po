@@ -54,15 +54,15 @@ msgstr "Required"
 
 msgctxt "Languages::newsman.cscart_mailing_list_id_help"
 msgid "Two-way sync is restricted to this mailing list: only its subscribers are pushed to Newsman, and Newsman webhooks affect only this list."
-msgstr "Two-way sync is restricted to this mailing list: only its subscribers are pushed to Newsman, and Newsman webhooks affect only this list."
+msgstr "Optional. When selected, two-way sync is restricted to this CS-Cart mailing list: only its subscribers are pushed to Newsman, and Newsman webhooks affect only this list."
 
 msgctxt "Languages::newsman.cscart_mailing_list_id_warning"
 msgid "Subscribe and unsubscribe will not work until a mailing list is selected here."
-msgstr "Subscribe and unsubscribe will not work until a mailing list is selected here."
+msgstr "Leave empty to disable CS-Cart mailing-list subscription sync."
 
 msgctxt "Languages::newsman.cscart_mailing_list_none"
 msgid "Any list (no restriction)"
-msgstr "Any list (no restriction)"
+msgstr "No CS-Cart mailing list"
 
 msgctxt "Languages::newsman.double_optin"
 msgid "Double Opt-in"
@@ -318,7 +318,7 @@ msgstr "CS-Cart mailing list to sync"
 
 msgctxt "SettingsTooltips::newsman::cscart_mailing_list_id"
 msgid "Select the CS-Cart mailing list used for two-way subscriber sync with Newsman. Only subscribers of this list are pushed to Newsman, and Newsman subscribe/unsubscribe webhooks affect only this list."
-msgstr "Select the CS-Cart mailing list used for two-way subscriber sync with Newsman. Only subscribers of this list are pushed to Newsman, and Newsman subscribe/unsubscribe webhooks affect only this list."
+msgstr "Optional. Select the CS-Cart mailing list used for two-way subscriber sync with Newsman. Only subscribers of this list are pushed to Newsman, and Newsman subscribe/unsubscribe webhooks affect only this list. Leave empty to disable this sync."
 
 msgctxt "SettingsOptions::newsman::double_optin"
 msgid "Double Opt-in"

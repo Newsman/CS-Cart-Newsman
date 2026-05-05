@@ -36,7 +36,7 @@ Inainte de a folosi orice functionalitate, add-on-ul trebuie conectat la contul 
 5. Apasa **Save**. Un indicator verde confirma conexiunea.
 6. Apoi selecteaza o **Email List** din dropdown; lista e populata din contul tau Newsman.
 7. Optional, selecteaza un **Segment** din lista respectiva.
-8. Selecteaza o **CS-Cart mailing list** (obligatoriu) pentru a defini ce abonati CS-Cart participa la sincronizarea bidirectionala (vezi mai jos).
+8. Optional, selecteaza o **CS-Cart mailing list** pentru a defini ce abonati CS-Cart participa la sincronizarea bidirectionala (vezi mai jos).
 9. Apasa **Save** din nou.
 
 ---
@@ -63,10 +63,10 @@ Pagina **Admin > Marketing > Newsman** este organizata pe sectiuni. Fiecare sect
 
 - **Email List** (obligatoriu) - Lista Newsman unde sunt adaugati abonatii din acest magazin CS-Cart. Dropdown-ul este populat din contul tau Newsman.
 - **Segment** - Optional, restrange sincronizarea la un segment specific din lista selectata. Lasa gol pentru sincronizare cu toata lista.
-- **CS-Cart mailing list** (obligatoriu) - Lista de mailing CS-Cart folosita pentru sincronizarea bidirectionala cu Newsman:
+- **CS-Cart mailing list** (optional) - Lista de mailing CS-Cart folosita pentru sincronizarea bidirectionala cu Newsman:
   - Doar abonatii listei CS-Cart selectate sunt trimisi catre Newsman.
   - Webhook-urile Newsman de subscribe/unsubscribe afecteaza doar aceasta lista.
-  - Daca alegi **Any list (no restriction)**, actiunile de subscribe/unsubscribe sunt ignorate - alege o lista aici pentru a activa sincronizarea.
+  - Daca lasi campul gol, sincronizarea abonarii/dezabonarii cu listele CS-Cart este dezactivata.
 - **Double Opt-in** - Cand este activ, abonatii noi primesc un email de confirmare de la Newsman si sunt adaugati in lista doar dupa ce fac click pe link-ul din email. Recomandat pentru deliverability mai bun.
 - **Send User IP** - Cand un vizitator se aboneaza sau plaseaza o comanda, add-on-ul poate trimite adresa IP a clientului catre Newsman (util pentru analytics si anti-abuz). Daca il dezactivezi, add-on-ul foloseste **Server IP** de mai jos ca fallback.
 - **Server IP** - Adresa IP folosita ca fallback cand **Send User IP** este dezactivat. De regula poti lasa gol; add-on-ul detecteaza automat IP-ul serverului.
@@ -130,7 +130,7 @@ In mod normal nu trebuie sa modifici nimic aici - e mai sigur sa modifici setari
 ## Depanare
 
 - **"Could not connect to Newsman"** - Verifica din nou API Key si User ID. Daca sunt corecte si eroarea persista, apasa **Reconnect** pentru a relua fluxul OAuth.
-- **Subscribe/unsubscribe de la newsletter nu ajunge la Newsman** - Asigura-te ca este selectata o **CS-Cart mailing list** in sectiunea General. Sincronizarea este restransa in mod intentionat la o singura lista CS-Cart, asa ca abonatii adaugati la alte liste sunt sariti.
+- **Subscribe/unsubscribe de la newsletter nu ajunge la Newsman** - Daca vrei ca evenimentele de abonare/dezabonare CS-Cart sa se sincronizeze, selecteaza o **CS-Cart mailing list** in sectiunea General. Daca o lasi goala, aceasta parte a sincronizarii este dezactivata.
 - **Scripturile de remarketing nu apar pe storefront** - Verifica ca **Enable Remarketing** este activ, ca **Remarketing ID** este setat (status verde) si ca ai sters cache-ul CS-Cart.
 - **Ai nevoie de mai multe detalii in log** - Seteaza temporar **Log Level** la **Debug**; fisierele de log sunt in `var/newsman_logs/`.
 
