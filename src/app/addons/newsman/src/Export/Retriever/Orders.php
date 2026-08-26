@@ -58,7 +58,7 @@ class Orders extends AbstractRetriever
         $orders = db_get_array(
             "SELECT o.order_id, o.email, o.firstname, o.lastname, o.phone, o.b_firstname, o.b_lastname,"
             . " o.b_phone, o.company, o.total, o.subtotal, o.discount, o.shipping_cost, o.status,"
-            . " o.timestamp, o.user_id"
+            . " o.timestamp, o.updated_at, o.user_id"
             . " FROM ?:orders AS o"
             . " WHERE o.is_parent_order != 'Y'" . $extraCondition . $filterSql
             . $orderSql
@@ -117,7 +117,8 @@ class Orders extends AbstractRetriever
                 'discount_code'        => $discountCode,
                 'status'               => $statusMapper->toNewsman($order['status']),
                 'date_created'         => date('Y-m-d H:i:s', $order['timestamp']),
-                'date_modified'        => date('Y-m-d H:i:s', $order['timestamp']),
+                // updated_at stays 0 until the order is first updated.
+                'date_modified'        => date('Y-m-d H:i:s', !empty($order['updated_at']) ? (int) $order['updated_at'] : (int) $order['timestamp']),
                 'products'             => $products,
             );
         }
@@ -197,7 +198,9 @@ class Orders extends AbstractRetriever
     {
         return array(
             'created_at'  => array('field' => 'o.timestamp', 'quote' => false, 'type' => 'int'),
-            'modified_at' => array('field' => 'o.updated_at', 'quote' => false, 'type' => 'int'),
+            // updated_at stays 0 until the order is first updated, so filter
+            // and sort on the effective modification time instead.
+            'modified_at' => array('field' => 'IF(o.updated_at > 0, o.updated_at, o.timestamp)', 'quote' => false, 'type' => 'int'),
             'order_id'    => array('field' => 'o.order_id', 'quote' => false, 'type' => 'int'),
             'order_ids'   => array('field' => 'o.order_id', 'quote' => false, 'type' => 'int', 'multiple' => true),
         );
@@ -210,7 +213,7 @@ class Orders extends AbstractRetriever
     {
         return array(
             'created_at'  => 'o.timestamp',
-            'modified_at' => 'o.updated_at',
+            'modified_at' => 'IF(o.updated_at > 0, o.updated_at, o.timestamp)',
             'order_id'    => 'o.order_id',
         );
     }

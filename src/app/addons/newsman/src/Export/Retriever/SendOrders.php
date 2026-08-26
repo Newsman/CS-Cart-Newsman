@@ -159,7 +159,9 @@ class SendOrders extends AbstractRetriever
     {
         return array(
             'created_at'  => array('field' => 'o.timestamp', 'quote' => false, 'type' => 'int'),
-            'modified_at' => array('field' => 'o.updated_timestamp', 'quote' => false, 'type' => 'int'),
+            // ?:orders has no updated_timestamp column (that is the products
+            // table); updated_at stays 0 until the order is first updated.
+            'modified_at' => array('field' => 'IF(o.updated_at > 0, o.updated_at, o.timestamp)', 'quote' => false, 'type' => 'int'),
             'order_id'    => array('field' => 'o.order_id', 'quote' => false, 'type' => 'int'),
             'order_ids'   => array('field' => 'o.order_id', 'quote' => false, 'type' => 'int', 'multiple' => true),
         );
