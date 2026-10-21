@@ -7,7 +7,7 @@ class CustomerIdentifyDeferred
     /**
      * Render a static bootstrap script that resolves the logged-in customer
      * client-side by fetching a non-cacheable JSON endpoint and calling
-     * `_nzm.run('identify', ...)` with the response.
+     * `_nzm.identify(...)` with the response.
      *
      * The HTML contains no per-user data, so the surrounding page stays
      * safely cacheable by Varnish / full_page_cache.
@@ -35,7 +35,7 @@ class CustomerIdentifyDeferred
             var data;
             try { data = JSON.parse(xhr.responseText); } catch (e) { return; }
             if (!data || !data.email) { return; }
-            _nzm.run('identify', {
+            _nzm.identify({
                 'email': data.email,
                 'first_name': data.first_name || '',
                 'last_name': data.last_name || ''

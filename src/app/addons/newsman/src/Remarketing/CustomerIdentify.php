@@ -20,7 +20,7 @@ class CustomerIdentify
         $firstJs = JsHelper::escapeJs($firstname);
         $lastJs = JsHelper::escapeJs($lastname);
 
-        $js = "_nzm.run('identify', {"
+        $js = "_nzm.identify({"
             . "'email': '{$emailJs}'"
             . ", 'first_name': '{$firstJs}'"
             . ", 'last_name': '{$lastJs}'"
