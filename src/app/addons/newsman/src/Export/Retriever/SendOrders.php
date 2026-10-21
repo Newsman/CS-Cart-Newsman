@@ -81,9 +81,11 @@ class SendOrders extends AbstractRetriever
         $productsByOrder = array();
         foreach ($allProducts as $item) {
             $productsByOrder[$item['order_id']][] = array(
-                'id'       => (string) $item['product_id'],
-                'quantity' => (int) $item['amount'],
-                'price'    => number_format((float) $item['price'], 2, '.', ''),
+                'id'             => (string) $item['product_id'],
+                'quantity'       => (int) $item['amount'],
+                'price'          => number_format((float) $item['price'], 2, '.', ''),
+                // Newsman rejects the whole order ("No valid purchases sent") without it.
+                'variation_code' => '',
             );
         }
 
@@ -106,6 +108,7 @@ class SendOrders extends AbstractRetriever
         // Build order payloads
         $orderPayloads = array();
         $total = count($orders);
+        $currency = defined('CART_PRIMARY_CURRENCY') ? CART_PRIMARY_CURRENCY : '';
 
         foreach ($orders as $order) {
             $oid = $order['order_id'];
@@ -125,6 +128,8 @@ class SendOrders extends AbstractRetriever
                 'rebates'       => 0,
                 'fees'          => 0,
                 'total'         => number_format((float) $order['total'], 2, '.', ''),
+                // Newsman rejects the whole order ("No valid purchases sent") without it.
+                'currency'      => $currency,
                 'products'      => isset($productsByOrder[$oid]) ? $productsByOrder[$oid] : array(),
             );
         }

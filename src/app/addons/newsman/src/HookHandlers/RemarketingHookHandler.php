@@ -65,7 +65,12 @@ class RemarketingHookHandler
 
             // Body scripts
             $bodyScripts = '';
-            $isCheckoutComplete = ($dispatch === 'checkout.complete');
+            $completedOrder = array();
+            if ($dispatch === 'checkout.complete') {
+                $completedOrder = $this->getCompletedOrder($view);
+            }
+            // Only a page showing the visitor their own order counts as a checkout completion.
+            $isCheckoutComplete = !empty($completedOrder);
 
             // Cart tracking
             $cartUrl = fn_url('newsman_front.cart', 'C');
@@ -129,11 +134,8 @@ class RemarketingHookHandler
                 $categoryName = is_array($categoryData) && !empty($categoryData['category']) ? $categoryData['category'] : '';
                 $bodyScripts .= $this->renderer->renderCategoryView($categoryId, $products, $categoryName);
                 $bodyScripts .= $this->renderer->renderPageView();
-            } elseif ($isCheckoutComplete && !empty($_REQUEST['order_id'])) {
-                $orderInfo = fn_get_order_info($_REQUEST['order_id']);
-                if (!empty($orderInfo)) {
-                    $bodyScripts .= $this->renderer->renderPurchase($orderInfo);
-                }
+            } elseif ($isCheckoutComplete) {
+                $bodyScripts .= $this->renderer->renderPurchase($completedOrder);
             } else {
                 $bodyScripts .= $this->renderer->renderPageView();
             }
@@ -157,4 +159,30 @@ class RemarketingHookHandler
         );
     }
 
+    /**
+     * Order shown on checkout.complete, only when the visitor may see it.
+     *
+     * For someone else's order the core controller returns CONTROLLER_STATUS_DENIED,
+     * but dispatch_before_display still runs, so the requested order_id alone must
+     * never be trusted.
+     *
+     * @param \Tygh\SmartyEngine\Core $view
+     * @return array
+     */
+    protected function getCompletedOrder($view)
+    {
+        $orderId = isset($_REQUEST['order_id']) ? (int) $_REQUEST['order_id'] : 0;
+        $auth = isset(Tygh::$app['session']['auth']) ? Tygh::$app['session']['auth'] : array();
+        if ($orderId <= 0 || !fn_is_order_allowed($orderId, $auth)) {
+            return array();
+        }
+
+        // The controller's copy has the placeholder email of email-less orders blanked.
+        $orderInfo = $view->getTemplateVars('order_info');
+        if (!is_array($orderInfo) || empty($orderInfo['order_id']) || (int) $orderInfo['order_id'] !== $orderId) {
+            $orderInfo = fn_get_order_info($orderId);
+        }
+
+        return is_array($orderInfo) ? $orderInfo : array();
+    }
 }

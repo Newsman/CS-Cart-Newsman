@@ -55,10 +55,12 @@ class Save
         if (!empty($orderInfo['products'])) {
             foreach ($orderInfo['products'] as $product) {
                 $products[] = array(
-                    'id'       => (string) $product['product_id'],
-                    'name'     => isset($product['product']) ? $product['product'] : '',
-                    'price'    => number_format((float) $product['price'], 2, '.', ''),
-                    'quantity' => (int) $product['amount'],
+                    'id'             => (string) $product['product_id'],
+                    'name'           => isset($product['product']) ? $product['product'] : '',
+                    'price'          => number_format((float) $product['price'], 2, '.', ''),
+                    'quantity'       => (int) $product['amount'],
+                    // Newsman rejects the whole order ("No valid purchases sent") without it.
+                    'variation_code' => '',
                 );
             }
         }
@@ -88,7 +90,7 @@ class Save
 
         $details = array(
             'order_no'      => (string) $orderId,
-            'date'          => date('Y-m-d H:i:s', $orderInfo['timestamp']),
+            'created_at'    => date('Y-m-d H:i:s', $orderInfo['timestamp']),
             'status'        => $this->statusMapper->toNewsman(!empty($orderInfo['status']) ? $orderInfo['status'] : $orderStatus),
             'total'         => number_format((float) $orderInfo['total'], 2, '.', ''),
             'discount'      => number_format(abs((float) (isset($orderInfo['discount']) ? $orderInfo['discount'] : 0)), 2, '.', ''),
