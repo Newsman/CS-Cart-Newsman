@@ -17,6 +17,7 @@ use Tygh\Addons\Newsman\HookHandlers\NewsletterHookHandler;
 use Tygh\Addons\Newsman\HookHandlers\OrderHookHandler;
 use Tygh\Addons\Newsman\HookHandlers\ProfileHookHandler;
 use Tygh\Addons\Newsman\HookHandlers\RemarketingHookHandler;
+use Tygh\Addons\Newsman\HookHandlers\UserHookHandler;
 use Tygh\Addons\Newsman\Remarketing\CartTracking;
 use Tygh\Addons\Newsman\Remarketing\CartTrackingNative;
 use Tygh\Addons\Newsman\Remarketing\CategoryView;
@@ -217,6 +218,15 @@ class ServiceProvider implements ServiceProviderInterface
             return new NewsletterHookHandler(
                 $app['addons.newsman.config'],
                 $app['addons.newsman.action.subscribe'],
+                $app['addons.newsman.logger']
+            );
+        };
+
+        $app['addons.newsman.hook_handlers.user'] = static function ($app) {
+            return new UserHookHandler(
+                $app['addons.newsman.config'],
+                $app['addons.newsman.service.unsubscribe'],
+                $app['addons.newsman.user.ip_address'],
                 $app['addons.newsman.logger']
             );
         };

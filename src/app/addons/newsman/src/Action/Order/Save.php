@@ -2,6 +2,7 @@
 
 namespace Tygh\Addons\Newsman\Action\Order;
 
+use Tygh\Addons\Newsman\Api\Client;
 use Tygh\Addons\Newsman\Config;
 use Tygh\Addons\Newsman\Logger;
 use Tygh\Addons\Newsman\Service\Remarketing\SaveOrders;
@@ -123,7 +124,7 @@ class Save
         }
 
         if (isset($result['error'])) {
-            $this->logger->error(sprintf('Failed to save order #%d: %s', $orderId, $result['error']));
+            $this->logger->error(sprintf('Failed to save order #%d: %s', $orderId, Client::errorMessage($result)));
             return false;
         }
 

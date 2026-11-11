@@ -51,7 +51,7 @@ class ExportCsvSubscribers
         $result = $this->client->post($context, array(), $postParams);
 
         if (isset($result['error'])) {
-            throw new \RuntimeException('import.csv API error: ' . $result['error']);
+            throw new \RuntimeException('import.csv API error: ' . Client::errorMessage($result));
         }
 
         $this->logger->info('Subscriber export completed successfully');

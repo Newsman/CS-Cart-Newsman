@@ -50,7 +50,7 @@ class RefreshRemarketing extends AbstractRetriever
         $result = $this->client->get($context, array('list_id' => $listId));
 
         if (isset($result['error'])) {
-            throw new ApiV1Exception(9004, 'Failed to fetch remarketing settings: ' . $result['error'], 500);
+            throw new ApiV1Exception(9004, 'Failed to fetch remarketing settings: ' . Client::errorMessage($result), 500);
         }
 
         $oldJs = $this->config->getRemarketingScriptJs();

@@ -2,6 +2,7 @@
 
 namespace Tygh\Addons\Newsman\Action\Subscribe;
 
+use Tygh\Addons\Newsman\Api\Client;
 use Tygh\Addons\Newsman\Config;
 use Tygh\Addons\Newsman\Logger;
 use Tygh\Addons\Newsman\Service\InitSubscribeEmail;
@@ -88,7 +89,7 @@ class Email
             }
 
             if (isset($result['error'])) {
-                $this->logger->error(sprintf('Subscribe failed for %s: %s', $email, $result['error']));
+                $this->logger->error(sprintf('Subscribe failed for %s: %s', $email, Client::errorMessage($result)));
                 return false;
             }
         } catch (\Exception $e) {
@@ -122,7 +123,7 @@ class Email
             $result = $this->unsubscribeService->execute($email, $ip);
 
             if (isset($result['error'])) {
-                $this->logger->error(sprintf('Unsubscribe failed for %s: %s', $email, $result['error']));
+                $this->logger->error(sprintf('Unsubscribe failed for %s: %s', $email, Client::errorMessage($result)));
                 return false;
             }
         } catch (\Exception $e) {

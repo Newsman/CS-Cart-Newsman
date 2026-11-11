@@ -7,6 +7,12 @@ use Tygh\Addons\Newsman\Logger;
 
 class Client
 {
+    /** Error code when Newsman could not be reached (no HTTP answer). */
+    const ERROR_CODE_NO_RESPONSE = 599;
+
+    /** Error code for an error answer at HTTP 200 that carries no Newsman code. */
+    const ERROR_CODE_GENERIC = 1;
+
     /** @var Config */
     protected $config;
 
@@ -98,16 +104,17 @@ class Client
         }
 
         $response = curl_exec($ch);
-        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-        $curlError = curl_error($ch);
+        $httpCode = (int) curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        $curlError = (string) curl_error($ch);
         curl_close($ch);
 
         $elapsedMs = round((microtime(true) - $startTime) * 1000);
         $this->logger->debug(sprintf('[%s] Requested in %s', $logHash, $this->formatTimeDuration($elapsedMs)));
 
-        if ($curlError) {
-            $this->logger->error(sprintf('[%s] cURL error: %s', $logHash, $curlError));
-            return array('error' => $curlError);
+        if ($response === false || $curlError !== '' || $httpCode === 0) {
+            $message = $curlError !== '' ? $curlError : 'No response from Newsman';
+            $this->logger->error(sprintf('[%s] cURL error: %s', $logHash, $message));
+            return $this->errorResult($message, self::ERROR_CODE_NO_RESPONSE, $message);
         }
 
         $this->logger->debug(sprintf('[%s] Raw response (HTTP %d): %s', $logHash, $httpCode, substr($response, 0, 500)));
@@ -117,23 +124,89 @@ class Client
         if ($httpCode >= 400) {
             $this->logger->error(sprintf('[%s] %d | %s', $logHash, $httpCode, substr($response, 0, 500)));
             $errorMsg = isset($decoded['err']) ? $decoded['err'] : "HTTP $httpCode";
-            return array('error' => $errorMsg);
+            return $this->errorResult(
+                $errorMsg,
+                $this->errorCode(isset($decoded['code']) ? $decoded['code'] : 0, $httpCode),
+                isset($decoded['message']) ? (string) $decoded['message'] : ''
+            );
         }
 
         if ($decoded === null) {
             $this->logger->error(sprintf('[%s] Invalid JSON: %s', $logHash, substr($response, 0, 200)));
-            return array('error' => 'Invalid JSON response');
+            return $this->errorResult('Invalid JSON response', $this->errorCode(0, $httpCode), 'Invalid JSON response');
         }
 
         $apiError = $this->parseApiError($decoded);
         if ($apiError !== false) {
             $this->logger->warning(sprintf('[%s] %d | %s', $logHash, $apiError['code'], $apiError['message']));
-            return array('error' => $apiError['message']);
+            return $this->errorResult(
+                $apiError['message'],
+                $this->errorCode($apiError['code'], $httpCode),
+                $apiError['message']
+            );
         }
 
         $this->logger->notice(sprintf('[%s] %s', $logHash, json_encode($decoded)));
 
         return $decoded;
+    }
+
+    /**
+     * Readable text of an error result: the Newsman message, else the error.
+     *
+     * @param array $result Error result returned by request()
+     * @return string
+     */
+    public static function errorMessage($result)
+    {
+        if (!is_array($result)) {
+            return '';
+        }
+        if (isset($result['message']) && (string) $result['message'] !== '') {
+            return (string) $result['message'];
+        }
+        if (isset($result['error']) && is_string($result['error']) && $result['error'] !== '') {
+            return $result['error'];
+        }
+
+        return isset($result['code']) ? 'error code ' . (int) $result['code'] : 'unknown error';
+    }
+
+    /**
+     * Every error result has a non-empty error, a non-zero code and a message
+     * (empty when Newsman sent none).
+     *
+     * @param mixed  $error
+     * @param int    $code
+     * @param string $message
+     * @return array
+     */
+    protected function errorResult($error, $code, $message)
+    {
+        return array(
+            'error'   => ($error === null || $error === false || $error === '') ? 'error code ' . (int) $code : $error,
+            'code'    => (int) $code,
+            'message' => (string) $message,
+        );
+    }
+
+    /**
+     * The Newsman error code, else the HTTP status, else 1 (HTTP 200).
+     *
+     * @param mixed $apiCode
+     * @param int   $httpCode
+     * @return int
+     */
+    protected function errorCode($apiCode, $httpCode)
+    {
+        if ((int) $apiCode !== 0) {
+            return (int) $apiCode;
+        }
+        if ($httpCode > 0 && $httpCode !== 200) {
+            return $httpCode;
+        }
+
+        return self::ERROR_CODE_GENERIC;
     }
 
     /**

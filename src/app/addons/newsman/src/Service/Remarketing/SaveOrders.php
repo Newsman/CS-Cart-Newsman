@@ -44,7 +44,7 @@ class SaveOrders
         $result = $this->client->post($context, array(), $postParams);
 
         if (isset($result['error'])) {
-            throw new \RuntimeException('remarketing.saveOrders API error: ' . $result['error']);
+            throw new \RuntimeException('remarketing.saveOrders API error: ' . Client::errorMessage($result));
         }
 
         $this->logger->info('Batch order export completed successfully');
