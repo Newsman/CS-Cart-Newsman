@@ -127,6 +127,19 @@ In mod normal nu trebuie sa modifici nimic aici - e mai sigur sa modifici setari
 
 ---
 
+## Date personale (GDPR)
+
+Cand stergi sau anonimizezi un client in CS-Cart, add-on-ul dezaboneaza si adresa lui de email din Newsman. Functioneaza pe storefront-urile unde Newsman este conectat si este selectata o **CS-Cart mailing list**.
+
+- **Stergerea unui client** - **Customers > Customers**, **Delete** pentru un client sau **Delete selected** pentru mai multi, ori REST API (`DELETE /api/users/<id>`): adresa de email este dezabonata din lista Newsman a storefront-urilor clientului, daca este in **CS-Cart mailing list** selectata acolo. Cu **Share users among stores** activ (Ultimate), toate storefront-urile sunt considerate ale clientului. Abonarea din newsletter-ul CS-Cart ramane neschimbata (comportamentul standard CS-Cart); ea nu poate abona din nou contactul in Newsman.
+- **Anonimizarea unui client** (add-on-ul CS-Cart **GDPR**: **Customers > Customers**, iconita roata > **Anonymize**) - adresa de email este dezabonata din lista Newsman a storefront-urilor clientului chiar daca nu este in CS-Cart mailing list, pentru ca poate sa fi ajuns in Newsman pe alta cale, si din lista oricarui alt storefront a carui CS-Cart mailing list o contine.
+
+Storefront-urile care folosesc aceeasi lista Newsman primesc o singura dezabonare. Nu se trimite niciun email de confirmare, nici cu **Double Opt-in** activ, asa ca nimeni nu primeste un email dupa ce a cerut sa fie uitat. O adresa de email care nu este in lista Newsman nu este o eroare. O eroare Newsman nu opreste niciodata stergerea sau anonimizarea; ea este scrisa in log-ul Newsman (`var/newsman_logs/`). Daca Newsman nu poate fi contactat, stergerea sau anonimizarea dureaza mai mult (pana la **API Timeout** pentru fiecare lista Newsman) si se finalizeaza oricum.
+
+Newsman nu are un API pentru stergerea unui contact, asa ca acesta ramane in Newsman ca dezabonat. Astfel, o sincronizare ulterioara a aceleiasi adrese de email nu o poate abona din nou.
+
+---
+
 ## Depanare
 
 - **"Could not connect to Newsman"** - Verifica din nou API Key si User ID. Daca sunt corecte si eroarea persista, apasa **Reconnect** pentru a relua fluxul OAuth.

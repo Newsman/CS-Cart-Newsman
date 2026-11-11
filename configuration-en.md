@@ -127,6 +127,19 @@ You generally do not need to edit anything here - it's safer to edit settings on
 
 ---
 
+## Personal Data (GDPR)
+
+When you delete or anonymize a customer in CS-Cart, the addon also unsubscribes their email address from Newsman. This works on the storefronts where Newsman is connected and a **CS-Cart mailing list** is selected.
+
+- **Deleting a customer** - **Customers > Customers**, **Delete** for one customer or **Delete selected** for several, or the REST API (`DELETE /api/users/<id>`): the email address is unsubscribed from the Newsman list of the customer's storefronts, when it is on the **CS-Cart mailing list** selected there. With **Share users among stores** turned on (Ultimate), every storefront counts as the customer's. The CS-Cart newsletter subscription itself is left as it is (CS-Cart's own behaviour); it cannot subscribe the contact again in Newsman.
+- **Anonymizing a customer** (the CS-Cart **GDPR** add-on: **Customers > Customers**, gear icon > **Anonymize**) - the email address is unsubscribed from the Newsman list of the customer's storefronts even when it is not on the CS-Cart mailing list, because it may have reached Newsman in other ways, and from the list of any other storefront whose CS-Cart mailing list has it.
+
+Storefronts that use the same Newsman list get a single unsubscribe. Nothing goes through a confirmation email, even with **Double Opt-in** on, so nobody receives an email after asking to be forgotten. An email address that is not on the Newsman list is not an error. A Newsman error never stops the deletion or the anonymization; it is written to the Newsman log (`var/newsman_logs/`). If Newsman cannot be reached, the deletion or the anonymization takes longer (up to the **API Timeout** for each Newsman list) and still completes.
+
+Newsman has no API to delete a contact, so the contact stays in Newsman as unsubscribed. This also means a later sync of the same email address cannot subscribe it again.
+
+---
+
 ## Troubleshooting
 
 - **"Could not connect to Newsman"** - Double-check the API Key and User ID. If they are correct but the error persists, click **Reconnect** to run the OAuth flow again.
