@@ -72,6 +72,14 @@ msgctxt "Languages::newsman.send_user_ip"
 msgid "Send User IP"
 msgstr "Invia IP utente"
 
+msgctxt "Languages::newsman.anonymise_on_delete"
+msgid "Anonymise in Newsman when customers are deleted"
+msgstr "Anonimizza in Newsman quando i clienti vengono eliminati"
+
+msgctxt "Languages::newsman.anonymise_on_delete_help"
+msgid "When a customer or a newsletter subscriber is deleted, the email address is anonymised in Newsman. When off, the email address is unsubscribed in Newsman instead. If storefronts that use the same Newsman list have different values, it is unsubscribed. Anonymizing a customer (GDPR add-on) always anonymises the email address in Newsman."
+msgstr "Quando un cliente o un iscritto alla newsletter viene eliminato, l'indirizzo email viene anonimizzato in Newsman. Se disattivato, l'indirizzo email viene invece disiscritto in Newsman. Se le vetrine che usano la stessa lista Newsman hanno valori diversi, viene disiscritto. L'anonimizzazione di un cliente (add-on GDPR) anonimizza sempre l'indirizzo email in Newsman."
+
 msgctxt "Languages::newsman.server_ip"
 msgid "Server IP"
 msgstr "IP server"
@@ -327,6 +335,14 @@ msgstr "Double opt-in"
 msgctxt "SettingsOptions::newsman::send_user_ip"
 msgid "Send User IP"
 msgstr "Invia IP utente"
+
+msgctxt "SettingsOptions::newsman::anonymise_on_delete"
+msgid "Anonymise in Newsman when customers are deleted"
+msgstr "Anonimizza in Newsman quando i clienti vengono eliminati"
+
+msgctxt "SettingsTooltips::newsman::anonymise_on_delete"
+msgid "When a customer or a newsletter subscriber is deleted, the email address is anonymised in Newsman. When off, the email address is unsubscribed in Newsman instead. If storefronts that use the same Newsman list have different values, it is unsubscribed. Anonymizing a customer (GDPR add-on) always anonymises the email address in Newsman."
+msgstr "Quando un cliente o un iscritto alla newsletter viene eliminato, l'indirizzo email viene anonimizzato in Newsman. Se disattivato, l'indirizzo email viene invece disiscritto in Newsman. Se le vetrine che usano la stessa lista Newsman hanno valori diversi, viene disiscritto. L'anonimizzazione di un cliente (add-on GDPR) anonimizza sempre l'indirizzo email in Newsman."
 
 msgctxt "SettingsOptions::newsman::remarketing_status"
 msgid "Enable Remarketing"

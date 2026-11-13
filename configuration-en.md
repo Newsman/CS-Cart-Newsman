@@ -69,6 +69,7 @@ The **Admin > Marketing > Newsman** page is organized into sections. Each sectio
   - If you select **Any list (no restriction)**, subscribe and unsubscribe actions are ignored - pick a list here to enable syncing.
 - **Double Opt-in** - When enabled, new subscribers receive a confirmation email from Newsman and are only added to the list after they click the link inside. Recommended for higher deliverability.
 - **Send User IP** - When a visitor subscribes or places an order, the addon can send the client IP address to Newsman (helpful for analytics and anti-abuse). If turned off, the addon will use the **Server IP** value below as a fallback.
+- **Anonymise in Newsman when customers are deleted** (enabled by default) - When a customer or a newsletter subscriber is deleted in CS-Cart, the email address is anonymised in Newsman. Turn it off to unsubscribe the email address in Newsman instead. Anonymizing a customer with the GDPR add-on always anonymises. See [Personal Data (GDPR)](#personal-data-gdpr).
 - **Server IP** - A fallback IP address used when **Send User IP** is disabled. You can usually leave this empty; the addon will detect the server IP automatically.
 
 ### Remarketing
@@ -117,7 +118,7 @@ Scroll to the bottom of the Newsman settings page and click **Save**. After savi
 A few extra options are exposed on the standard CS-Cart addon settings page (accessible via **Admin > Add-ons > Manage add-ons > Newsman > gear icon > Settings**). These mirror the options on the main Newsman page and are kept in the CS-Cart storage for addon-level settings access by hooks:
 
 - **API Key**, **User ID**, **CS-Cart mailing list to sync**
-- **Double Opt-in**, **Send User IP**
+- **Double Opt-in**, **Send User IP**, **Anonymise in Newsman when customers are deleted**
 - **Enable Remarketing**, **Anonymize IP**, **Send Telephone**, **Theme Cart Compatibility**
 - **Log Level**, **API Timeout (seconds)**, **Log Retention (days)**
 - **Export Auth Header Name**, **Export Auth Header Key**
@@ -129,11 +130,13 @@ You generally do not need to edit anything here - it's safer to edit settings on
 
 ## Personal Data (GDPR)
 
-When you delete a customer or a newsletter subscriber, or anonymize a customer, in CS-Cart, the addon also anonymises the email address in Newsman. A few seconds later Newsman replaces the address of the contact with an anonymous one and marks the contact as unsubscribed, so the original address is no longer on the Newsman list. This is done whatever the CS-Cart newsletter status (subscribed, unsubscribed or never subscribed), because the address may have reached Newsman in other ways (orders, imports, Newsman forms). It works on the storefronts where Newsman is connected (User ID, API key and a Newsman list); the **CS-Cart mailing list** setting does not matter here.
+When you delete a customer or a newsletter subscriber, or anonymize a customer, in CS-Cart, the addon also anonymises the email address in Newsman (for the deletes, only while the setting **Anonymise in Newsman when customers are deleted** is on, see below). A few seconds later Newsman replaces the address of the contact with an anonymous one and marks the contact as unsubscribed, so the original address is no longer on the Newsman list. This is done whatever the CS-Cart newsletter status (subscribed, unsubscribed or never subscribed), because the address may have reached Newsman in other ways (orders, imports, Newsman forms). It works on the storefronts where Newsman is connected (User ID, API key and a Newsman list); the **CS-Cart mailing list** setting does not matter here.
 
 - **Deleting a customer** - **Customers > Customers**, **Delete** for one customer or **Delete selected** for several, or the REST API (`DELETE /api/users/<id>`): the email address is anonymised in the Newsman list of the customer's storefronts. With **Share users among stores** turned on (Ultimate), or for a user who belongs to no store, every storefront counts as the customer's. The CS-Cart newsletter subscriber with the same email address is left as it is (CS-Cart's own behaviour).
 - **Anonymizing a customer** (the CS-Cart **GDPR** add-on: **Customers > Customers**, gear icon > **Anonymize**) - the email address is anonymised in the Newsman list of the customer's storefronts. When the anonymization also deletes the CS-Cart newsletter subscriber (CS-Cart does that when you work in **All stores** mode), it is anonymised in the Newsman list of every storefront, as for a subscriber delete.
 - **Deleting a newsletter subscriber** - **Marketing > Newsletters > Subscribers**, **Delete** for one subscriber or **Delete selected** for several: a CS-Cart subscriber belongs to no storefront, so the email address is anonymised in the Newsman list of every storefront.
+
+**Anonymise in Newsman when customers are deleted** (section **General**, set per storefront, enabled by default, also after an update from an earlier version) decides what the deletes send. Turned off, deleting a customer (one or several, through the REST API or by another add-on too) or a newsletter subscriber unsubscribes the email address in the Newsman list instead of anonymising it: the contact stays in Newsman as unsubscribed, with its history, and a later import does not subscribe it again. Each storefront's own value decides for its Newsman list, also for a newsletter subscriber delete. When storefronts that use the same Newsman list have different values, the email address is unsubscribed there, the less destructive action. Anonymizing a customer with the **GDPR** add-on always anonymises, whatever this setting.
 
 Storefronts that use the same Newsman list get a single request. Nothing goes through a confirmation email, even with **Double Opt-in** on, so nobody receives an email after asking to be forgotten. An email address that is not on the Newsman list is not an error. A Newsman error never stops the deletion or the anonymization; it is written to the Newsman log (`var/newsman_logs/`). If Newsman cannot be reached, the deletion or the anonymization takes longer (up to the **API Timeout** for each Newsman list) and still completes.
 

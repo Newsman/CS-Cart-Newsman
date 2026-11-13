@@ -72,6 +72,14 @@ msgctxt "Languages::newsman.send_user_ip"
 msgid "Send User IP"
 msgstr "Trimite IP-ul utilizatorului"
 
+msgctxt "Languages::newsman.anonymise_on_delete"
+msgid "Anonymise in Newsman when customers are deleted"
+msgstr "Anonimizează în Newsman când clienții sunt șterși"
+
+msgctxt "Languages::newsman.anonymise_on_delete_help"
+msgid "When a customer or a newsletter subscriber is deleted, the email address is anonymised in Newsman. When off, the email address is unsubscribed in Newsman instead. If storefronts that use the same Newsman list have different values, it is unsubscribed. Anonymizing a customer (GDPR add-on) always anonymises the email address in Newsman."
+msgstr "Când un client sau un abonat la newsletter este șters, adresa de e-mail este anonimizată în Newsman. Când opțiunea este dezactivată, adresa de e-mail este dezabonată în Newsman. Dacă magazinele care folosesc aceeași listă Newsman au valori diferite, adresa este dezabonată. Anonimizarea unui client (add-on-ul GDPR) anonimizează întotdeauna adresa de e-mail în Newsman."
+
 msgctxt "Languages::newsman.server_ip"
 msgid "Server IP"
 msgstr "IP server"
@@ -327,6 +335,14 @@ msgstr "Dublă confirmare"
 msgctxt "SettingsOptions::newsman::send_user_ip"
 msgid "Send User IP"
 msgstr "Trimite IP-ul utilizatorului"
+
+msgctxt "SettingsOptions::newsman::anonymise_on_delete"
+msgid "Anonymise in Newsman when customers are deleted"
+msgstr "Anonimizează în Newsman când clienții sunt șterși"
+
+msgctxt "SettingsTooltips::newsman::anonymise_on_delete"
+msgid "When a customer or a newsletter subscriber is deleted, the email address is anonymised in Newsman. When off, the email address is unsubscribed in Newsman instead. If storefronts that use the same Newsman list have different values, it is unsubscribed. Anonymizing a customer (GDPR add-on) always anonymises the email address in Newsman."
+msgstr "Când un client sau un abonat la newsletter este șters, adresa de e-mail este anonimizată în Newsman. Când opțiunea este dezactivată, adresa de e-mail este dezabonată în Newsman. Dacă magazinele care folosesc aceeași listă Newsman au valori diferite, adresa este dezabonată. Anonimizarea unui client (add-on-ul GDPR) anonimizează întotdeauna adresa de e-mail în Newsman."
 
 msgctxt "SettingsOptions::newsman::remarketing_status"
 msgid "Enable Remarketing"

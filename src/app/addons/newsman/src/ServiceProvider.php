@@ -189,7 +189,9 @@ class ServiceProvider implements ServiceProviderInterface
             return new AnonymiseAction(
                 $app['addons.newsman.config'],
                 $app['addons.newsman.logger'],
-                $app['addons.newsman.service.anonymise']
+                $app['addons.newsman.service.anonymise'],
+                $app['addons.newsman.service.unsubscribe'],
+                $app['addons.newsman.user.ip_address']
             );
         };
 

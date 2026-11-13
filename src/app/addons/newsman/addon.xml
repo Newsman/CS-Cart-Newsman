@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <addon scheme="4.0">
     <id>newsman</id>
-    <version>2.0.9</version>
+    <version>2.0.10</version>
     <priority>500</priority>
     <status>disabled</status>
     <default_language>en</default_language>
@@ -46,6 +46,10 @@
                         <default_value>N</default_value>
                     </item>
                     <item id="send_user_ip">
+                        <type>checkbox</type>
+                        <default_value>Y</default_value>
+                    </item>
+                    <item id="anonymise_on_delete">
                         <type>checkbox</type>
                         <default_value>Y</default_value>
                     </item>

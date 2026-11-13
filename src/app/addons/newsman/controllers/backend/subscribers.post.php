@@ -17,7 +17,10 @@ if (!defined('BOOTSTRAP')) {
 // always work in "All stores" mode), and the contact can be on a Newsman list
 // without being on the CS-Cart mailing list selected for that storefront, so
 // the email is anonymised in the Newsman list of every storefront where
-// Newsman is connected, one call per Newsman list.
+// Newsman is connected, one call per Newsman list. Each storefront's setting
+// "Anonymise in Newsman when customers are deleted" decides for its Newsman
+// list: off means an unsubscribe instead, and a Newsman list shared by
+// storefronts with different values gets the unsubscribe.
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST' || ($mode !== 'delete' && $mode !== 'm_delete')) {
     return;
@@ -46,7 +49,7 @@ try {
             $logger->debug(sprintf('subscribers.post: subscriber_id=%d was not deleted, nothing sent to Newsman', $subscriberId));
             continue;
         }
-        $anonymiseAction->execute($email, $storefrontIds, sprintf('subscriber delete subscriber_id=%d', $subscriberId));
+        $anonymiseAction->executeForDelete($email, $storefrontIds, sprintf('subscriber delete subscriber_id=%d', $subscriberId));
     }
 } catch (\Throwable $e) {
     // Never break the delete because of Newsman.

@@ -95,6 +95,15 @@
 </div>
 
 <div class="control-group">
+    <label class="control-label" for="newsman_anonymise_on_delete">{__("newsman.anonymise_on_delete")}:</label>
+    <div class="controls">
+        <input type="hidden" name="anonymise_on_delete" value="N" />
+        <input type="checkbox" name="anonymise_on_delete" id="newsman_anonymise_on_delete" value="Y" {if $newsman_settings.anonymise_on_delete != "N"}checked="checked"{/if} />
+        <p class="muted description">{__("newsman.anonymise_on_delete_help")}</p>
+    </div>
+</div>
+
+<div class="control-group">
     <label class="control-label" for="newsman_server_ip">{__("newsman.server_ip")}:</label>
     <div class="controls">
         <input type="text" name="server_ip" id="newsman_server_ip" value="{$newsman_settings.server_ip}" size="30" class="input-medium" />

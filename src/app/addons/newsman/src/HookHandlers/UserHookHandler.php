@@ -11,12 +11,16 @@ use Tygh\Registry;
  * Anonymises in Newsman the email of a user who is deleted or anonymized
  * (GDPR erase request) in the store, whatever the user's newsletter status.
  *
- * User delete (Customers delete and mass delete, REST API): the email is read
- * on delete_user, while the user row still exists, and the anonymisation is
- * sent on post_delete_user, after the row was removed. It goes to the Newsman
- * lists of the user's storefronts. The CS-Cart subscriber row is left as it is.
+ * User delete (Customers delete and mass delete, REST API, any fn_delete_user
+ * call): the email is read on delete_user, while the user row still exists,
+ * and the anonymisation is sent on post_delete_user, after the row was
+ * removed. It goes to the Newsman lists of the user's storefronts. A Newsman
+ * list where the storefront setting "Anonymise in Newsman when customers are
+ * deleted" is off gets an unsubscribe instead. The CS-Cart subscriber row is
+ * left as it is.
  *
- * GDPR anonymize (profiles.anonymize): controllers/backend/profiles.pre.php
+ * GDPR anonymize (profiles.anonymize) always anonymises, whatever that
+ * setting: controllers/backend/profiles.pre.php
  * captures the email before the core controller replaces it, and the
  * anonymisation is sent on update_user_pre, when the core controller saves
  * the anonymized user data. It goes to the Newsman lists of the user's
@@ -146,7 +150,7 @@ class UserHookHandler
         }
 
         try {
-            $this->anonymiseAction->execute(
+            $this->anonymiseAction->executeForDelete(
                 $user['email'],
                 $this->getUserStorefrontIds($user['company_id']),
                 sprintf('user delete user_id=%d', $user_id)

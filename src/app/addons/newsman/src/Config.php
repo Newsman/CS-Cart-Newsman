@@ -9,7 +9,7 @@ class Config
 {
     const API_URL = 'https://ssl.newsman.app/api/';
     const API_VERSION = '1.2';
-    const ADDON_VERSION = '2.0.9';
+    const ADDON_VERSION = '2.0.10';
     const PLATFORM_NAME = 'CS-Cart';
 
     const OAUTH_AUTHORIZE_URL = 'https://newsman.app/admin/oauth/authorize';
@@ -141,6 +141,28 @@ class Config
     public function isSendUserIp($storefrontId = null)
     {
         return $this->readValue('send_user_ip', $storefrontId) === 'Y';
+    }
+
+    /**
+     * Whether the email of a deleted customer or newsletter subscriber is
+     * anonymised in Newsman (otherwise it is unsubscribed). On by default: a
+     * missing value (installs that predate the setting) counts as on.
+     *
+     * @param int|null $storefrontId
+     * @return bool
+     */
+    public function isAnonymiseOnDelete($storefrontId = null)
+    {
+        return self::isAnonymiseOnDeleteValue($this->readValue('anonymise_on_delete', $storefrontId));
+    }
+
+    /**
+     * @param mixed $value Stored value of the anonymise_on_delete setting, null when missing
+     * @return bool Only an explicit "N" turns it off
+     */
+    public static function isAnonymiseOnDeleteValue($value)
+    {
+        return $value !== 'N';
     }
 
     /**
@@ -383,6 +405,7 @@ class Config
             'authenticate_token'         => $this->getAuthenticateToken($storefrontId),
             'double_optin'               => $this->isDoubleOptin($storefrontId) ? 'Y' : 'N',
             'send_user_ip'               => $this->isSendUserIp($storefrontId) ? 'Y' : 'N',
+            'anonymise_on_delete'        => $this->isAnonymiseOnDelete($storefrontId) ? 'Y' : 'N',
             'server_ip'                  => $this->getServerIp($storefrontId),
             'export_auth_header_name'    => $this->getExportAuthHeaderName($storefrontId),
             'export_auth_header_key'     => $this->getExportAuthHeaderKey($storefrontId),

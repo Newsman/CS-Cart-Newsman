@@ -18,8 +18,8 @@ if (!defined('BOOTSTRAP')) {
 //    between old and new list_ids.
 //  * fn_delete_subscribers has no hook at all. For delete/m_delete the
 //    emails are captured here, while the rows still exist, and
-//    subscribers.post.php anonymises them in Newsman once the core has
-//    deleted the rows.
+//    subscribers.post.php sends them to Newsman once the core has deleted
+//    the rows.
 //  * runtime.newsman.admin_handled is set so NewsletterHookHandler skips
 //    the update modes (it would otherwise double-fire for the root).
 //
@@ -31,7 +31,8 @@ if (!defined('BOOTSTRAP')) {
 //    other lists are untouched. subscriber_id is always 0 here (resolved
 //    via the selected user's email).
 //  * delete / m_delete: the subscriber is removed entirely; its email is
-//    anonymised in Newsman (subscribers.post.php), not unsubscribed.
+//    anonymised in Newsman (subscribers.post.php), or unsubscribed where the
+//    setting "Anonymise in Newsman when customers are deleted" is off.
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     return;

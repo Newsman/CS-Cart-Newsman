@@ -6,11 +6,15 @@ use Tygh\Addons\Newsman\Api\Client;
 use Tygh\Addons\Newsman\Config;
 use Tygh\Addons\Newsman\Logger;
 use Tygh\Addons\Newsman\Service\AnonymiseEmail;
+use Tygh\Addons\Newsman\Service\UnsubscribeEmail;
+use Tygh\Addons\Newsman\User\IpAddress;
 use Tygh\Registry;
 use Tygh\Settings;
 
 /**
- * Anonymises an email address in the Newsman lists of the given storefronts.
+ * Anonymises an email address in the Newsman lists of the given storefronts,
+ * or, for a delete when the storefront setting "Anonymise in Newsman when
+ * customers are deleted" is off, unsubscribes it there instead.
  *
  * A storefront counts when Newsman is connected there: User ID, API key and
  * a Newsman list. The CS-Cart mailing list setting does not matter, because
@@ -19,6 +23,12 @@ use Tygh\Settings;
  * user and list) get a single call, and an email address is sent to a
  * Newsman list at most once per request. Each call runs with the
  * storefront's own Newsman settings.
+ *
+ * execute() always anonymises (GDPR anonymize). executeForDelete() follows
+ * the setting per Newsman list: it anonymises only when the setting is on
+ * for every storefront where Newsman is connected with that list; when one
+ * of them has it off, the less destructive unsubscribe is sent. The
+ * unsubscribe never sends a confirmation email.
  *
  * "Not on the list" (code 121) is not an error. Any failure is logged and
  * never thrown, so the store action that triggered it always completes.
@@ -33,7 +43,8 @@ class Email
     protected static $swappableKeys = array(
         'api_key', 'user_id', 'list_id', 'segment_id', 'authenticate_token',
         'cscart_mailing_list_id', 'double_optin', 'send_user_ip', 'server_ip',
-        'api_timeout', 'log_severity', 'log_clean_days',
+        'api_timeout', 'log_severity', 'log_clean_days', 'anonymise_on_delete',
+        'dev_active_user_ip', 'dev_user_ip',
     );
 
     /** @var Config */
@@ -45,25 +56,65 @@ class Email
     /** @var AnonymiseEmail */
     protected $anonymiseService;
 
+    /** @var UnsubscribeEmail */
+    protected $unsubscribeService;
+
+    /** @var IpAddress */
+    protected $ipAddress;
+
     /** @var array<int,array>|null storefront_id => company_id, settings; per request */
     protected $storefrontConfigs = null;
 
     /** @var array<string,array<string,bool>> lowercase email => Newsman list key => true */
     protected $sent = array();
 
-    public function __construct(Config $config, Logger $logger, AnonymiseEmail $anonymiseService)
-    {
+    public function __construct(
+        Config $config,
+        Logger $logger,
+        AnonymiseEmail $anonymiseService,
+        UnsubscribeEmail $unsubscribeService,
+        IpAddress $ipAddress
+    ) {
         $this->config = $config;
         $this->logger = $logger;
         $this->anonymiseService = $anonymiseService;
+        $this->unsubscribeService = $unsubscribeService;
+        $this->ipAddress = $ipAddress;
+    }
+
+    /**
+     * Anonymise, whatever the "Anonymise in Newsman when customers are
+     * deleted" setting (GDPR anonymize).
+     *
+     * @param string     $email
+     * @param array<int> $storefrontIds
+     * @param string     $reason For the log, e.g. "GDPR anonymize user_id=5"
+     */
+    public function execute($email, array $storefrontIds, $reason)
+    {
+        $this->process($email, $storefrontIds, $reason, false);
+    }
+
+    /**
+     * A user or newsletter subscriber was deleted: anonymise, or unsubscribe
+     * on the Newsman lists where the setting is off.
+     *
+     * @param string     $email
+     * @param array<int> $storefrontIds
+     * @param string     $reason For the log, e.g. "user delete user_id=5"
+     */
+    public function executeForDelete($email, array $storefrontIds, $reason)
+    {
+        $this->process($email, $storefrontIds, $reason, true);
     }
 
     /**
      * @param string     $email
      * @param array<int> $storefrontIds
-     * @param string     $reason For the log, e.g. "user delete user_id=5"
+     * @param string     $reason
+     * @param bool       $followSetting True for a delete
      */
-    public function execute($email, array $storefrontIds, $reason)
+    protected function process($email, array $storefrontIds, $reason, $followSetting)
     {
         try {
             $email = trim((string) $email);
@@ -111,8 +162,14 @@ class Email
                 }
                 $this->sent[$emailKey][$listKey] = true;
 
-                $this->withStorefrontScope($storefrontId, $configs[$storefrontId], function () use ($email, $storefrontId, $reason) {
-                    $this->send($email, $storefrontId, $reason);
+                $offStorefrontIds = $followSetting ? $this->getAnonymiseOffStorefrontIds($listKey) : array();
+
+                $this->withStorefrontScope($storefrontId, $configs[$storefrontId], function () use ($email, $storefrontId, $reason, $offStorefrontIds) {
+                    if (empty($offStorefrontIds)) {
+                        $this->send($email, $storefrontId, $reason);
+                    } else {
+                        $this->sendUnsubscribe($email, $storefrontId, $reason, $offStorefrontIds);
+                    }
                 });
             }
         } catch (\Throwable $e) {
@@ -172,6 +229,75 @@ class Email
             $email,
             Client::errorMessage($result)
         ));
+    }
+
+    /**
+     * Must run inside withStorefrontScope(), the service reads the Registry.
+     *
+     * @param string     $email
+     * @param int        $storefrontId
+     * @param string     $reason
+     * @param array<int> $offStorefrontIds Storefronts of this Newsman list with the setting off
+     */
+    protected function sendUnsubscribe($email, $storefrontId, $reason, array $offStorefrontIds)
+    {
+        $listId = $this->config->getListId();
+
+        $this->logger->info(sprintf(
+            'Unsubscribe (%s): storefront=%d unsubscribe %s from Newsman list %s, anonymise on delete is off for storefront(s) %s',
+            $reason,
+            $storefrontId,
+            $email,
+            $listId,
+            implode(',', $offStorefrontIds)
+        ));
+
+        $result = $this->unsubscribeService->execute($email, $this->ipAddress->getIp());
+
+        if (!is_array($result) || !isset($result['error'])) {
+            return;
+        }
+
+        if (isset($result['code']) && (int) $result['code'] === AnonymiseEmail::ERROR_NO_SUCH_SUBSCRIBER) {
+            $this->logger->info(sprintf(
+                'Unsubscribe (%s): %s is not on Newsman list %s, nothing to unsubscribe',
+                $reason,
+                $email,
+                $listId
+            ));
+            return;
+        }
+
+        $this->logger->error(sprintf(
+            'Unsubscribe (%s): storefront=%d unsubscribe failed for %s: %s',
+            $reason,
+            $storefrontId,
+            $email,
+            Client::errorMessage($result)
+        ));
+    }
+
+    /**
+     * Connected storefronts that use this Newsman list and have "Anonymise in
+     * Newsman when customers are deleted" off. A missing value counts as on.
+     *
+     * @param string $listKey See getListKey()
+     * @return array<int>
+     */
+    protected function getAnonymiseOffStorefrontIds($listKey)
+    {
+        $ids = array();
+        foreach ($this->getStorefrontConfigs() as $storefrontId => $cfg) {
+            if ($this->getListKey($cfg) !== $listKey) {
+                continue;
+            }
+            $value = isset($cfg['settings']['anonymise_on_delete']) ? $cfg['settings']['anonymise_on_delete'] : null;
+            if (!Config::isAnonymiseOnDeleteValue($value)) {
+                $ids[] = (int) $storefrontId;
+            }
+        }
+
+        return $ids;
     }
 
     /**

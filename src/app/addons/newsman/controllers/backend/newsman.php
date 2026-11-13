@@ -34,7 +34,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // 2. Persist the POSTed fields.
         $fields = array(
             'api_key', 'user_id', 'list_id', 'segment_id', 'cscart_mailing_list_id',
-            'double_optin', 'send_user_ip', 'server_ip',
+            'double_optin', 'send_user_ip', 'anonymise_on_delete', 'server_ip',
             'remarketing_status', 'remarketing_id', 'remarketing_anonymize_ip', 'remarketing_send_telephone',
             'theme_cart_compatibility',
             'log_severity', 'log_clean_days', 'api_timeout',
@@ -50,7 +50,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         // Unchecked checkboxes aren't sent in POST; default them to N.
         $checkboxes = array(
-            'double_optin', 'send_user_ip',
+            'double_optin', 'send_user_ip', 'anonymise_on_delete',
             'remarketing_status', 'remarketing_anonymize_ip', 'remarketing_send_telephone',
             'theme_cart_compatibility',
             'dev_active_user_ip',
