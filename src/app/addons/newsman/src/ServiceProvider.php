@@ -4,6 +4,7 @@ namespace Tygh\Addons\Newsman;
 
 use Pimple\Container;
 use Pimple\ServiceProviderInterface;
+use Tygh\Addons\Newsman\Action\Anonymise\Email as AnonymiseAction;
 use Tygh\Addons\Newsman\Action\Order\Save as OrderSave;
 use Tygh\Addons\Newsman\Action\Order\Status as OrderStatus;
 use Tygh\Addons\Newsman\Action\Subscribe\Email as SubscribeEmail;
@@ -96,6 +97,10 @@ class ServiceProvider implements ServiceProviderInterface
             return new Service\UnsubscribeEmail($app['addons.newsman.api.client'], $app['addons.newsman.config'], $app['addons.newsman.logger']);
         };
 
+        $app['addons.newsman.service.anonymise'] = static function ($app) {
+            return new Service\AnonymiseEmail($app['addons.newsman.api.client'], $app['addons.newsman.config'], $app['addons.newsman.logger']);
+        };
+
         $app['addons.newsman.service.segment_add'] = static function ($app) {
             return new Service\SegmentAddSubscriber($app['addons.newsman.api.client'], $app['addons.newsman.config'], $app['addons.newsman.logger']);
         };
@@ -180,6 +185,14 @@ class ServiceProvider implements ServiceProviderInterface
             );
         };
 
+        $app['addons.newsman.action.anonymise'] = static function ($app) {
+            return new AnonymiseAction(
+                $app['addons.newsman.config'],
+                $app['addons.newsman.logger'],
+                $app['addons.newsman.service.anonymise']
+            );
+        };
+
         $app['addons.newsman.action.order.save'] = static function ($app) {
             return new OrderSave(
                 $app['addons.newsman.config'],
@@ -225,8 +238,7 @@ class ServiceProvider implements ServiceProviderInterface
         $app['addons.newsman.hook_handlers.user'] = static function ($app) {
             return new UserHookHandler(
                 $app['addons.newsman.config'],
-                $app['addons.newsman.service.unsubscribe'],
-                $app['addons.newsman.user.ip_address'],
+                $app['addons.newsman.action.anonymise'],
                 $app['addons.newsman.logger']
             );
         };

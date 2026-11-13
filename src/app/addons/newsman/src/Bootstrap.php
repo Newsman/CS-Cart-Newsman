@@ -55,7 +55,7 @@ class Bootstrap implements BootstrapInterface, HookHandlerProviderInterface
                 'addons.newsman.hook_handlers.remarketing',
                 'onDispatchBeforeDisplay',
             ),
-            // Unsubscribe a deleted user from Newsman: read the email before
+            // Anonymise a deleted user in Newsman: read the email before
             // the user row is removed, send after the delete succeeded
             'delete_user' => array(
                 'addons.newsman.hook_handlers.user',
@@ -65,11 +65,20 @@ class Bootstrap implements BootstrapInterface, HookHandlerProviderInterface
                 'addons.newsman.hook_handlers.user',
                 'onPostDeleteUser',
             ),
-            // Unsubscribe a GDPR-anonymized user from Newsman (the email is
+            // Anonymise a GDPR-anonymized user in Newsman (the email is
             // captured by controllers/backend/profiles.pre.php)
             'update_user_pre' => array(
                 'addons.newsman.hook_handlers.user',
                 'onUpdateUserPre',
+            ),
+            // Storefront delete: the users it deletes get no Newsman action
+            'delete_company_pre' => array(
+                'addons.newsman.hook_handlers.user',
+                'onDeleteCompanyPre',
+            ),
+            'delete_company' => array(
+                'addons.newsman.hook_handlers.user',
+                'onDeleteCompany',
             ),
         );
     }

@@ -16,8 +16,10 @@ if (!defined('BOOTSTRAP')) {
 //    Here we enumerate every storefront with Newsman configured and fire
 //    the correct subscribe/unsubscribe per storefront based on the diff
 //    between old and new list_ids.
-//  * fn_delete_subscribers has no post-hook at all — delete/m_delete are
-//    handled entirely here.
+//  * fn_delete_subscribers has no hook at all. For delete/m_delete the
+//    emails are captured here, while the rows still exist, and
+//    subscribers.post.php anonymises them in Newsman once the core has
+//    deleted the rows.
 //  * runtime.newsman.admin_handled is set so NewsletterHookHandler skips
 //    the update modes (it would otherwise double-fire for the root).
 //
@@ -28,7 +30,8 @@ if (!defined('BOOTSTRAP')) {
 //  * add_users: `add` — submitted list_id is appended to current membership;
 //    other lists are untouched. subscriber_id is always 0 here (resolved
 //    via the selected user's email).
-//  * delete / m_delete: subscriber is removed entirely.
+//  * delete / m_delete: the subscriber is removed entirely; its email is
+//    anonymised in Newsman (subscribers.post.php), not unsubscribed.
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     return;
@@ -43,6 +46,36 @@ if (!in_array($mode, $handledModes, true)) {
 $config = Tygh::$app['addons.newsman.config'];
 
 if (!$config->isActive()) {
+    return;
+}
+
+if ($mode === 'delete' || $mode === 'm_delete') {
+    try {
+        if ($mode === 'delete') {
+            $deleteIds = !empty($_REQUEST['subscriber_id']) ? (array) $_REQUEST['subscriber_id'] : array();
+        } else {
+            $deleteIds = (!empty($_REQUEST['subscriber_ids']) && is_array($_REQUEST['subscriber_ids'])) ? $_REQUEST['subscriber_ids'] : array();
+        }
+        $deleteIds = array_values(array_filter(array_map('intval', $deleteIds)));
+        if (!empty($deleteIds)) {
+            $deletedSubscribers = array();
+            $rows = db_get_array(
+                'SELECT subscriber_id, email FROM ?:subscribers WHERE subscriber_id IN (?n)',
+                $deleteIds
+            );
+            foreach ($rows as $row) {
+                $deletedSubscribers[(int) $row['subscriber_id']] = (string) $row['email'];
+            }
+            Registry::set('runtime.newsman.deleted_subscribers', $deletedSubscribers);
+        }
+    } catch (\Throwable $e) {
+        // Never block the delete because of Newsman.
+        try {
+            Tygh::$app['addons.newsman.logger']->logException($e);
+        } catch (\Throwable $ignored) {
+        }
+    }
+
     return;
 }
 
@@ -88,8 +121,8 @@ $targetListIds = array_values(array_unique($targetListIds));
 
 // Build the operation list: each entry describes one subscriber-level change.
 //   subscriber_id: int (0 if unknown yet — resolved via email below)
-//   email: string (empty for delete modes — resolved via subscriber_id below)
-//   op: 'replace' | 'add' | 'delete'
+//   email: string (empty when unknown — resolved via subscriber_id below)
+//   op: 'replace' | 'add'
 //   listIds: int[] — meaning depends on op
 $operations = array();
 $parseIds = function ($raw) {
@@ -112,22 +145,6 @@ if ($mode === 'update') {
             'email'         => isset($data['email']) ? trim($data['email']) : '',
             'op'            => 'replace',
             'listIds'       => $parseIds(isset($data['list_ids']) ? $data['list_ids'] : array()),
-        );
-    }
-} elseif ($mode === 'delete' && !empty($_REQUEST['subscriber_id'])) {
-    $operations[] = array(
-        'subscriber_id' => (int) $_REQUEST['subscriber_id'],
-        'email'         => '',
-        'op'            => 'delete',
-        'listIds'       => array(),
-    );
-} elseif ($mode === 'm_delete' && !empty($_REQUEST['subscriber_ids']) && is_array($_REQUEST['subscriber_ids'])) {
-    foreach ($_REQUEST['subscriber_ids'] as $subId) {
-        $operations[] = array(
-            'subscriber_id' => (int) $subId,
-            'email'         => '',
-            'op'            => 'delete',
-            'listIds'       => array(),
         );
     }
 } elseif ($mode === 'add_users' && !empty($_REQUEST['add_users']) && !empty($_REQUEST['list_id'])) {
@@ -155,7 +172,7 @@ if (empty($operations)) {
     return;
 }
 
-// Resolve missing email (delete modes) or missing subscriber_id (update with
+// Resolve missing email or missing subscriber_id (update with
 // subscriber_id=0, or add_users). A subscriber_id of 0 after this lookup
 // means the subscriber doesn't exist yet — treat as "not on any list" below.
 $emailsToResolve = array();
@@ -242,10 +259,6 @@ foreach ($operations as $op) {
     if ($email === '') {
         continue;
     }
-    // delete of a non-existent subscriber_id: nothing to unsubscribe.
-    if ($op['op'] === 'delete' && $op['subscriber_id'] === 0) {
-        continue;
-    }
 
     $currentLists = ($op['subscriber_id'] > 0 && isset($currentListsBySubId[$op['subscriber_id']]))
         ? $currentListsBySubId[$op['subscriber_id']]
@@ -255,9 +268,7 @@ foreach ($operations as $op) {
         $targetListId = $cfg['target'];
         $wasOn = in_array($targetListId, $currentLists, true);
 
-        if ($op['op'] === 'delete') {
-            $willBeOn = false;
-        } elseif ($op['op'] === 'replace') {
+        if ($op['op'] === 'replace') {
             $willBeOn = in_array($targetListId, $op['listIds'], true);
         } else { // 'add' (additive — existing memberships are preserved)
             $willBeOn = $wasOn || in_array($targetListId, $op['listIds'], true);

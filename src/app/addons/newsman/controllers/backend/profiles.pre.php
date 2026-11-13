@@ -11,7 +11,7 @@ if (!defined('BOOTSTRAP')) {
 // GDPR anonymize (Customers > anonymize): the core profiles.anonymize mode
 // replaces the user's email with a random one and fires no hook of its own.
 // Capture the real email here, before that happens. UserHookHandler sends the
-// Newsman unsubscribe on update_user_pre, which fires only when the core
+// Newsman anonymisation on update_user_pre, which fires only when the core
 // controller really saves the anonymized data (not when the request is
 // refused, e.g. the user is not a customer or was already anonymized).
 
